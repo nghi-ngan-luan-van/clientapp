@@ -1,0 +1,2 @@
+*.pbxproj -text
+123 filter=lfs diff=lfs merge=lfs -text

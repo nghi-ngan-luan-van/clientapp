@@ -58,6 +58,10 @@ target 'clientapp' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
   target 'clientappTests' do
     inherit! :complete
     # Pods for testing

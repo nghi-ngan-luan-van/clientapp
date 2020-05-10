@@ -36,9 +36,9 @@ export default class RtspVideoPlayer extends Component {
                 <TouchableOpacity
 
                     style={{ width: WIDTH_SCREEN / this.numColums, height: 200, alignItems: 'center' }}>
-                    
+
                     <VlcSimplePlayer
-                        autoplay={true}
+                        autoplay={false}
                         url={rtspUrl}
                         initType={2}
                         hwDecoderEnabled={1}
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#000',
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     body: {
         backgroundColor: Colors.white,

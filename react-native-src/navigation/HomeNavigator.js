@@ -8,7 +8,7 @@ import MediaDetail from '../screens/media/MediaDetail';
 import CameraDetails from '../screens/CameraDetails';
 import { Icon } from 'react-native-elements';
 import MenuButton from './index';
-import MediaNavigator from './MediaNavigator'
+
 const Stack = createStackNavigator();
 
 
@@ -29,7 +29,7 @@ export default class HomeNavigator extends React.PureComponent {
                         headerLeft: () => (
                             <Icon
                                 raised
-                                name='plus'
+                                name='profile'
                                 type='font-awesome'
                                 color='blue'
                                 onPress={() => navigation.toggleDrawer()}

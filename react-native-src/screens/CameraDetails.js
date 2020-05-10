@@ -14,9 +14,7 @@ export default class CameraDetails extends Component {
         super(props);
         this.camera = _.get(this.props, 'route.params.camera', {});
     }
-    componentDidMount() {
-        console.log('CameraDetails', this.props)
-    }
+
     goToMedia = () => {
         let { navigation } = this.props;
         navigation && navigation.push(AppRoute.MEDIA, { cameraId: this.camera && this.camera._id })

@@ -48,11 +48,11 @@ export default function AppNavigator({ navigation }) {
         const bootstrapAsync = async () => {
             let userToken;
 
-            // try {
-            //     userToken = await AsyncStorage.getItem('userToken');
-            // } catch (e) {
-            //     // Restoring token failed
-            // }
+            try {
+                userToken = await AsyncStorage.getItem('userToken');
+            } catch (e) {
+                // Restoring token failed
+            }
 
             // After restoring token, we may need to validate it in production apps
 

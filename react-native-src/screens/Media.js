@@ -28,21 +28,43 @@ export default class Media extends Component {
     async componentDidMount() {
         //call api get all data of this user
         let token = await AsyncStorage.getItem('userToken')
-        console.log(this.cameraId);
+        // console.log(this.cameraId);
+        // var raw = JSON.stringify({ "_id": "5ea51d2b907fa122b48a1853" });
 
-        const response = await fetch("http://206.189.34.187/camera/savedvideo", {
+        // const response = await fetch("http://206.189.34.187/camera/savedvideo",
+        //     {
+        //         method: 'POST',
+        //         body: raw,
+        //         redirect: 'follow',
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`
+        //         },
+        //     })
+        //     .then(response => response.text())
+        //     .then(result => console.log('dddddd', result))
+        //     .catch(error => console.log('error MEDIA', error));
+        // console.log('aaa', response)
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({ "_id": "5ea51d2b907fa122b48a1853" });
+
+        var requestOptions = {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ _id: this.cameraId })
-        })
-            .then(response => response.json())
-                .catch(error => console.log('error MEDIA', error));
-        console.log('aaa', response)
-        this.setState({
-            listVideo: response || []
-        })
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        await fetch("http://206.189.34.187/camera/savedvideo", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+        // this.setState({
+        //     listVideo: response || []
+        // })
     }
 
     onPress = (video) => () => {

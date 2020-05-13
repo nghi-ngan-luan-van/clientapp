@@ -109,31 +109,56 @@ export default function AppNavigator({ navigation }) {
         []
     );
 
+    // return (
+    //     <AuthContext.Provider value={authContext}>
+    //         <Stack.Navigator headerMode="none">
+    //             {state.userToken == null ?
+    //                 state.isLoading === true ?
+    //                     <Stack.Screen name="Welcome" component={Welcome} /> :
+    //                     <Stack.Screen name="SignIn" component={SignIn} />
+
+    //                 : (
+    //                     <Stack.Screen
+    //                         name="App"
+    //                         component={DrawerScreen}
+    //                         headerMode='none'
+    //                         options={({ navigation }) => ({
+    //                             headerLeft: () => (
+    //                                 <MenuButton navigation={navigation} />
+    //                             ),
+    //                             animationEnabled: false,
+
+
+    //                         })}
+
+    //                     />
+    //                 )}
+    //         </Stack.Navigator>
+    //     </AuthContext.Provider>
+    // );
+    if (state.isLoading) {
+        // We haven't finished checking for the token yet
+        return <View />;
+    }
+
     return (
-        <AuthContext.Provider value={authContext}>
-            <Stack.Navigator headerMode="none">
-                {state.userToken == null ?
-                    state.isLoading === true ?
-                        <Stack.Screen name="Welcome" component={Welcome} /> :
-                        <Stack.Screen name="SignIn" component={SignIn} />
-
-                    : (
-                        <Stack.Screen
-                            name="App"
-                            component={DrawerScreen}
-                            headerMode='none'
-                            options={({ navigation }) => ({
-                                headerLeft: () => (
-                                    <MenuButton navigation={navigation} />
-                                ),
-                                animationEnabled: false,
-
-
-                            })}
-
-                        />
-                    )}
-            </Stack.Navigator>
-        </AuthContext.Provider>
+        <Stack.Navigator>
+            {state.userToken == null ? (
+                // No token found, user isn't signed in
+                <Stack.Screen
+                    name="SignIn"
+                    component={SignIn}
+                    options={{
+                        title: 'Sign in',
+                        // When logging out, a pop animation feels intuitive
+                        // You can remove this if you want the default 'push' animation
+                        animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+                    }}
+                />
+            ) : (
+                    // User is signed in
+                    <Stack.Screen name="App" component={DrawerScreen} />
+                )}
+        </Stack.Navigator>
     );
 }

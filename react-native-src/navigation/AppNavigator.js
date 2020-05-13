@@ -49,7 +49,7 @@ export default function AppNavigator({ navigation }) {
             let userToken;
 
             try {
-                userToken = await AsyncStorage.getItem('userToken');
+                // userToken = await AsyncStorage.getItem('userToken');
             } catch (e) {
                 // Restoring token failed
             }

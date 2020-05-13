@@ -47,9 +47,8 @@ export default class Media extends Component {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", `Bearer ${token}`);
-        myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({ "_id": "5ea51d2b907fa122b48a1853" });
+        var raw = JSON.stringify({ "_id": this.cameraId });
 
         var requestOptions = {
             method: 'POST',
@@ -59,12 +58,15 @@ export default class Media extends Component {
         };
 
         await fetch("http://206.189.34.187/camera/savedvideo", requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                this.setState({
+                    listVideo: result || []
+                })
+            })
             .catch(error => console.log('error', error));
-        // this.setState({
-        //     listVideo: response || []
-        // })
+       
     }
 
     onPress = (video) => () => {
@@ -83,7 +85,8 @@ export default class Media extends Component {
 
     render() {
         const { listVideo } = this.state;
-        if (!Array.isArray(listVideo) || listVideo.length === 0) return this.renderEmpty();
+        console.log("listvideo", listVideo)
+        if (listVideo.length === 0) return this.renderEmpty();
         return (
             <View style={styles.container}>
                 <FlatList
@@ -101,11 +104,8 @@ export default class Media extends Component {
                                 source={{ uri: item.name }}
                             />
                         </TouchableOpacity>
-
-
                     )}
                 />
-
             </View>
         );
     }

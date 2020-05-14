@@ -48,7 +48,7 @@ export default class HomeNavigator extends React.PureComponent {
                     })} />
                 <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
 
-                <Stack.Screen name={'123'} component={CameraDetails} />
+                <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={CameraDetails} />
 
     
                 <Stack.Screen name={AppRoute.MEDIA} component={Media} />

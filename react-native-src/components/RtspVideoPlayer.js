@@ -18,8 +18,8 @@ export default class RtspVideoPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rtspUrl: this.props.url,
-            name: this.props.name || '',
+            rtspUrl: '',
+            name:'',
 
         },
             this.numColums = this.props.numColums || 1;
@@ -30,16 +30,17 @@ export default class RtspVideoPlayer extends Component {
 
     render() {
         let { rtspUrl } = this.state;
+        console.log("cam detail", rtspUrl)
         return (
             <View style={styles.container}>
-                <Text style={styles.sectionTitle}>{this.props.name}</Text>
+                <Text style={styles.sectionTitle} numberOfLines={1}>{this.props.name}</Text>
                 <TouchableOpacity
 
                     style={{ width: WIDTH_SCREEN / this.numColums, height: 200, alignItems: 'center' }}>
 
                     <VlcSimplePlayer
                         autoplay={false}
-                        url={rtspUrl}
+                        url={this.props.url}
                         initType={2}
                         hwDecoderEnabled={1}
                         hwDecoderForced={1}

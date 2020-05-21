@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    AsyncStorage
+    AsyncStorage,
+    ImageBackground
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { AppRoute } from '../navigation/app-routes';
@@ -27,8 +28,7 @@ export default class HomeScreen extends Component {
 
     async componentDidMount() {
         //call api get all data of this user
-        let token = await AsyncStorage.getItem('userToken1');
-
+        let token = await AsyncStorage.getItem('userToken');
 
         var requestOptions = {
             method: 'GET',
@@ -42,9 +42,9 @@ export default class HomeScreen extends Component {
             .then(response => response.text())
             .then(result => {
                 console.log(result)
-                    if(result && result.statusCode == 403){
+                if (result && result.statusCode == 403) {
 
-                    }
+                }
                 this.setState({
                     cameras: JSON.parse(result).result
                 })
@@ -72,21 +72,26 @@ export default class HomeScreen extends Component {
         const { cameras } = this.state
         if (!Array.isArray(cameras) || cameras.length == 0) return this.renderEmpty();
         let numColumns = 2;
+
         return (
             <View style={styles.container}>
                 <FlatList
                     style={{ flex: 1, width: WIDTH_SCREEN }}
-                    contentContainerStyle={{justifyContent:'flex-start'}}
+                    contentContainerStyle={{ justifyContent: 'flex-start' }}
                     data={cameras}
                     numColumns={numColumns}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
                         <TouchableOpacity
-                            style={{ flex: 1, paddingHorizontal: 6 ,alignItems:'flex-start' }}
+                            style={{ flex: 1, alignItems: 'flex-start', paddingTop: 6 }}
                             onPress={this.onPress(item)}
                         >
-                            <Text numberOfLines={1}>{item.rtspUrl}</Text>
-                            <Image style={{ height: (WIDTH_SCREEN / 2 - 24) / 251 * 130, width: WIDTH_SCREEN/2, resizeMode: 'contain'}} source={{ uri: THUMBNAILS }} />
+                            <ImageBackground
+                                source={{ uri: item.image || THUMBNAILS }}
+                                style={{ padding: 6, alignItems: 'flex-start', height: ((WIDTH_SCREEN - 24) / 2) / 251 * 130, width: (WIDTH_SCREEN - 24) / 2, resizeMode: 'contain' }}  >
+                                <Text numberOfLines={1} style={{ fontWeight: 'bold', color:'#fff' }}>{item.name}</Text>
+                            </ImageBackground>
+
                         </TouchableOpacity>
 
 
@@ -104,10 +109,9 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        // alignItems:'center',
+        alignItems: 'center',
         backgroundColor: Colors.lighter,
-        // padding:12,
-        width: '100%'
+        paddingHorizontal: 12,
     },
     body: {
         backgroundColor: Colors.white,
@@ -115,8 +119,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         justifyContent: 'flex-end',
         borderRadius: 5,
-        padding: 10,
-        height: 150,
+
     }
 });
 

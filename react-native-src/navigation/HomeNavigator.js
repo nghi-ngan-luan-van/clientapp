@@ -8,9 +8,10 @@ import MediaDetail from '../screens/media/MediaDetail';
 import CameraDetails from '../screens/CameraDetails';
 import { Icon } from 'react-native-elements';
 import MenuButton from './index';
+import { Image, TouchableOpacity } from 'react-native'
+import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
-
 
 export default class HomeNavigator extends React.PureComponent {
     render() {
@@ -18,22 +19,24 @@ export default class HomeNavigator extends React.PureComponent {
             <Stack.Navigator {...this.props} initialRouteName={AppRoute.HOME}
 
                 options={({ navigation }) => ({
-                    headerLeft: () => (
-                        <MenuButton navigation={navigation} />
-                    ),
                     animationEnabled: false,
                 })}
             >
                 <Stack.Screen name={AppRoute.HOME} component={HomeScreen}
                     options={({ navigation }) => ({
                         headerLeft: () => (
-                            <Icon
-                                raised
-                                name='profile'
-                                type='font-awesome'
-                                color='blue'
+                            <TouchableOpacity
+                                style={{ width: 24, height: 24, marginLeft: 12 }}
+
                                 onPress={() => navigation.toggleDrawer()}
-                            />
+                            >
+                                <Image
+                                    style={{ width: 24, height: 24 }}
+                                    source={require('../assets/ic_menu.png')}
+
+                                />
+                            </TouchableOpacity>
+
                         ),
                         headerRight: () => (
                             <Icon
@@ -50,7 +53,7 @@ export default class HomeNavigator extends React.PureComponent {
 
                 <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={CameraDetails} />
 
-    
+
                 <Stack.Screen name={AppRoute.MEDIA} component={Media} />
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
             </Stack.Navigator>

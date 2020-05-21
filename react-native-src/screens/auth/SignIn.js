@@ -33,11 +33,10 @@ function SignIn() {
                         secureTextEntry={true} />
                 </View>
 
-
                 <TouchableOpacity style={styles.button}
-                onPress={() => signIn({ email: email.toLowerCase(), password })}
+                    onPress={() => signIn({ email: email.toLowerCase(), password })}
                 >
-                    <Text>SignIn</Text>
+                    <Text style={{ fontWeight: 'bold', color: 'white' }}>SIGN IN</Text>
                 </TouchableOpacity>
             </View>
 

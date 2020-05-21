@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeNavigator from './HomeNavigator';
 import MediaNavigator from './MediaNavigator';
+import PlayBackTimeline from '../screens/playback/PlayBackTimeline';
 
 
 export const MenuButton = ({ navigation }) => {
@@ -33,17 +34,17 @@ export const DrawerScreen = () => (
         <Drawer.Screen
             name="Home"
             component={HomeNavigator}
-            // options={{
-            //     title: 'Home'
-            // }}
-            
+            options={{
+                title: 'Home'
+            }}
+
         />
 
         <Drawer.Screen
             name="Media"
             component={MediaNavigator}
             options={{
-                title: 'Media'
+                title: 'PlayBack'
             }} />
     </Drawer.Navigator>
 );

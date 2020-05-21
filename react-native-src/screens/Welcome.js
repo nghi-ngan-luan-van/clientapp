@@ -1,14 +1,18 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Layout, LayoutElement, Text } from '@ui-kitten/components';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default  Welcome = (props) => (
-  <Layout style={styles.container}>
-    <Text style={styles.text} category='h1'>
-      Welcome to React Navigation 5 Guide
-    </Text>
-  </Layout>
-);
+export default class Welcome extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>
+          Welcome to NN Application
+      </Text>
+      </View>
+    )
+  }
+}
+
 
 const styles = StyleSheet.create({
   container: {

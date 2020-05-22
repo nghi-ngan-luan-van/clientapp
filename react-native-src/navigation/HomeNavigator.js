@@ -10,6 +10,7 @@ import { Icon } from 'react-native-elements';
 import MenuButton from './index';
 import { Image, TouchableOpacity } from 'react-native'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import EditCamera from '../screens/editcamera';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,8 @@ export default class HomeNavigator extends React.PureComponent {
 
                 <Stack.Screen name={AppRoute.MEDIA} component={Media} />
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
+                <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
+
             </Stack.Navigator>
         );
     }

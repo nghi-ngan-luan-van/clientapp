@@ -9,7 +9,7 @@ import Welcome from '../screens/Welcome';
 import AsyncStorage from '@react-native-community/async-storage';
 import SignIn from '../screens/auth/SignIn';
 
-const ROOT = "http://206.189.34.187"
+const ROOT = "http://165.22.98.234"
 export default function AppNavigator({ navigation }) {
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {

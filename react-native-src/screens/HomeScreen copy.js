@@ -39,7 +39,7 @@ export default function HomeScreen({ props }) {
             // Restoring token failed
         }
         try {
-            const response = await fetch("http://206.189.34.187/camera/listcam", {
+            const response = await fetch("http://165.22.98.234/camera/listcam", {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`

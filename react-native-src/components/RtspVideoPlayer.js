@@ -37,7 +37,7 @@ export default class RtspVideoPlayer extends Component {
                 <TouchableOpacity
                     style={{ width: WIDTH_SCREEN / this.numColums, height: 200, alignItems: 'center' }}>
                     <VlcSimplePlayer
-                        autoplay
+                        autoplay={false}
                         Orientation={Orientation}
                         url={this.props.url}
                         initType={2}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Switch} from 'react-native';
+import {StyleSheet, View, Text, Switch, Picker} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RtspVideoPlayer from '../components/RtspVideoPlayer';
 import _ from 'lodash';
@@ -15,19 +15,20 @@ export default class CameraDetails extends Component {
     super(props);
     this.camera = _.get(this.props, 'route.params.camera', {});
     this.state = {
+      cameraList:_.get(this.props, 'route.params.cameras', {}),
       isEnabled: false,
-      selectData: '',
+      selectedCamera: this.camera.name ,
     };
   }
   _handleOnSelect = (value) => {
-    console.log('valueee', value)
-    if (value === "0") {
+    console.log('valueee', value);
+    if (value === '0') {
       let {navigation} = this.props;
-      console.log('this camera', this.camera)
+      console.log('this camera', this.camera);
       navigation &&
-      navigation.push(AppRoute.CAMERA_EDIT, {
-        camera: this.camera,
-      });
+        navigation.push(AppRoute.CAMERA_EDIT, {
+          camera: this.camera,
+        });
     }
   };
 
@@ -38,28 +39,49 @@ export default class CameraDetails extends Component {
         cameraId: this.camera && this.camera._id,
       });
   };
-
-  
+  goToEditCamera = () => {
+    let {navigation} = this.props;
+    navigation &&
+      navigation.push(AppRoute.CAMERA_EDIT, {
+        camera: this.camera,
+      });
+  };
   render() {
     let {rtspUrl, name} = this.camera;
-    const {isEnabled} = this.state;
-    const menuGroup = [
-      {
-        key: '0',
-        value: '0',
-        text: `Edit camera information`,
-      },
-    ];
+    const {isEnabled, selectedCamera,cameraList} = this.state;
+    console.log('litsttsat', selectedCamera)
     return (
       <View style={styles.container}>
         <View style={styles.top}>
-          <MenuButton
-            buttonStyle={[styles.rightButton]}
-            menuGroup={menuGroup}
-            onSelect={this._handleOnSelect}
-            optionSelectedStyle={{backgroundColor: 'red'}}
-            optionsStyle={styles.options}
+          <Picker
+            selectedValue={selectedCamera}
+            style={styles.selectMenu}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({selectedCamera: itemValue})
+            }>
+              {cameraList.map((cam) => (
+                 <Picker.Item key={cam._id} label={cam.name} value={cam.name} />
+              )
+              )}
+          </Picker>
+          <TouchableOpacity
+            onPress={this.goToEditCamera}
+          >
+          <Icon
+            style={styles.iconSetting}
+            name="edit"
+            type="font-awesome"
+            color="black"
           />
+          </TouchableOpacity>
+          <TouchableOpacity>
+          <Icon
+            style={styles.iconSetting}
+            name="trash"
+            type="font-awesome"
+            color="black"
+          />
+          </TouchableOpacity>
         </View>
         <RtspVideoPlayer style={styles.video} url={rtspUrl} />
         {/* <TouchableOpacity styles={{ height: 24 }} onPress={this.goToMedia}>
@@ -73,15 +95,18 @@ export default class CameraDetails extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black,
   },
-  options:{
-    right:20,
-    top:20
+  selectMenu: {
+    height: 50,
+    width: '70%',
+  },
+  options: {
+    right: 20,
+    top: 20,
   },
   iconSetting: {
     padding: 15,
-    alignItems: 'flex-end',
   },
   rightButton: {
     width: 37,
@@ -90,16 +115,16 @@ const styles = StyleSheet.create({
     bottom: 7,
     right: 2,
     padding: 10,
-    color: 'white'
+    color: 'black',
   },
   top: {
     backgroundColor: 'white',
+    flexDirection: 'row',
+    flexWrap:'wrap',
     top: 0,
     height: 40,
     right: 0,
     left: 0,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#828287',
     position: 'relative',
   },
   video: {

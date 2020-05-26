@@ -38,7 +38,7 @@ export default class HomeScreen extends Component {
             redirect: 'follow'
         };
 
-        await fetch("http://206.189.34.187/camera/listcam", requestOptions)
+        await fetch("http://165.22.98.234/camera/listcam", requestOptions)
             .then(response => response.text())
             .then(result => {
                 console.log(result)
@@ -58,7 +58,7 @@ export default class HomeScreen extends Component {
         console.log(camera)
         navigation && navigation.push(
             AppRoute.CAMERA_DETAIL,
-            { camera: camera }
+            { camera: camera, cameras:this.state.cameras }
         )
     }
 

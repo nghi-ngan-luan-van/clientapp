@@ -57,7 +57,7 @@ export default class Media extends Component {
             redirect: 'follow'
         };
 
-        await fetch("http://206.189.34.187/camera/savedvideo", requestOptions)
+        await fetch("http://165.22.98.234/camera/savedvideo", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

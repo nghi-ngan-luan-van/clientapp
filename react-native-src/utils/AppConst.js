@@ -1,3 +1,3 @@
 module.exports = {
-    HOST_URL:'http://206.189.34.187/'
+    HOST_URL:'http://165.22.98.234/'
 }

@@ -5,11 +5,10 @@ import android.content.Context;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.yamill.orientation.OrientationPackage;
 
@@ -57,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
 //        protected List<ReactPackage> getPackages() {
 //            return Arrays.asList(
 //                    new MainReactPackage(),
+            //new ReactVlcPlayerPackage(),
 //                    new ReactVideoPackage()
 //            );
 //        }

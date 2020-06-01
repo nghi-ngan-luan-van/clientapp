@@ -1,6 +1,6 @@
 import React, {useRef, useLayoutEffect} from 'react';
-import {DrawerActions} from '@react-navigation/native';
-
+import {DrawerActions, NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   Button,
   TouchableOpacity,
@@ -17,8 +17,38 @@ import {
 
 import CameraDetails from '../screens/CameraDetails';
 const Drawer = createDrawerNavigator();
+// const Tab = createBottomTabNavigator();
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-function DrawerContent() {
+const Tab = createMaterialTopTabNavigator();
+
+// function MyTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen name="Home" component={HomeScreen} />
+//       <Tab.Screen name="Settings" component={SettingsScreen} />
+//     </Tab.Navigator>
+//   );
+// }
+// function DrawerContent() {
+//   return (
+//     <DrawerContentScrollView {...props}>
+//       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+//         <Text>Drawer content</Text>
+//       </View>
+//     </DrawerContentScrollView>
+//   );
+// }
+function CameraEditInfor(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>CameraEditInfor</Text>
+      </View>
+    </DrawerContentScrollView>
+  );
+}
+function CameraSetting(props) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -27,6 +57,18 @@ function DrawerContent() {
     </DrawerContentScrollView>
   );
 }
+
+function DrawerContent(props) {
+  return (
+    <NavigationContainer independent={true}>
+      <Tab.Navigator>
+        <Tab.Screen key={0} name="CameraEditInfor" component={CameraEditInfor} />
+        <Tab.Screen key={1} name="Settings" component={CameraSetting} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
 const SettingsDrawer = (props) => {
   const {route, navigation} = props;
 
@@ -36,10 +78,6 @@ const SettingsDrawer = (props) => {
         <TouchableOpacity
           onPress={() => {
             navigation.dispatch(DrawerActions.openDrawer());
-
-            console.log(drawerRef);
-            // drawerRef.current.props.navigation &&
-            //   drawerRef.current.props.navigation.toggleDrawer();
           }}>
           <Image
             source={require('../assets/ic_settings.png')}
@@ -62,6 +100,8 @@ const SettingsDrawer = (props) => {
         component={CameraDetails}
         ref={(el) => (drawerRef = el)}
       />
+      <Drawer.Screen name="CameraEditInfor" component={CameraEditInfor} />
+      <Drawer.Screen name="Settings1" component={CameraSetting} />
     </Drawer.Navigator>
   );
 };

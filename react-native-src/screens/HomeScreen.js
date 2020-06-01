@@ -1,125 +1,211 @@
-import React, { Component } from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    FlatList,
-    Dimensions,
-    AsyncStorage,
-    ImageBackground
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+  AsyncStorage,
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { AppRoute } from '../navigation/app-routes';
-const WIDTH_SCREEN = Dimensions.get('window').width;
-const THUMBNAILS = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT4AAACfCAMAAABX0UX9AAAAw1BMVEUG1aCD7NDqM1YA1J116csG2aIg2KiI7dMGvZUGmIW1q6X///9/8NN989XsKlLuI0/vHEzOfoKY077jZnsFM2KW18HxDEe+nZrFkJIGw5gFEFvNgYUFioAGtZIGyJoFW24FdHcFLGEGq40FF1wFN2MFMmIGo4oFkIKxsagGqIwFPGUFfHoFIl4Fl4UFbXWY6tBP3rTh+vK98uHx/Phc37ep7NbQ9urJiIvnOVr48fHpV3DzxMrneIn119ruq7TyzNHutr0DCiEMAAAC2ElEQVR4nO3d61LaQBiA4ciyAZoasIIK9oQFiiJKjFJoPfT+r6ogaFuySNgPgpH3+eOMOAbf2SxJFoPjAAAAAAAAAAAAAAAAANvO3fQTSDN16alNP4c0c3vkk6AeAGAFFK8nAqrH0YxA4HnBpp9Daqkrb+SK8WdHheN8IfnsqP44X0A+O6o3zndNPkvKvblxqWeP4z7gtVLMbQIq+OfAROvJ9xK0sT98NdzRkcnTEpH++Gncz80mKO3LU4HXnw4B/bn85TFfbicxubTnU8+XVPTXRv1Ek8+Ozn9rlJsO+ezok1bne6tKPktaF/LMffbIJ0I+EfKJkE+EfCLkEyGfCPlEyCdCPpFl8r2ffjH670fIZ4j34VGl/c6gXZk8GiPgVubbbWdKE0Wj6YOZ9i75DGOvcpCJ5aCyaPxtZb7DYrx8xUPyRe0exc13tGjvJR/5pmLnO/bj5fN/kM+Qb28m36Bo7unvkW9xPn9/+LNEPvt8nverZBiA5Iubz/NuowHJFz+fdxfZg8m3RD7Pu8/45LPPN9qDffLZ53sYMPqs8w33ZyY/8i2R7z5y8Ey+2PnuBtETYfLFzDe8NZ12kC9evt++8aSXfMZ8s1dc/DkXsPxj8hnycb3PhHwirHWIsNImssQ6r//SMu/TQq/POu+c8Zd74U0Gz28zyPEugwUZ54j9C7Y7nxj5yDdFPhHyiZBPhHwi5BMhnwj5RMgnwX+TS3AvAxHupCHDfVxEuIuQDPewkuEOangFdDWJrVR1EltJnHYKtdGOvG5OreC8wYD69KxZzyeg3jw7jfRL/3TYOW+Uu93CmnW75cZ5J7Lxfuo/YkBXL2rr33e1rl1EZz/3771AU0vrVhKbaeno1Key2dTvvU4yU7pxI+mf+4A3jfM1CZUNQz4GxF7IZ/hIkE9CXYcBn9Rgj5eO1SKmhNpJ/ZnuJqnwkvEnwFQIAAAAAAAAAAAAAACArfcHI9BmNv0JG/IAAAAASUVORK5CYII=';
-import { AuthContext } from '../navigation/AppNavigator';
+import {AppRoute} from '../navigation/app-routes';
+const WIDTH = Dimensions.get('window').width;
+import {HOST_URL} from '../utils/AppConst';
+export const Header = ({navigation}) => (
+  <View
+    style={{
+      top: 0,
+      height: 100,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 12,
+    }}>
+    <TouchableOpacity
+      style={{width: 42, height: 42}}
+      onPress={() => navigation && navigation.toggleDrawer()}>
+      <Image
+        style={{width: 36, height: 36}}
+        source={require('../assets/menu.png')}
+      />
+    </TouchableOpacity>
 
-export default class HomeScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            cameras: []
+    <Text style={styles.title}>Clomera</Text>
+    <View />
+  </View>
+);
+
+export default HomeScreen = (props) => {
+  const [cameras, setCameras] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    let token = await AsyncStorage.getItem('userToken');
+
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      redirect: 'follow',
+    };
+    const fetchUrl = HOST_URL + 'camera/listcam';
+
+    await fetch(fetchUrl, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        if (result && result.statusCode == 403) {
         }
-    }
+        setCameras(JSON.parse(result).result);
+      })
+      .catch((error) => console.log('error', error));
+  };
 
-    async componentDidMount() {
-        //call api get all data of this user
-        let token = await AsyncStorage.getItem('userToken');
+  const onPress = (camera) => () => {
+    // params: { user: 'jane' },
 
-        var requestOptions = {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            redirect: 'follow'
-        };
+    const {navigation} = props || {};
+    navigation &&
+      navigation.push(AppRoute.CAMERA_DETAIL, {
+        screen: 'Settings',
+        params: {
+          camera: camera,
+          cameras: cameras,
+        },
+      });
+  };
 
-        await fetch("http://206.189.34.187/camera/listcam", requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                console.log(result)
-                if (result && result.statusCode == 403) {
+  const renderEmpty = () => {
+    return (
+      <View>
+        <Text></Text>
+      </View>
+    );
+  };
 
-                }
-                this.setState({
-                    cameras: JSON.parse(result).result
-                })
-            })
-            .catch(error => console.log('error', error));
+  const testThumbnail = require('../assets/test.jpg');
 
-    }
+  const renderCamera = ({item, index}) => (
+    <TouchableOpacity key={index} onPress={onPress(item)}>
+      <Image
+        source={testThumbnail}
+        resizeMode={'cover'}
+        style={styles.cardView}
+      />
+      <Image
+        source={require('../assets/ic_video_play.png')}
+        style={styles.iconPlay}
+      />
 
-    onPress = (camera) => () => {
-        const { navigation } = this.props || {};
-        console.log(camera)
-        navigation && navigation.push(
-            AppRoute.CAMERA_DETAIL,
-            { camera: camera }
-        )
-    }
+      <View style={styles.nameContainer}>
+        <Text style={styles.cameraName}>{String(item.name)}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-    renderEmpty() {
-        return (
-            <View><Text>no camera</Text></View>
-        )
-    }
-
-    render() {
-        const { cameras } = this.state
-        if (!Array.isArray(cameras) || cameras.length == 0) return this.renderEmpty();
-        let numColumns = 2;
-
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    style={{ flex: 1, width: WIDTH_SCREEN }}
-                    contentContainerStyle={{ justifyContent: 'flex-start' }}
-                    data={cameras}
-                    numColumns={numColumns}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: 'flex-start', paddingTop: 6 }}
-                            onPress={this.onPress(item)}
-                        >
-                            <ImageBackground
-                                source={{ uri: item.image || THUMBNAILS }}
-                                style={{ padding: 6, alignItems: 'flex-start', height: ((WIDTH_SCREEN - 24) / 2) / 251 * 130, width: (WIDTH_SCREEN - 24) / 2, resizeMode: 'contain' }}  >
-                                <Text numberOfLines={1} style={{ fontWeight: 'bold', color:'#fff' }}>{item.name}</Text>
-                            </ImageBackground>
-
-                        </TouchableOpacity>
-
-
-                    )}
-                />
-
-            </View>
-        );
-    }
+  return (
+    <View style={styles.container}>
+      <Image
+        style={styles.backgroundImg}
+        source={require('../assets/background.png')}
+      />
+      <Header navigation={props.navigation} />
+      <FlatList
+        contentContainerStyle={styles.list}
+        columnWrapperStyle={styles.row}
+        numColumns={2}
+        keyExtractor={({item, index}) => index}
+        data={cameras}
+        renderItem={(cam) => renderCamera(cam)}
+      />
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          width: 42,
+          height: 42,
+          bottom: 40,
+          right: 24,
+        }}
+        onPress={() => navigation && navigation.push(AppRoute.ADD_CAMERA)}>
+        <Image
+          style={{width: 42, height: 42}}
+          source={require('../assets/plus.png')}
+        />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
+const CARD_WIDTH = (WIDTH - 24) / 2;
+
+const CARD_HEIGHT = (CARD_WIDTH / 7) * 4;
+const ICON_SIZE = 42;
 const styles = StyleSheet.create({
-    gridView: {
-        flex: 1,
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: Colors.lighter,
-        paddingHorizontal: 12,
-    },
-    body: {
-        backgroundColor: Colors.white,
-    },
-    itemContainer: {
-        justifyContent: 'flex-end',
-        borderRadius: 5,
-
-    }
+  nameContainer: {
+    opacity: 0.7,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 0.2,
+    position: 'absolute',
+    borderTopLeftRadius: 16,
+    padding: 5,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  list: {
+    // paddingBottom: 10, //ios android
+    // alignItems: 'flex-start',
+    alignContent:'flex-start'
+    // justifyContent:'space-evenly'
+  },
+  row: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    alignContent:'flex-start'
+  },
+  cardView: {
+    borderRadius: 16,
+    width: CARD_WIDTH,
+    marginBottom: 12,
+    height: CARD_HEIGHT,
+  },
+  title: {
+    color: '#38369e',
+    fontSize: 38,
+    fontWeight: 'bold',
+  },
+  backgroundImg: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: WIDTH,
+    overflow: 'hidden',
+  },
+  camera: {
+    overflow: 'hidden',
+    flex: 1,
+    paddingBottom: 12,
+    width: WIDTH,
+  },
+  cameraName: {
+    fontSize: 14,
+    color: '#fff',
+    flex: 1,
+  },
+  iconPlay: {
+    position: 'absolute',
+    alignContent: 'center',
+    height: ICON_SIZE,
+    width: ICON_SIZE,
+    opacity: 0.7,
+    top: (CARD_HEIGHT - ICON_SIZE) / 2,
+    left: (CARD_WIDTH - ICON_SIZE) / 2,
+  },
 });
-

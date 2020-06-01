@@ -1,16 +1,50 @@
 import React, { useState } from "react";
-import { View, Switch, StyleSheet,Text,Button } from "react-native";
+import { View, Switch, StyleSheet,Text,Button, Alert } from "react-native";
 import {Input } from 'react-native-elements';
 import _ from 'lodash';
+import AsyncStorage from "@react-native-community/async-storage";
+import { AppRoute } from "../../navigation/app-routes";
 
 export default function EditCamera(props) {
   const [camera,setCamera]=useState(_.get(props, 'route.params.camera', {}))
   const [isEnabled, setIsEnabled] = useState(camera.backupMode);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-   
+  const [newName,setNewName] = useState(camera.name)
+  const [newIP,setNewIP] = useState(camera.ip)
+  const [newPort,setNewPort] = useState(camera.port)
 
-    const onUpdateCamera =() =>{
-      alert('doing')
+    const onUpdateCamera = async() =>{
+      console.log(newName,newIP,newPort,isEnabled)
+      const token= await AsyncStorage.getItem('userToken')
+      if (typeof(newPort) !== "number") {
+        console.log(typeof(newPort))
+        alert("Port must be a number")
+        return
+      }
+    var myHeaders = new Headers();
+    myHeaders.append(
+      'Authorization',
+      `Bearer ${token}`,
+    );
+    myHeaders.append('Content-Type', 'application/json');
+
+    var raw = JSON.stringify({_id: camera._id,name:newName,rtspUrl:camera.rtspUrl,ip:newIP,port:newPort,backupMode:isEnabled});
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+
+    fetch('http://165.22.98.234/camera/edit', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result)
+        let {navigation} = props;
+        navigation &&
+        navigation.push(AppRoute.HOME, { });
+      })
     }
   return (
     <View style={styles.container}>
@@ -18,7 +52,8 @@ export default function EditCamera(props) {
           placeholder="Camera Name"
           leftIcon={{type: 'font-awesome', name: 'camera-retro'}}
           style={{height: '36'}}
-          value={camera.name}
+          defaultValue={camera.name}
+          onChangeText={(value)=>{setNewName(value)}}
         />
 
         <Input
@@ -26,22 +61,24 @@ export default function EditCamera(props) {
           placeholder="RTSP Url"
           leftIcon={{type: 'font-awesome', name: 'location-arrow'}}
           style={{height: '36'}}
-          value={camera.rtspUrl}
+          defaultValue={camera.rtspUrl}
         />
          <Input
           placeholder="IP"
           leftIcon={{type: 'font-awesome', name: 'link'}}
           style={{height: '36'}}
-          value={camera.ip}
-
+          defaultValue={camera.ip}
+          onChangeText={(value)=>{setNewIP(value)}}
         />
 
         <Input
           placeholder="Port"
+          keyboardType='numeric'
+          maxLength={10}
           leftIcon={{type: 'font-awesome', name: 'compass'}}
           style={{height: '36'}}
-          value={camera.port}
-
+          defaultValue={camera && camera.port && camera.port.toString()}
+          onChangeText={(value)=>{setNewPort(Number.parseInt(value))}}
         />
         <View style={styles.switchBtn}>
         <Text> Back-up Mode : </Text> 
@@ -61,7 +98,8 @@ export default function EditCamera(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1
+    flex:1,
+    paddingHorizontal:12,
   },
   switchBtn: {
     paddingBottom:10,

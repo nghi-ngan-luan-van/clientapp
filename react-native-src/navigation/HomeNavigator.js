@@ -6,58 +6,44 @@ import HomeScreen from '../screens/HomeScreen';
 import Media from '../screens/Media';
 import MediaDetail from '../screens/media/MediaDetail';
 import CameraDetails from '../screens/CameraDetails';
+import CameraNavigator from './CameraNavigator';
 import { Icon } from 'react-native-elements';
-import MenuButton from './index';
-import { Image, TouchableOpacity } from 'react-native'
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import {Image, TouchableOpacity, View, Text, Button} from 'react-native'
 import EditCamera from '../screens/editcamera';
-
+// import Home from '../fromscreens/main/Home';
 const Stack = createStackNavigator();
+import Header from "../components/Header";
+import SettingsDrawer from "../navigation/SettingsDrawer";
 
 export default class HomeNavigator extends React.PureComponent {
     render() {
         return (
             <Stack.Navigator {...this.props} initialRouteName={AppRoute.HOME}
-
-                options={({ navigation }) => ({
+            screenOptions={( props ) => ({
                     animationEnabled: false,
+                    header: (props) => ( <Header {...props}/>)
                 })}
+                headerMode='float'
             >
-                <Stack.Screen name={AppRoute.HOME} component={HomeScreen}
-                    options={({ navigation }) => ({
-                        headerLeft: () => (
-                            <TouchableOpacity
-                                style={{ width: 24, height: 24, marginLeft: 12 }}
-
-                                onPress={() => navigation.toggleDrawer()}
-                            >
-                                <Image
-                                    style={{ width: 24, height: 24 }}
-                                    source={require('../assets/ic_menu.png')}
-
-                                />
-                            </TouchableOpacity>
-
-                        ),
-                        headerRight: () => (
-                            <Icon
-                                raised
-                                name='plus'
-                                type='font-awesome'
-                                color='blue'
-                                onPress={() => navigation.push(AppRoute.ADD_CAMERA)} />
-                        ),
-
-
+                <Stack.Screen
+                    headerMode={'none'}
+                    name={AppRoute.HOME}
+                    component={HomeScreen}
+                    options={({  }) => ({
+                        header: () => {
+                            return ( <View/>);
+                          },
+                        
                     })} />
                 <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
 
-                <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={CameraDetails} />
 
-
+                 <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={SettingsDrawer} 
+                 />
                 <Stack.Screen name={AppRoute.MEDIA} component={Media} />
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
                 <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
+                <Stack.Screen name={AppRoute.SETTINGS} component={SettingsDrawer} />
 
             </Stack.Navigator>
         );

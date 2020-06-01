@@ -14,7 +14,7 @@ import {
 import _ from 'lodash';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-const WIDTH_SCREEN = Dimensions.get('window').width;
+const WIDTH = Dimensions.get('window').width;
 
 export default class Media extends Component {
     constructor(props) {
@@ -57,10 +57,10 @@ export default class Media extends Component {
             redirect: 'follow'
         };
 
-        await fetch("http://206.189.34.187/camera/savedvideo", requestOptions)
+        await fetch("http://165.22.98.234/camera/savedvideo", requestOptions)
             .then(response => response.json())
             .then(result => {
-                console.log(result)
+              //  console.log(result)
                 this.setState({
                     listVideo: result || []
                 })
@@ -85,12 +85,12 @@ export default class Media extends Component {
 
     render() {
         const { listVideo } = this.state;
-        console.log("listvideo", listVideo)
+        // console.log("listvideo", listVideo)
         if (listVideo.length === 0) return this.renderEmpty();
         return (
             <View style={styles.container}>
                 <FlatList
-                    style={{ flex: 1, width: WIDTH_SCREEN - 24 }}
+                    style={{ flex: 1, width: WIDTH - 24 }}
                     data={listVideo}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
@@ -100,7 +100,7 @@ export default class Media extends Component {
                         >
                             <Text numberOfLines={1}>{item.name}</Text>
                             <Image
-                                style={{ height: (WIDTH_SCREEN / 2 - 24) / 251 * 130, width: '100%', resizeMode: 'contain' }}
+                                style={{ height: (WIDTH / 2 - 24) / 251 * 130, width: '100%', resizeMode: 'contain' }}
                                 source={{ uri: item.name }}
                             />
                         </TouchableOpacity>

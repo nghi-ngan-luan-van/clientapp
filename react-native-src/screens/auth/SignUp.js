@@ -1,17 +1,18 @@
-import React, {Component} from 'react';
-import {View} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { AuthContext } from '../../navigation/AppNavigator'
 
-class SignUp extends Component{
-    constructor(props){
-        super(props);
-    }
+function SignUp() {
+    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
+    const [password, setPassword] = React.useState('123456');
 
-    render(){
-        return(
-            <View>SignUp</View>
-        )
-    }
-
+    const { signUp } = React.useContext(AuthContext);
+    return (
+        
+    );
 }
 
-module.exports = SignUp;
+module.exports = SignIn;
+const styles = StyleSheet.create({
+
+});

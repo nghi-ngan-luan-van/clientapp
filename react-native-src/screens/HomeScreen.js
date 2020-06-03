@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  AsyncStorage,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {AppRoute} from '../navigation/app-routes';
 const WIDTH = Dimensions.get('window').width;
 import {HOST_URL} from '../utils/AppConst';
@@ -43,8 +43,8 @@ export default HomeScreen = (props) => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    let token = await AsyncStorage.getItem('userToken');
-
+    let token = await AsyncStorage.getItem('userProfileToken');
+    console.log(await AsyncStorage.getItem('userProfileToken'))
     const requestOptions = {
       method: 'GET',
       headers: {
@@ -57,9 +57,11 @@ export default HomeScreen = (props) => {
     await fetch(fetchUrl, requestOptions)
       .then((response) => response.text())
       .then((result) => {
+        
         if (result && result.statusCode == 403) {
         }
         setCameras(JSON.parse(result).result);
+        console.log(result)
       })
       .catch((error) => console.log('error', error));
   };
@@ -89,7 +91,7 @@ export default HomeScreen = (props) => {
   const testThumbnail = require('../assets/test.jpg');
 
   const renderCamera = ({item, index}) => (
-    <TouchableOpacity key={index} onPress={onPress(item)}>
+    <TouchableOpacity key={index} onPress={onPress(item)} style={styles.cardView}>
       <Image
         source={testThumbnail}
         resizeMode={'cover'}
@@ -139,7 +141,7 @@ export default HomeScreen = (props) => {
   );
 };
 
-const CARD_WIDTH = (WIDTH - 24) / 2;
+const CARD_WIDTH = (WIDTH - 36) / 2;
 
 const CARD_HEIGHT = (CARD_WIDTH / 7) * 4;
 const ICON_SIZE = 42;
@@ -157,24 +159,26 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flex: 1,
+    // paddingHorizontal:12
   },
   list: {
-    // paddingBottom: 10, //ios android
-    // alignItems: 'flex-start',
-    alignContent:'flex-start'
-    // justifyContent:'space-evenly'
+    paddingHorizontal:12,
+   
   },
   row: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-    alignContent:'flex-start'
+    // alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    // alignContent:'flex-start'
   },
   cardView: {
     borderRadius: 16,
     width: CARD_WIDTH,
     marginBottom: 12,
     height: CARD_HEIGHT,
+    borderWidth:2,
+    borderStartColor:'#000',
+    borderEndColor:"#fff"
   },
   title: {
     color: '#38369e',

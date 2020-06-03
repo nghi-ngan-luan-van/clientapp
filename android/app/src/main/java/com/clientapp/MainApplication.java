@@ -5,25 +5,10 @@ import android.content.Context;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
+
 import com.brentvatne.react.ReactVideoPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.github.yamill.orientation.OrientationPackage;
 
-import org.wonday.live.RNLiveStreamPackage;
-import org.wonday.live.RNLiveStreamPackage;
-import org.wonday.live.RNLiveStreamPackage;
 
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
-
-import org.wonday.live.RNLiveStreamPackage;
-import org.wonday.live.RNLiveStreamPackage;
-import org.wonday.live.RNLiveStreamPackage;
-
-import com.yuanzhou.vlc.ReactVlcPlayerPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

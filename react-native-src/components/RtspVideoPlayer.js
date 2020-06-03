@@ -23,44 +23,82 @@ export default class RtspVideoPlayer extends Component {
     (this.state = {
       rtspUrl: '',
       name: '',
+      isFull:true
     }),
       (this.numColums = this.props.numColums || 1);
   }
 
   componentDidMount() {}
 
+  renderView(vs){
+    return <VlCPlayerView
+    // style={{ backgroundColor:'red'}}
+      autoplay={true}
+      url={vs}
+      Orientation={Orientation}
+      //BackHandle={BackHandle}
+      // ggUrl={vs}
+      showGG={false}
+      showTitle={true}
+      title="VIDEO TEST"
+      showBack={true}
+      onLeftPress={() => {}}
+      startFullScreen={() => {
+        this.setState({
+          isFull: true,
+        });
+      }}
+      closeFullScreen={() => {
+        this.setState({
+          isFull: false,
+        });
+      }}
+    />
+  }
+  renderSecondView(vs){
+    return <ScrollView contentContainerStyle={styles.container}>
+
+    <TouchableOpacity
+      style={{
+        width: WIDTH_SCREEN / this.numColums,
+        height: 200,
+        alignItems: 'center',
+        backgroundColor:'#fff'
+      }}>
+      <VLCPlayer
+        // ref={(ref) => (this.vlcPlayer = ref)}
+        style={styles.video}
+        videoAspectRatio="16:9"
+        // paused={this.state.paused}
+        // source={{uri: rtspUrl}}
+        source={{uri: nc}}
+        // onProgress={this.onProgress.bind(this)}
+        // onEnd={this.onEnded.bind(this)}
+        // onBuffering={this.onBuffering.bind(this)}
+        // onError={this._onError}
+        // onStopped={this.onStopped.bind(this)}
+        // onPlaying={this.onPlaying.bind(this)}
+        // onPaused={this.onPaused.bind(this)}
+      />
+    </TouchableOpacity>
+    <VLCPlayer 
+          ref={(ref) => (this.vlcPlayer = ref)}
+          style={{width: '100%', height: 200}}
+          videoAspectRatio="16:9"
+          source={{
+            uri:
+              // 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            vs // camera rtsp tests
+          }}
+        />
+  </ScrollView>
+  }
   render() {
     let {rtspUrl} = this.state;
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={{
-            width: WIDTH_SCREEN / this.numColums,
-            height: 200,
-            alignItems: 'center',
-          }}>
-          {/* <VlcSimplePlayer
-                        autoplay={false}
-                        Orientation={Orientation}
-                        url={this.props.url}
-                        initType={2}
-                        isLive={true}
-                        autoReloadLive={true}
-                        // hwDecoderEnabled={1}
-                        // hwDecoderForced={1}
-                        // initOptions={[
-                        //     "--no-audio",
-                        //     "--rtsp-tcp",
-                        //     "--network-caching=" + 150,
-                        //     "--rtsp-caching=" + 150,
-                        //     "--no-stats",
-                        //     "--tcp-caching=" + 150,
-                        //     "--realrtsp-caching=" + 150,
-                        // ]}
-                    />  */}
-        </TouchableOpacity>
-      </View>
-    );
+    let nc =
+      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    let vs = 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov';
+    return this.renderView(vs);
   }
 }
 
@@ -68,35 +106,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#000',
+    // backgroundColor: '#000',
     justifyContent: 'center',
   },
   body: {
     backgroundColor: Colors.white,
   },
+  video: {
+    height: 200,
+    width: WIDTH_SCREEN - 24,
+  },
+
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: Colors.black,
   },
 });
-
-// //
-// <LivePlayer
-// source={{uri: rtspUrl}}
-// style={styles.video}
-// paused={false}
-// muted={false}
-// bufferTime={300}
-// maxBufferTime={1000}
-// resizeMode={"contain"}
-// onLoading={() => {
-//     console.log('LivePlayer_onLoading....')
-// }}
-// onLoad={() => {
-//     console.log('LivePlayer_onLoad')
-// }}
-// onEnd={() => {
-//     console.log('LivePlayer_onEnd')
-// }}
-// />

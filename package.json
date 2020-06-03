@@ -44,7 +44,6 @@
     "react-native-tab-view": "^2.14.2",
     "react-native-timeline-flatlist": "^0.7.2",
     "react-native-vector-icons": "^6.6.0",
-    "react-native-video": "^4.4.5",
     "react-native-vlc-media-player": "^1.0.20",
     "react-redux": "^7.2.0",
     "yup": "^0.28.5"

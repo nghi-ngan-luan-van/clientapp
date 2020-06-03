@@ -47,7 +47,7 @@ export default function CameraDetails(props) {
     let {navigation} = props;
     navigation &&
     navigation.navigate(AppRoute.CAMERA_EDIT, {
-      cameraId: camera && camera._id,
+      camera: camera,
     });
     //navigation.toggleDrawer();
   };

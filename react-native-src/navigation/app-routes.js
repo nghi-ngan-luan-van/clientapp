@@ -15,6 +15,7 @@ export const AppRoute = {
   MEDIA_DETAIL: 'MediaDetail',
   CAMERA_DETAIL: 'CameraDetails',
   CAMERA_EDIT: 'Edit Camera Information',
+  CAMERA_EDIT_MODE:'Edit Camera Mode',
   SETTINGS: 'Settings',
 
 }

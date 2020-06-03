@@ -9,9 +9,9 @@ import {
   Dimensions,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {LivePlayer} from 'react-native-live-stream';
+// import {LivePlayer} from 'react-native-live-stream';
 // import { VlcSimplePlayer, VLCPlayer } from 'react-native-yz-vlcplayer';
-import { VLCPlayer, VlCPlayerView } from 'react-native-vlc-media-player';
+import {VLCPlayer, VlCPlayerView} from 'react-native-vlc-media-player';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
 const WIDTH_SCREEN = Dimensions.get('window').width;

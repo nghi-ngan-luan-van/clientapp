@@ -67,11 +67,11 @@ export default function AppNavigator({navigation}) {
 
         fetch(HOST_URL + 'auth/login', requestOptions)
           .then((response) => response.text())
-          .then((result) => {
+          .then(async (result) => {
             let {token} = JSON.parse(result);
             console.log('t', token);
             if (!token) alert('Wrong email or password, please try again');
-            AsyncStorage.setItem('userToken', token);
+            await AsyncStorage.setItem('userProfileToken', token);
             dispatch({type: 'SIGN_IN', token: token});
           })
           .catch((error) => {

@@ -44,7 +44,7 @@ export default HomeScreen = (props) => {
   }, []);
   const fetchData = async () => {
     let token = await AsyncStorage.getItem('userProfileToken');
-    console.log(await AsyncStorage.getItem('userProfileToken'))
+  
     const requestOptions = {
       method: 'GET',
       headers: {

@@ -9,11 +9,12 @@ import CameraDetails from '../screens/CameraDetails';
 import CameraNavigator from './CameraNavigator';
 import { Icon } from 'react-native-elements';
 import {Image, TouchableOpacity, View, Text, Button} from 'react-native'
-import EditCamera from '../screens/editcamera';
+import EditCamera from '../screens/editcamera/index';
 // import Home from '../fromscreens/main/Home';
 const Stack = createStackNavigator();
 import Header from "../components/Header";
 import SettingsDrawer from "../navigation/SettingsDrawer";
+import EditMode from '../screens/editcamera/EditMode';
 
 export default class HomeNavigator extends React.PureComponent {
     render() {
@@ -43,6 +44,8 @@ export default class HomeNavigator extends React.PureComponent {
                 <Stack.Screen name={AppRoute.MEDIA} component={Media} />
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
                 <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
+                <Stack.Screen name={AppRoute.CAMERA_EDIT_MODE} component={EditMode} />
+
                 <Stack.Screen name={AppRoute.SETTINGS} component={SettingsDrawer} />
 
             </Stack.Navigator>

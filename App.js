@@ -4,7 +4,7 @@ import AppNavigator from './react-native-src/navigation/AppNavigator';
 
 function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       <AppNavigator />
     </NavigationContainer>
   );

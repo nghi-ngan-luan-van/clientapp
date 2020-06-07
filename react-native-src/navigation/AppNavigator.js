@@ -10,6 +10,8 @@ import Welcome from '../screens/Welcome';
 import AsyncStorage from '@react-native-community/async-storage';
 import SignIn from '../screens/auth/SignIn';
 import {HOST_URL} from '../utils/AppConst';
+import {AuthNavigator} from "./AuthNavigator";
+import {AppRoute} from "./app-routes";
 
 export default function AppNavigator({navigation}) {
   const [state, dispatch] = React.useReducer(
@@ -71,7 +73,7 @@ export default function AppNavigator({navigation}) {
             let {token} = JSON.parse(result);
             console.log('t', token);
             if (!token) alert('Wrong email or password, please try again');
-            await AsyncStorage.setItem('userProfileToken', token);
+            await AsyncStorage.setItem('userToken', token);
             dispatch({type: 'SIGN_IN', token: token});
           })
           .catch((error) => {
@@ -93,7 +95,7 @@ export default function AppNavigator({navigation}) {
           state.isLoading === true ? (
             <Stack.Screen name="Welcome" component={Welcome} />
           ) : (
-            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name={AppRoute.SIGN_IN} component={AuthNavigator} />
           )
         ) : (
           <Stack.Screen

@@ -1,42 +1,76 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { AuthContext } from '../../navigation/AppNavigator'
+import React from 'react';
+import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
+import {AuthContext} from '../../navigation/AppNavigator'
+import {AppRoute} from "../../navigation/app-routes";
 
-function SignIn() {
+const BACKGROUND = require('../../assets/Illustration.png')
+const {width, height} = Dimensions.get('window')
+
+export function SignInForm() {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
 
-    const { signIn } = React.useContext(AuthContext);
+    const {signIn} = React.useContext(AuthContext);
     return (
-        <View>
-            <View style={styles.logoContiner}>
-                <Image style={styles.logo}
-                    source={require('../../assets/logo.png')} />
+        <View style={styles.container}>
+            <Text style={styles.welcome}>WELCOME</Text>
+            <View style={{height: 30}}/>
+
+            <View style={styles.emailContainer}>
+                <TextInput style={styles.textInput}
+                           placeholder="Email"
+                           value={email}
+                           onChangeText={setEmail}
+                           keyboardType="email-address"/>
             </View>
-            <View style={styles.container}>
+            <View style={styles.passwordContainer}>
+                <TextInput style={styles.textInput}
+                           value={password}
+                           onChangeText={setPassword}
+                           placeholder="Password"
+                           secureTextEntry={true}/>
+            </View>
 
-                <Text style={styles.welcome}>WELCOME</Text>
-                <View style={{ height: 30 }} />
+            <TouchableOpacity style={[styles.button,{marginTop:32, width: width -48}]}
+                              onPress={() => signIn({email: email.toLowerCase(), password})}
+            >
+                <Text style={{fontWeight: 'bold', color: 'white'}}>SIGN IN</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
 
-                <View style={styles.emailContainer}>
-                    <TextInput style={styles.textInput}
-                        placeholder="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address" />
-                </View>
-                <View style={styles.passwordContainer}>
-                    <TextInput style={styles.textInput}
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Password"
-                        secureTextEntry={true} />
-                </View>
+export function SignIn(props) {
+    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
+    const [password, setPassword] = React.useState('123456');
 
-                <TouchableOpacity style={styles.button}
-                    onPress={() => signIn({ email: email.toLowerCase(), password })}
-                >
-                    <Text style={{ fontWeight: 'bold', color: 'white' }}>SIGN IN</Text>
+    const {signIn} = React.useContext(AuthContext);
+    const onPressSignIn = ()=>{
+        let {navigation} = props;
+        navigation && navigation.navigate(AppRoute.SIGN_IN_FORM);
+    }
+    return (
+        <View style={styles.container}>
+            <Image style={styles.background}
+                   source={BACKGROUND}/>
+            <Text style={{
+                color: '#7B7F9E',
+                flex: 1,
+                width: width * 0.5,
+                marginLeft: 18,
+                fontSize: 15,
+                textAlign: 'left',
+                alignSelf: 'flex-start'
+            }}>this is app qwertyubgabasjhfbskjdfaskjfhajdgflajdgbaljkfbasdljkfbaslhjiosdfghjcvbcvbnvb</Text>
+            <View style={[styles.row, {width, paddingHorizontal: 12}]}>
+                <TouchableOpacity style={[styles.button, {backgroundColor: '#fff', borderWidth: 0.3}]}>
+                    <Image source={require('../../assets/ic_cloud_left.png')} style={styles.icon}/>
+                    <Text style={{color: '#567DF4'}}>SignUp</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.button]} onPress={onPressSignIn}>
+                    <Text style={{color: '#fff'}}>SignIn</Text>
+                    <Image source={require('../../assets/ic_next.png')} style={styles.icon}/>
                 </TouchableOpacity>
             </View>
 
@@ -44,18 +78,45 @@ function SignIn() {
     );
 }
 
-module.exports = SignIn;
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'flex-start',
         alignItems: 'center',
         flex: 1,
-        paddingTop: 50
+        backgroundColor: '#fff',
+        padding: 12,
     },
-    logo: {
+    background: {
+        top: 0,
+        width,
+        resizeMode: 'contain',
+        // height: height * 0.4,
+
+    },
+    row: {
+        // flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        alignContent: 'space-between'
+
+    },
+    button: {
+        // flex:1,
+        backgroundColor: '#567DF4',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        padding: 6,
+        height: 50,
+        width: 150
+    },
+    icon: {
         alignSelf: 'center',
-        width: 300,
-        height: 60,
+        width: 30,
+        height: 12,
         resizeMode: 'contain',
     },
     forgotPassword: {
@@ -109,27 +170,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: 14,
+        padding:6
     },
-    button: {
-        width: 325,
-        borderColor: '#129793',
-        borderWidth: 1,
-        height: 50,
-        padding: 10,
-        borderRadius: 24,
-        marginTop: 20,
-        backgroundColor: '#129793',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#129793',
-        shadowOffset: {
-            width: 0,
-            height: 4
-        },
-        shadowRadius: 5,
-        shadowOpacity: 0.8
-    },
+    // button: {
+    //     width: 325,
+    //     borderColor: '#129793',
+    //     borderWidth: 1,
+    //     height: 50,
+    //     padding: 10,
+    //     borderRadius: 24,
+    //     marginTop: 20,
+    //     backgroundColor: '#129793',
+    //     flexDirection: 'column',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     shadowColor: '#129793',
+    //     shadowOffset: {
+    //         width: 0,
+    //         height: 4
+    //     },
+    //     shadowRadius: 5,
+    //     shadowOpacity: 0.8
+    // },
     buttonText: {
         color: 'white',
         fontSize: 12

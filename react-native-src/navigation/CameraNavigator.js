@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import SettingsDrawer from './SettingsDrawer';
+import SettingsDrawer from './CameraTabs';
 import CameraDetails from '../screens/CameraDetails';
 
 const Drawer = createDrawerNavigator();

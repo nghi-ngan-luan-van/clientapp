@@ -1,113 +1,116 @@
-import React, { Component } from 'react';
-import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    FlatList,
-    Dimensions,
-    AsyncStorage
-} from 'react-native';
-import _ from 'lodash';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import React, {useEffect, useState} from 'react';
+import {Dimensions, StyleSheet, TouchableOpacity, FlatList, Text, View, Image, Button} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import _ from "lodash";
+import {HOST_URL} from "../utils/AppConst";
+import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 const WIDTH = Dimensions.get('window').width;
+export default function Media(props, route) {
+    const url='https://clientapp.sgp1.digitaloceanspaces.com/5ed3e22848d6943ed70ec47f/5_5/_002.mp4'
 
-export default class Media extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            listVideo: []
-        }
-        this.cameraId = _.get(this.props, 'route.params.cameraId', '0');
-    }
-
-    async componentDidMount() {
-        //call api get all data of this user
+    const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
+    const [cameras, setCameras] = useState(_.get(props, 'route.params.cameras', {}));
+    const [listVideo, setListVideo] = useState( []);
+    const [video, setVideo] = useState( url);
+    const {_id = ''} = camera || {}
+    useEffect( () => {
+        fetchData();
+    }, []);
+    const fetchData = async () => {
         let token = await AsyncStorage.getItem('userToken')
-        // console.log(this.cameraId);
-        // var raw = JSON.stringify({ "_id": "5ea51d2b907fa122b48a1853" });
-
-        // const response = await fetch("http://206.189.34.187/camera/savedvideo",
-        //     {
-        //         method: 'POST',
-        //         body: raw,
-        //         redirect: 'follow',
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`
-        //         },
-        //     })
-        //     .then(response => response.text())
-        //     .then(result => console.log('dddddd', result))
-        //     .catch(error => console.log('error MEDIA', error));
-        // console.log('aaa', response)
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", `Bearer ${token}`);
 
-        var raw = JSON.stringify({ "_id": this.cameraId });
+        let raw = JSON.stringify({"_id": _id});
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
             redirect: 'follow'
         };
-
-        await fetch("http://165.22.98.234/camera/savedvideo", requestOptions)
+        await fetch(HOST_URL + "camera/savedvideo", requestOptions)
             .then(response => response.json())
             .then(result => {
-              //  console.log(result)
-                this.setState({
-                    listVideo: result || []
-                })
+                 console.log(result)
+                setListVideo(result || [])
+                setVideo(result[0] || [])
             })
             .catch(error => console.log('error', error));
-       
+
     }
 
-    onPress = (video) => () => {
-        const { navigation } = this.props || {};
+    const onPress = (video) => () => {
+        const {navigation} = props || {};
         navigation.navigate(
             'MediaDetail',
-            { video: video }
+            {video: video}
+        )
+    }
+const renderVideo=()=>(
+    <VLCPlayer
+        source={{
+            uri: video.url || '',
+        }}
+        style={styles.backgroundVideo}
+        videoAspectRatio="16:9"
+    />
+
+)
+    const renderItem = ({item, index}) => {
+        let {timeStart,timeEnd} = item;
+
+        let start = new Date(Number(timeStart));
+        let end = new Date(Number(timeEnd));
+        // console.log(timeStart, )
+        return(
+            <View>
+                <Text>{String(start.getDate())} - {start.getMonth()} - {start.getFullYear()}</Text>
+                <Text>{String(start.getHours())} : {start.getMinutes()} : {start.getSeconds()}</Text>
+                <Text>{String(end.getDate())} - {end.getMonth()} - {end.getFullYear()}</Text>
+                <Text>{String(end.getHours())} : {end.getMinutes()} : {end.getSeconds()}</Text>
+
+
+            </View>
+
         )
     }
 
-    renderEmpty() {
+    const renderEmpty = () => {
         return (
             <View><Text>no video</Text></View>
         )
     }
-
-    render() {
-        const { listVideo } = this.state;
-        // console.log("listvideo", listVideo)
-        if (listVideo.length === 0) return this.renderEmpty();
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    style={{ flex: 1, width: WIDTH - 24 }}
-                    data={listVideo}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                            style={{ flex: 1, paddingHorizontal: 6 }}
-                            onPress={this.onPress(item)}
-                        >
-                            <Text numberOfLines={1}>{item.name}</Text>
-                            <Image
-                                style={{ height: (WIDTH / 2 - 24) / 251 * 130, width: '100%', resizeMode: 'contain' }}
-                                source={{ uri: item.name }}
-                            />
-                        </TouchableOpacity>
-                    )}
-                />
+    const renderOptions=()=>{
+        let {timeStart} = video||{}
+        let start=new Date(Number(timeStart));
+        return(
+            <View
+            style={{flexDirection:'row'}}
+            >
+                <Text>{String(start.getDate())} - {start.getMonth()} - {start.getFullYear()}</Text>
+                <Button title={'Options'} onPress={()=>{}}/>
+                <Text>{listVideo.length} video</Text>
             </View>
-        );
+        )
+    }
+    if(!listVideo || listVideo.length=== 0) return renderEmpty();
+    else{
+    return (
+        <View style={styles.container}>
+            {/*<Text>{String(props.route.params)}</Text>*/}
+            {renderVideo()}
+            {renderOptions()}
+
+            <FlatList
+                data={listVideo}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderItem}
+            />
+        </View>
+    );
     }
 };
 
@@ -130,6 +133,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         height: 150,
-    }
+    },
+    backgroundVideo: {
+        height: 200,
+        marginBottom:12
+    },
 });
 

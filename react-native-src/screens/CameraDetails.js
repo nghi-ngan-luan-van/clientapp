@@ -18,30 +18,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Input, } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-Icon.loadFont();
+// Icon.loadFont();
 export default function CameraDetails(props) {
   const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
-  const navigation_parent = _.get(props, 'route.params.navigation', {});
-  console.log('1234567',props)
-  console.log('123456789',navigation_parent)
-  const {navigation} = props;
-  // React.useLayoutEffect(() => {
-  //   navigation_parent.setOptions({
-  //     headerRight: <TouchableOpacity onPress={goToEditCamera}>
-  //     <Image
-  //       source={require('../assets/ic_settings.png')}
-  //       style={styles.rightButton}
-  //     />
-  //   </TouchableOpacity>,
-  //   }),
-  //     [props, goToEditCamera];
-  // });
 
- 
   const goToMedia = () => {
     let {navigation} = props;
     navigation &&
-      navigation.push(AppRoute.MEDIA, {
+      navigation.navigate(AppRoute.MEDIA, {
         cameraId: camera && camera._id,
       });
   };
@@ -105,16 +89,16 @@ export default function CameraDetails(props) {
             color="black"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={renderAlertDelete}>
-          <Icon
-            style={styles.iconSetting}
-            name="trash"
-            type="font-awesome"
-            color="black"
-          />
-        </TouchableOpacity>
+        {/*<TouchableOpacity onPress={renderAlertDelete}>*/}
+        {/*  <Icon*/}
+        {/*    style={styles.iconSetting}*/}
+        {/*    name="trash"*/}
+        {/*    type="font-awesome"*/}
+        {/*    color="black"*/}
+        {/*  />*/}
+        {/*</TouchableOpacity>*/}
       </View>
-      <RtspVideoPlayer style={styles.video} url={camera.rtspUrl} />
+      <RtspVideoPlayer style={styles.video}  camera={camera} />
       {/* <TouchableOpacity styles={{ height: 24 }} onPress={this.goToMedia}>
                          <Text> Xem lại video </Text>
                 </TouchableOpacity> */}

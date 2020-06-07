@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 
 //22215B
 export default Header = (props) => {
-  const {options={}, navigation={}, scene} = props;
+  const {options={}, navigation={}, scene, titleMode} = props;
   const title =
     options.headerTitle !== undefined
       ? options.headerTitle
@@ -53,8 +53,8 @@ export default Header = (props) => {
     <TouchableOpacity onPress={onPressLeft}>
       <Image
         resizeMode="contain"
-        style={{width: 36, height: 36}}
-        source={require('../assets/back.png')}
+        style={{width: 18, height: 18}}
+        source={require('../assets/ic_back.png')}
       />
     </TouchableOpacity>
   );
@@ -64,6 +64,11 @@ export default Header = (props) => {
     return headerRight;
   };
 
+  const renderTitle = () => {
+    if(titleMode === 'none') return <View/>
+    else return <Text style={styles.title}>{title}</Text>
+  }
+
   return (
     <View style={styles.container}>
       <Image
@@ -71,7 +76,7 @@ export default Header = (props) => {
         source={require('../assets/background_image.png')}
       />
       {renderHeaderLeft()}
-      <Text style={styles.title}>{title}</Text>
+      {renderTitle()}
       {renderHeaderRight()}
     </View>
   );

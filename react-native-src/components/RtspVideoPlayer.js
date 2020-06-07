@@ -20,19 +20,21 @@ import Orientation from 'react-native-orientation';
 export default class RtspVideoPlayer extends Component {
   constructor(props) {
     super(props);
-    (this.state = {
-      rtspUrl: '',
-      name: '',
+    let {camera}=this.props;
+    console.log('sfasfa',this.props)
+    this.state = {
+      rtspUrl: camera && camera.rtspUrl,
+      name: camera && camera.name,
       isFull:true
-    }),
-      (this.numColums = this.props.numColums || 1);
+    }
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+  }
 
   renderView(vs){
+    let {name} = this.state;
     return <VlCPlayerView
-    // style={{ backgroundColor:'red'}}
       autoplay={true}
       url={vs}
       Orientation={Orientation}
@@ -98,7 +100,7 @@ export default class RtspVideoPlayer extends Component {
     let nc =
       'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
     let vs = 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov';
-    return this.renderView(vs);
+    return this.renderView(rtspUrl);
   }
 }
 

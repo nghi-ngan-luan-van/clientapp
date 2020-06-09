@@ -1,79 +1,24 @@
-import React, {useLayoutEffect} from 'react';
-import {Dimensions, Image, StyleSheet, TouchableOpacity,} from 'react-native';
-import Media from "../screens/Media";
-import CameraDetails from '../screens/CameraDetails';
+import React, {useLayoutEffect, useRef, useState} from 'react';
+import {Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch} from 'react-native';
+
+import {Avatar, Icon} from 'react-native-elements';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {AppRoute} from "./app-routes";
+import {Colors} from '../utils/AppConfig';
 import _ from 'lodash'
+import Media from "../screens/Media";
+import CameraStream from '../screens/CameraStream';
+
+import {createDrawerNavigator,DrawerItem, DrawerContentScrollView,} from "@react-navigation/drawer";
+import {DrawerActions} from "@react-navigation/native";
+import EditCamera from "../screens/editcamera";
+
 const Tab = createMaterialTopTabNavigator();
+const Drawer = createDrawerNavigator();
 const WIDTH = Dimensions.get('window').width;
+const CameraDrawer = () => {
 
-const CameraTabs = (props) => {
-    const {route, navigation} = props;
-    const params = _.get(props,'route.params.params')
-    useLayoutEffect(() => {
-        // navigation.setParams({...route.params})
-        navigation.setOptions({
-            headerRight: (
-                <TouchableOpacity
-                >
-                    <Image
-                        source={require('../assets/ic_settings.png')}
-                        style={styles.rightButton}
-                    />
-                </TouchableOpacity>
-            ),
-        }),
-            [props];
-    });
-
-    return (
-        <Tab.Navigator
-            initialRouteName={AppRoute.CAMERA_STREAM}
-            shifting={true}
-            sceneAnimationEnabled={false}
-
-            // screenOptions={({ route }) => ({
-            //     tabBarIcon: ({ focused, color, size }) => {
-            //         let iconName;
-            //
-            //         if (route.name === 'Home') {
-            //             iconName = focused
-            //                 ? 'ios-information-circle'
-            //                 : 'ios-information-circle-outline';
-            //         } else if (route.name === 'Settings') {
-            //             iconName = focused ? 'ios-list-box' : 'ios-list';
-            //         }
-            //
-            //         // You can return any component that you like here!
-            //         return <Icon name={iconName} size={size} color={color} />;
-            //     },
-            // })}
-            tabBarOptions={{
-                activeTintColor: 'tomato',
-                inactiveTintColor: 'gray',
-            }}
-
-        >
-            <Tab.Screen
-                options={{
-                    tabBarIcon: { focused: true, color: 'red' },
-                }}
-                name={AppRoute.CAMERA_STREAM}
-                initialParams={params}
-                component={CameraDetails}/>
-            <Tab.Screen
-                options={{
-                    tabBarIcon: 'bell-outline',
-                }}
-                name={AppRoute.MEDIA}
-                initialParams={params}
-                component={Media}/>
-        </Tab.Navigator>
-    );
-};
-
-module.exports = CameraTabs;
+}
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
@@ -84,4 +29,129 @@ const styles = StyleSheet.create({
         width: 37,
         height: 37,
     },
+    label:{
+        fontSize:16,
+        color: Colors.text
+    }
 });
+
+function DrawerContent(props) {
+    const {navigation} = props;
+    const camera = _.get(props, 'state.routes[0].params.camera',{})
+    const [isEnabled, setIsEnabled] = useState(camera.backupMode);
+    const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+    return (
+        <DrawerContentScrollView
+            contentContainerStyle={{ paddingHorizontal:12}}
+        >
+            <DrawerItem
+                focused
+                icon={() => (
+                    <Icon
+                        // style={{width:36,height:36}}
+                        name= 'camera'
+                        color='#7b79db'
+                        type='font-awesome'
+                    />
+                )}
+                label={camera.name}
+                labelStyle={styles.label}
+                onPress={() => navigation && navigation.navigate && navigation.navigate('Camera')}
+
+            />
+            <DrawerItem
+                icon={() => (
+                    <Image
+                        style={{width:30,height:30}}
+                        source={require('../assets/ic_edit.png')}
+                    />
+                )}
+                label="Edit camera infor"
+                labelStyle={styles.label}
+                onPress={() => {navigation && navigation.navigate && navigation.navigate('Edit')}}
+            />
+            <DrawerItem
+                icon={() => (
+                    <Switch
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                    />
+                )}
+                label="Change backup mode"
+                labelStyle={styles.label}
+            />
+
+        </DrawerContentScrollView>
+    );
+}
+
+const CameraTabs = (props) => {
+    const {navigation} = props;
+    const params = _.get(props, 'route.params.params')
+    const settingRef = useRef();
+
+    useLayoutEffect(() => {
+        const onPressSetting = () => {
+            navigation && navigation.dispatch(DrawerActions.toggleDrawer());
+        }
+        navigation.setOptions({
+            headerRight: (
+                <View>
+                <TouchableOpacity
+                    ref={settingRef}
+                    onPress={onPressSetting}
+                >
+                    <Image
+                        source={require('../assets/ic_settings.png')}
+                        style={styles.rightButton}
+                    />
+                </TouchableOpacity>
+
+        </View>
+            ),
+        }),
+            [props];
+    });
+
+
+    const TabNavigator= ()=> <Tab.Navigator
+        initialRouteName={AppRoute.CAMERA_STREAM}
+        shifting={true}
+        sceneAnimationEnabled={false}
+        tabBarOptions={{
+            style: {borderRadius: 8, backgroundColor: Colors.screen},
+            pressColor: Colors.light,
+            activeTintColor: Colors.purple_blue,
+            inactiveTintColor: Colors.text,
+        }}
+
+    >
+        <Tab.Screen
+            name={AppRoute.CAMERA_STREAM}
+            initialParams={params}
+            component={CameraStream}/>
+        <Tab.Screen
+            options={{
+                tabBarIcon: 'bell-outline',
+            }}
+            name={AppRoute.MEDIA}
+            initialParams={params}
+            component={Media}/>
+    </Tab.Navigator>
+
+    return (
+        <Drawer.Navigator initialRouteName={'Camera'}
+                          drawerPosition={'right'}
+                          drawerType={'front'}
+                          drawerContent={(props) => <DrawerContent {...props}/>}
+                         >
+            <Drawer.Screen name={'Camera'} component={TabNavigator} initialParams={params}/>
+            <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
+        </Drawer.Navigator>
+
+    );
+};
+
+
+module.exports = CameraTabs;

@@ -19,7 +19,7 @@ import {Input, } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // Icon.loadFont();
-export default function CameraDetails(props) {
+export default function CameraStream(props) {
   const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
 
   const goToMedia = () => {

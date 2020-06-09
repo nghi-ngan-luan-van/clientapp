@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Button, Dimensions, Image, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import _ from "lodash";
 import {HOST_URL} from "../utils/AppConst";
@@ -91,7 +91,7 @@ export default function Media(props, route) {
     }
     const renderVideo = () => (
         <VLCPlayer
-            // ref={el=> vlcref=el}
+            ref={vlcref}
             source={{uri: "https://clientapp.sgp1.digitaloceanspaces.com/5e9471d6cbeb62504f03bc0b/5ed3e22848d6943ed70ec47f/1591588193850.mp4"}}
             style={styles.backgroundVideo}
             videoAspectRatio="16:9"
@@ -120,16 +120,18 @@ export default function Media(props, route) {
 
     const renderEmpty = () => {
         return (
-            <View><Text>no video</Text></View>
+            <View style={{alignContent:'center', backgroundColor:'#fff'}}>
+                <Image source={require('../assets/camera_animate.gif')}/>
+                <Text style={{color: '#22215B', textAlign:'center', fontSize:14}}>This camera does not contain any event. Turn up your back up mode to experiment movenment detecting</Text>
+            </View>
         )
     }
     const renderOptions = () => {
         let {timeStart} = video || {}
-        // console.log(listEvent)
         let start = moment(Number(timeStart)).format("DD ddd, HH:mm")
         return (
             <View
-                style={{flexDirection: 'row'}}
+                style={{flexDirection: 'row', justifyContent:'space-between'}}
             >
                 <Text>{start}</Text>
                 <Button title={'Options'} onPress={() => {

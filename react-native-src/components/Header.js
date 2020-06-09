@@ -1,8 +1,10 @@
 import {Image, Text, TouchableOpacity, View, StyleSheet, Dimensions} from 'react-native';
 import React from 'react';
 import _ from 'lodash'
+import {Colors} from "../utils/AppConfig";
 const {width} = Dimensions.get('window')
 const HEADER_HEIGHT = 60;
+
 const styles = StyleSheet.create({
   container: {
     height: HEADER_HEIGHT,
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff'
   },
   title:{
-    color:'#22215B',
+    color:Colors.text,
     fontSize:18,
     fontWeight:'bold'
   }

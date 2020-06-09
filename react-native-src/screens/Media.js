@@ -125,15 +125,16 @@ export default function Media(props, route) {
     }
     const renderOptions = () => {
         let {timeStart} = video || {}
-        let start = new Date(Number(timeStart));
+        // console.log(listEvent)
+        let start = moment(Number(timeStart)).format("DD ddd, HH:mm")
         return (
             <View
                 style={{flexDirection: 'row'}}
             >
-                <Text>{String(start.getDate())} - {start.getMonth()} - {start.getFullYear()}</Text>
+                <Text>{start}</Text>
                 <Button title={'Options'} onPress={() => {
                 }}/>
-                <Text>{listVideo.length} video</Text>
+                {/*<Text>{listEvent.length} event video</Text>*/}
             </View>
         )
     }

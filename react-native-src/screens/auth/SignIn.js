@@ -10,7 +10,9 @@ import {
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-community/google-signin';
+
 GoogleSignin.configure();
+
 export function SignInForm() {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
@@ -111,7 +113,7 @@ export function SignIn(props) {
                 </TouchableOpacity>
 
             </View>
-            <Text> or using </Text>
+            <Text> or  </Text>
             <GoogleSigninButton
                 style={{ width: 192, height: 48 }}
                 size={GoogleSigninButton.Size.Wide}

@@ -43,7 +43,6 @@ export default HomeScreen = (props) => {
                 if (result && result.statusCode == 403) {
                 }
                 setCameras(JSON.parse(result).result);
-                console.log(result)
             })
             .catch((error) => console.log('error', error));
     };
@@ -91,6 +90,7 @@ export default HomeScreen = (props) => {
                 source={require('../assets/background.png')}
             />
             <Header navigation={props.navigation}/>
+
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={({item, index}) => index}

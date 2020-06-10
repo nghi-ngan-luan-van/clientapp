@@ -1,9 +1,9 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
 import {Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch} from 'react-native';
 
-import {Avatar, Icon} from 'react-native-elements';
+import { Icon} from 'react-native-elements';
+import ScrollableTabView from 'react-native-scrollable-tab-view'
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {AppRoute} from "./app-routes";
 import {Colors} from '../utils/AppConfig';
 import _ from 'lodash'
 import Media from "../screens/Media";
@@ -46,7 +46,7 @@ function DrawerContent(props) {
             contentContainerStyle={{ paddingHorizontal:12}}
         >
             <DrawerItem
-                focused
+                // focused
                 icon={() => (
                     <Icon
                         // style={{width:36,height:36}}
@@ -115,30 +115,33 @@ const CameraTabs = (props) => {
     });
 
 
-    const TabNavigator= ()=> <Tab.Navigator
-        initialRouteName={AppRoute.CAMERA_STREAM}
-        shifting={true}
-        sceneAnimationEnabled={false}
-        tabBarOptions={{
-            style: {borderRadius: 8, backgroundColor: Colors.screen},
-            pressColor: Colors.light,
-            activeTintColor: Colors.purple_blue,
-            inactiveTintColor: Colors.text,
-        }}
+    const TabNavigator= ()=>
+        <ScrollableTabView
+        // initialRouteName={AppRoute.CAMERA_STREAM}
+        // shifting={true}
+        // sceneAnimationEnabled={false}
+        // tabBarOptions={{
+        //     style: {borderRadius: 8, backgroundColor: Colors.screen},
+        //     pressColor: Colors.light,
+        //     activeTintColor: Colors.purple_blue,
+        //     inactiveTintColor: Colors.text,
+        // }}
 
     >
-        <Tab.Screen
-            name={AppRoute.CAMERA_STREAM}
-            initialParams={params}
-            component={CameraStream}/>
-        <Tab.Screen
-            options={{
-                tabBarIcon: 'bell-outline',
-            }}
-            name={AppRoute.MEDIA}
-            initialParams={params}
-            component={Media}/>
-    </Tab.Navigator>
+            <CameraStream tabLabel="Stream" {...params}/>
+            <Media tabLabel="Media" {...params}/>
+        {/*<Tab.Screen*/}
+        {/*    name={AppRoute.CAMERA_STREAM}*/}
+        {/*    initialParams={params}*/}
+        {/*    component={CameraStream}/>*/}
+        {/*<Tab.Screen*/}
+        {/*    options={{*/}
+        {/*        tabBarIcon: 'bell-outline',*/}
+        {/*    }}*/}
+        {/*    name={AppRoute.MEDIA}*/}
+        {/*    initialParams={params}*/}
+        {/*    component={Media}/>*/}
+    </ScrollableTabView>
 
     return (
         <Drawer.Navigator initialRouteName={'Camera'}

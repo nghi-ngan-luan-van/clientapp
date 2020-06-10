@@ -10,17 +10,15 @@ import {
   Image,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import RtspVideoPlayer from '../components/RtspVideoPlayer';
 import _ from 'lodash';
 import {AppRoute} from '../navigation/app-routes';
-import {TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Input, } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Orientation from "react-native-orientation";
+import {VlCPlayerView} from "react-native-vlc-media-player";
 
 // Icon.loadFont();
 export default function CameraStream(props) {
-  const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
+  const [camera, setCamera] = useState(_.get(props, 'camera', {}));
 
   const goToMedia = () => {
     let {navigation} = props;
@@ -28,14 +26,6 @@ export default function CameraStream(props) {
       navigation.navigate(AppRoute.MEDIA, {
         cameraId: camera && camera._id,
       });
-  };
-  const goToEditCamera = () => {
-    let {navigation} = props;
-    navigation &&
-    navigation.navigate(AppRoute.CAMERA_EDIT, {
-      camera: camera,
-    });
-    //navigation.toggleDrawer();
   };
 
   const renderAlertDelete = () => {
@@ -77,31 +67,29 @@ export default function CameraStream(props) {
       {cancelable: false},
     );
   };
-  return (
+  console.log(camera)
+  return ( !!camera &&
     <View style={styles.container}>
-      <View style={styles.top}>
-        <Text>{camera.name}</Text>
-        <TouchableOpacity onPress={goToEditCamera}>
-          <Icon
-            style={styles.iconSetting}
-            name="edit"
-            type="font-awesome"
-            color="black"
-          />
-        </TouchableOpacity>
-        {/*<TouchableOpacity onPress={renderAlertDelete}>*/}
-        {/*  <Icon*/}
-        {/*    style={styles.iconSetting}*/}
-        {/*    name="trash"*/}
-        {/*    type="font-awesome"*/}
-        {/*    color="black"*/}
-        {/*  />*/}
-        {/*</TouchableOpacity>*/}
-      </View>
-      <RtspVideoPlayer style={styles.video}  camera={camera} />
-      {/* <TouchableOpacity styles={{ height: 24 }} onPress={this.goToMedia}>
-                         <Text> Xem lại video </Text>
-                </TouchableOpacity> */}
+      <VlCPlayerView
+          autoplay={true}
+          url={camera.rtspUrl}
+          Orientation={Orientation}
+          showGG={false}
+          showTitle={true}
+          title={camera.name}
+          showBack={true}
+          onLeftPress={() => {}}
+          startFullScreen={() => {
+            this.setState({
+              isFull: true,
+            });
+          }}
+          closeFullScreen={() => {
+            this.setState({
+              isFull: false,
+            });
+          }}
+      />
     </View>
   );
 }

@@ -77,7 +77,7 @@ export default function AppNavigator({navigation}) {
             dispatch({type: 'SIGN_IN', token: token});
           })
           .catch((error) => {
-            console.log('error signin 123', error);
+            console.log('error signin', error);
           });
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),

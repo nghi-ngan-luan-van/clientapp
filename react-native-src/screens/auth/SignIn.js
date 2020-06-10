@@ -3,7 +3,7 @@ import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, TextInput,A
 import {AuthContext} from '../../navigation/AppNavigator'
 import {AppRoute} from "../../navigation/app-routes";
 
-const BACKGROUND = require('../../assets/Illustration.png')
+const BACKGROUND = require('../../assets/backgroung_cloud.png')
 const {width, height} = Dimensions.get('window')
 import {
     GoogleSignin,
@@ -56,8 +56,9 @@ export function SignIn(props) {
     const _signIn = async () => {
         try {
             await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            setUserInfo( userInfo);
+            const userInfor = await GoogleSignin.signIn();
+            setUserInfo( userInfor);
+            console.log(userInfor)
         } catch (error) {
             switch (error.code) {
                 case statusCodes.SIGN_IN_CANCELLED:
@@ -110,6 +111,7 @@ export function SignIn(props) {
                 </TouchableOpacity>
 
             </View>
+            <Text> or using </Text>
             <GoogleSigninButton
                 style={{ width: 192, height: 48 }}
                 size={GoogleSigninButton.Size.Wide}

@@ -80,7 +80,8 @@ export default function Media(props, route) {
         }
         return eventVideoArray
     }
-    console.log('dfghjjhgfds',video)
+    console.log('dfghjjhgfds',listEvent)
+    console.log('listVideoafas',listVideo)
 
     const onPress = (video) => () => {
         const {navigation} = props || {};
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundVideo: {
         height: 200,
         marginBottom: 12,
-        backgroundColor: '#000'
+        // backgroundColor: '#000'
     },
 });
 

@@ -1,11 +1,16 @@
 import React from 'react';
-import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, TextInput,Alert} from 'react-native';
 import {AuthContext} from '../../navigation/AppNavigator'
 import {AppRoute} from "../../navigation/app-routes";
 
 const BACKGROUND = require('../../assets/Illustration.png')
 const {width, height} = Dimensions.get('window')
-
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-community/google-signin';
+GoogleSignin.configure();
 export function SignInForm() {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
@@ -43,8 +48,39 @@ export function SignInForm() {
 export function SignIn(props) {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
+    const [userInfo, setUserInfo] = React.useState('123456');
+    const [error, setError] = React.useState(null);
 
     const {signIn} = React.useContext(AuthContext);
+
+    const _signIn = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            setUserInfo( userInfo);
+        } catch (error) {
+            switch (error.code) {
+                case statusCodes.SIGN_IN_CANCELLED:
+                    // sign in was cancelled
+                    Alert.alert('cancelled');
+                    break;
+                case statusCodes.IN_PROGRESS:
+                    // operation (eg. sign in) already in progress
+                    Alert.alert('in progress');
+                    break;
+                case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+                    // android only
+                    Alert.alert('play services not available or outdated');
+                    break;
+                default:
+                    Alert.alert('Something went wrong', error.toString());
+                    setError({
+                        error,
+                    });
+            }
+        }
+    };
+
     const onPressSignIn = ()=>{
         let {navigation} = props;
         navigation && navigation.navigate(AppRoute.SIGN_IN_FORM);
@@ -72,8 +108,15 @@ export function SignIn(props) {
                     <Text style={{color: '#fff'}}>SignIn</Text>
                     <Image source={require('../../assets/ic_next.png')} style={styles.icon}/>
                 </TouchableOpacity>
-            </View>
 
+            </View>
+            <GoogleSigninButton
+                style={{ width: 192, height: 48 }}
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={_signIn}
+                // disabled={this.state.isSigninInProgress}
+            />
         </View>
     );
 }

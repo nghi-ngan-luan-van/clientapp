@@ -131,6 +131,7 @@ const CameraTabs = (props) => {
 
    const detailScreens = ()=>
        <ScrollableTabView
+           locked
            // tabBarUnderlineColor="#EDEEEE"
            // tabBarBackgroundColor="#4A90E2"
            // tabBarActiveTextColor="#FFFFFF"

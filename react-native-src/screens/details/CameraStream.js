@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Orientation from "react-native-orientation";
 import {VlCPlayerView} from "react-native-vlc-media-player";
 
-// Icon.loadFont();
 export default function CameraStream(props) {
   const [camera, setCamera] = useState(_.get(props, 'camera', {}));
 
@@ -67,29 +66,29 @@ export default function CameraStream(props) {
       {cancelable: false},
     );
   };
-  console.log(camera)
+  // console.log(camera)
   return ( !!camera &&
     <View style={styles.container}>
-      {/*<VlCPlayerView*/}
-      {/*    autoplay={false}*/}
-      {/*    url={camera.rtspUrl}*/}
-      {/*    Orientation={Orientation}*/}
-      {/*    showGG={false}*/}
-      {/*    showTitle={true}*/}
-      {/*    title={camera.name}*/}
-      {/*    showBack={true}*/}
-      {/*    onLeftPress={() => {}}*/}
-      {/*    startFullScreen={() => {*/}
-      {/*      this.setState({*/}
-      {/*        isFull: true,*/}
-      {/*      });*/}
-      {/*    }}*/}
-      {/*    closeFullScreen={() => {*/}
-      {/*      this.setState({*/}
-      {/*        isFull: false,*/}
-      {/*      });*/}
-      {/*    }}*/}
-      {/*/>*/}
+      <VlCPlayerView
+          autoplay={false}
+          url={camera.rtspUrl}
+          Orientation={Orientation}
+          showGG={false}
+          showTitle={true}
+          title={camera.name}
+          showBack={true}
+          onLeftPress={() => {}}
+          startFullScreen={() => {
+            this.setState({
+              isFull: true,
+            });
+          }}
+          closeFullScreen={() => {
+            this.setState({
+              isFull: false,
+            });
+          }}
+      />
     </View>
   );
 }
@@ -112,11 +111,6 @@ const styles = StyleSheet.create({
   rightButton: {
     width: 37,
     height: 37,
-    // position: 'absolute',
-    // bottom: 7,
-    // right: 2,
-    // padding: 10,
-    // color: 'black',
   },
   top: {
     backgroundColor: 'white',

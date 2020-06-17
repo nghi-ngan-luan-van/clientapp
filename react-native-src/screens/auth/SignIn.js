@@ -26,18 +26,7 @@ export function SignInForm() {
             <View style={{height: 30}}/>
 
             <View style={styles.emailContainer}>
-                {/*<Input*/}
-                {/*    inputContainerStyle={styles.input}*/}
-                {/*    label=""*/}
-                {/*    keyboardType="numeric"EmaileftIcon*/}
-                {/*    l={{type: 'antdesign', name: 'edit'}}*/}
-                {/*    maxLength={10}*/}
-                {/*    style={{height: '36'}}*/}
-                {/*    // defaultValue={camera && camera.port && camera.port.toString()}*/}
-                {/*    onChangeText={(value) => {*/}
-                {/*        setEmail(value);*/}
-                {/*    }}*/}
-                {/*/>*/}
+
                 <TextInput style={styles.textInput}
                            placeholder="Email"
                            value={email}
@@ -108,13 +97,13 @@ export function SignIn(props) {
                    source={BACKGROUND}/>
             <Text style={{
                 color: '#7B7F9E',
-                flex: 1,
-                width: width * 0.5,
+                flex: 0.4,
+                width: width * 0.7,
                 marginLeft: 18,
                 fontSize: 15,
                 textAlign: 'left',
                 alignSelf: 'flex-start'
-            }}>this is app qwertyubgabasjhfbskjdfaskjfhajdgflajdgbaljkfbasdljkfbaslhjiosdfghjcvbcvbnvb</Text>
+            }}>this is app lorem ipsum dolor sit amet consectetur adipiscing elit. aliquam tincidunt elementum sem non luctus</Text>
             <View style={[styles.row, {width, paddingHorizontal: 12}]}>
                 <TouchableOpacity style={[styles.button, {backgroundColor: '#fff', borderWidth: 0.3}]}>
                     <Image source={require('../../assets/ic_cloud_left.png')} style={styles.icon}/>
@@ -127,9 +116,9 @@ export function SignIn(props) {
                 </TouchableOpacity>
 
             </View>
-            <Text> or  </Text>
+            <Text style={{padding:12, }}> or using </Text>
             <GoogleSigninButton
-                style={{ width: 192, height: 48 }}
+                style={{ width: 200, height: 48 }}
                 size={GoogleSigninButton.Size.Wide}
                 color={GoogleSigninButton.Color.Dark}
                 onPress={_signIn}
@@ -180,19 +169,7 @@ const styles = StyleSheet.create({
         height: 12,
         resizeMode: 'contain',
     },
-    forgotPassword: {
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        height: 30,
-        alignItems: 'flex-end',
-    },
-    createAccount: {
-        height: 30,
-    },
-    normalContainer: {
-        // height: 20,
-        fontSize: 14
-    },
+
     normalText: {
         color: '#5B5A5A',
         fontSize: 12,
@@ -224,13 +201,6 @@ const styles = StyleSheet.create({
         color: '#5B5A5A',
         letterSpacing: 6
     },
-    // input: {
-    //     padding: 5,
-    //     backgroundColor: Colors.screen,
-    //     borderBottomWidth: 0,
-    //     borderRadius: 8,
-    //     justifyContent: 'center',
-    // },
     textInput: {
         color: '#989899',
         flex: 1,
@@ -240,26 +210,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         padding:6
     },
-    // button: {
-    //     width: 325,
-    //     borderColor: '#129793',
-    //     borderWidth: 1,
-    //     height: 50,
-    //     padding: 10,
-    //     borderRadius: 24,
-    //     marginTop: 20,
-    //     backgroundColor: '#129793',
-    //     flexDirection: 'column',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     shadowColor: '#129793',
-    //     shadowOffset: {
-    //         width: 0,
-    //         height: 4
-    //     },
-    //     shadowRadius: 5,
-    //     shadowOpacity: 0.8
-    // },
+
     buttonText: {
         color: 'white',
         fontSize: 12

@@ -1,13 +1,16 @@
 import React, {Component} from "react";
-import {ImageBackground, Platform, ScrollView, StyleSheet, View} from "react-native";
+import {ActivityIndicator, ScrollView, StyleSheet, View} from "react-native";
 import {filterVideo} from "./DetailsHelper";
 import {Button} from "react-native-elements";
 import data from '../../utils/sample'
-import RTSPPlayer from "../../components/VLCPlayer/RTSPPlayer";
+import {Colors} from '../../utils/AppConfig'
+import {BACK_UP_TIME} from '../../utils/AppConst'
 import VLCPlayer from "react-native-vlc-media-player/VLCPlayer";
+import Slider from "../../components/slider /Slider";
+
 const styles = StyleSheet.create({
     video: {
-        position:'relative',
+        position: 'relative',
         justifyContent: 'center',
         alignItems: 'center',
         height: 300,
@@ -21,31 +24,38 @@ export default class CameraVideos extends Component {
         this.state = {
             eventList: [],
             video: {},
-            backupList:data.events,
-            cdnUrl:'',
+            backupList: data.events,
+            cdnUrl: '',
+            seek:0,
 
-            next:true,
+            next: true,
             isLoading: true,
             isError: false,
             loadingSuccess: false,
             currentTime: 0.0,
+            currentRate: 0.0,
             totalTime: 0.0,
             paused: false,
+            animating: true,
         }
         this.vlcRefs = [];
         this.vlcPlayer = null;
+        // this.totalTime = 0;
+        this.bufferTime = 0;
+        this.tmpDuration = 0;
+        this.changeSlide=false;
     }
 
     componentDidMount() {
         let {events} = this.props;
-
         let filtered = filterVideo(this.state.backupList)
-        console.log('sss',filtered)
-
         this.setState({
-            backupList: filtered,
-            video: filtered[0]
-         },()=>{console.log(this.state.video);}
+                backupList: filtered,
+                video: filtered[0]
+            }, () => {
+            this.totalTime = this.state.backupList.length * BACK_UP_TIME;
+            // console.log(this.state.video);
+            }
         )
 
     }
@@ -57,59 +67,31 @@ export default class CameraVideos extends Component {
         this.reloadSuccess = false;
         this.setState({
             isError: true,
+
         });
     };
 
-    onProgress(event) {
-        /* console.log(
-         'position=' +
-         event.position +
-         ',currentTime=' +
-         event.currentTime +
-         ',remainingTime=' +
-         event.remainingTime,
-         );*/
-        let currentTime = event.currentTime;
-        let loadingSuccess = false;
-        if (currentTime > 0 || this.state.currentTime > 0) {
-            loadingSuccess = true;
-        }
-        if (!this.changingSlider) {
-            if (currentTime === 0 || currentTime === this.state.currentTime * 1000) {
-            } else {
-                this.setState({
-                    loadingSuccess: loadingSuccess,
-                    isLoading: false,
-                    isError: false,
-                    progress: event.position,
-                    currentTime: event.currentTime / 1000,
-                    totalTime: event.duration / 1000,
-                });
-            }
-        }
-    }
-
-
-
-    onPausePress=()=>{
+    onPausePress = () => {
         console.log('this_pause', this.state.paused)
         this.setState({
-            paused:!this.state.paused
+            paused: !this.state.paused
         })
     }
 
 
-
-    onEnded = () =>{
-        console.log('onEnded',this.state.video.index)
+    onEnded = () => {
+        // console.log('onEnded', this.state.video.index)
         // console.log('onEnd', this.vlcRefs)
         let {video, backupList} = this.state;
-        if(video.index < backupList.length) {
+
+        this.bufferTime = this.bufferTime + this.tmpDuration;
+        // console.log()
+        if (video.index < backupList.length - 1) {
+
             this.setState({
-                video: this.state.backupList[video.index+1]
-                // cdnUrl
-            },
-            console.log(this.state.video)
+                    video: this.state.backupList[video.index + 1],
+                    animating: true
+                },
             )
         }
     }
@@ -118,91 +100,206 @@ export default class CameraVideos extends Component {
     }
     onPlaying = () => {
         console.log('onPlaying')
+        this.setState({
+            // paused:!this.state.paused
+            animating: false
+        })
     }
     onError = () => {
         console.log('onError')
     }
-    _onLoadStart = e => {
-        console.log('_onLoadStart');
+    _onLoadStart = (e) => {
+        console.log('_onLoadStart',e);
+
+    }
+
+    _onOpen = () => {
+        this.setState({paused: false})
+    }
+
+    onProgress = (event={}) => {
+        // console.log('onProgress_', event)
+        /* console.log(
+    'position=' +
+    event.position +
+    ',currentTime=' +
+    event.currentTime +
+    ',remainingTime=' +
+    event.remainingTime,
+    );*/
+
+//      currentTime: 154
+// duration: 8108
+// position: 0.018963739275932312
+// remainingTime: -7966
+// target: 5323
+
+
+        if( this.tmpDuration!= event.duration ){
+            this.tmpDuration = event.duration
+        }
+        let currentRate = (this.bufferTime + event.currentTime) / 1000;// from ms to s
+        let loadingSuccess = false;
+        if (currentRate > 0 || this.state.currentRate > 0) {
+            loadingSuccess = true;
+        }
+        // console.log(this.totalTime)
+        // console.log(this.bufferTime)
+        // console.log(currentTime)
+        // if (!this.changingSlider) {
+            if (currentRate === 0 || currentRate === this.state.currentRate * 1000) {
+            } else {
+                this.setState({
+                    loadingSuccess: loadingSuccess,
+                    isLoading: false,
+                    isError: false,
+                    progress: event.position,
+                    currentTime: event.currentTime,
+                    currentRate: (currentRate * 100 )/this.totalTime,//it is a rate
+                });
+            }
+        // }
+    }
+    onBuffering=()=>{
+
+    }
+    onPaused=()=>{}
+
+    onValueChange=(values)=>{
+        // this.changeSlider=true;
+        // this.vlcRefs
+        console.log(value)
+        let value = values[0];
+        let {index = 0} = this.state.video || {}
+        // let estTime =  value /100 * this.totalTime;
+        // let msEstTime = estTime * 1000;
+        let seekTime =0;
+        let {currentRate, currentTime, backupList} = this.state;
+        let diff = value - currentRate;
+        if(diff < 0){
+            //move back
+            seekTime = - diff *10000* this.totalTime;//to ms
+
+            //if same video
+            if(seekTime < currentTime){
+                this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
+                this.setState({seek:seekTime + (diff * 1000)})
+            }
+            // if not same video
+            else{
+                //check can seek
+                if(index === 0){
+                    this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
+                    this.setState({seek:0})
+                }
+                else{
+                    this.setState({
+                        video:this.state.backupList[index-1]
+                    },()=>{
+                        this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
+                    })
+                }
+            }
+        }else{
+            seekTime = diff *10000* this.totalTime;//to ms
+
+            //if same video
+            if(seekTime + currentTime < this.tmpDuration){
+                this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
+                this.setState({seek:(currentTime + diff )* 1000})
+            }
+            // if not same video
+            else{
+                //check can seek
+                if(index === (backupList.length-1)){//cant seek
+                    this.vlcPlayer.seek && this.vlcPlayer.seek(1);
+                    this.setState({seek:1})
+                }
+                else{
+                    // this.setState({
+                    //     video:this.state.backupList[index+1]
+                    // },()=>{
+                        // console.log('this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();\n',this.vlcPlayer)
+                        // this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();
+                        //
+                        // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime-(this.tmpDuration-currentTime));
+                        // // this.setState({seek: seekTime-(this.tmpDuration-currentTime)/1000})
+
+                    // }
+                // )
+                }
+            }
+        }
+        // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(value*10);
         // this.setState({
-        //     paused:!this.state.paused
-        // })
+        //     currentRate: 0
+        // },this.setState({
+        //     currentRate: value
+        // }))
+    }
 
-
+    renderSlider() {
+        let {currentRate} = this.state;
+        return (
+            <Slider
+                min={0}
+                max={100}
+                values={[currentRate]}
+                onChange={this.onValueChange}
+            />
+        )
 
     }
 
-    _onOpen=()=>{
-        this.setState({paused:false})
+    renderControls() {
     }
 
-    renderVideos(list) {
-        let videoAspectRatio = '16:9'
-
-        return list.slice(0).reverse().map((item, index) => (
-            <ImageBackground style={styles.video} source={require('../../assets/backgroung_cloud.png')}>
-                <RTSPPlayer
-                    showLoading={true}
-                    autoplay={false}
-                    key={index}
-                    ref={ref => (this.vlcRefs.push(ref))}
-                    paused={this.state.paused}
-                    //seek={this.state.seek}
-                    style={styles.video}
-                    source={{uri: video.cdnUrl}}//this.state.url
-                    videoAspectRatio={videoAspectRatio}
-                    onProgress={(event)=>this.onProgress(event)}
-                    // onEnd={this.onEnded.bind(this)}
-                    onEnded={this.onEnded}
-                    onStopped={this.onEnded}
-                    onPlaying={this.onPlaying}
-                    // onBuffering={this.onBuffering}
-                    // onPaused={this.onPaused}
-                    progressUpdateInterval={250}
-                    onError={this._onError}
-                    onOpen={this._onOpen}
-                    onLoadStart={this._onLoadStart}
-                />
-
-                <Button title={'play'} onPress={this.onPausePress}/>
-            </ImageBackground>
-        ))
-    }
-
-    render() {
+    renderVideo = () => {
         let {video, eventList} = this.state;
         let tempEventList = eventList
-        let {cdnUrl} = video||{};
-        if (eventList.length > 5) tempEventList = tempEventList.slice(0, 4)
-        if(typeof cdnUrl === 'string') return (
-            <ScrollView
-                contentContainerStyle={{paddingHorizontal: 12}}
-            >
-                <ImageBackground style={styles.video} source={require('../../assets/backgroung_cloud.png')}>
-                   <VLCPlayer
+        let {cdnUrl} = video || {};
+        return (
+            <View>
+                <View style={[styles.video, {backgroundColor: Colors.black}]}>
+                    <VLCPlayer
                         autoplay={false}
-                        // key={index}
-                        ref={ref => (this.vlcRefs.push(ref))}
+                        ref={ref => (this.vlcPlayer = ref)}
                         paused={this.state.paused}
-                        //seek={this.state.seek}
+                        seek={this.state.seek}
                         style={styles.video}
                         source={{uri: cdnUrl}}//this.state.url
                         videoAspectRatio={'16:9'}
-                        onProgress={(event)=>this.onProgress(event)}
+                        onProgress={(event) => this.onProgress(event)}
                         onEnd={this.onEnded}
                         // onEnded={this.onEnded}
                         onStopped={this.onEnded}
                         onPlaying={this.onPlaying}
-                        // onBuffering={this.onBuffering}
-                        // onPaused={this.onPaused}
+                        onBuffering={this.onBuffering}
+                        onPaused={this.onPaused}
                         progressUpdateInterval={250}
                         onError={this._onError}
                         onOpen={this._onOpen}
                         onLoadStart={this._onLoadStart}
                     />
+                    <ActivityIndicator style={{position: 'absolute'}} size={'large'} animating={this.state.animating}/>
 
-                    <Button title={'play'} onPress={this.onPausePress}/>
-                </ImageBackground>
+                </View>
+                <Button title={this.state.paused?'play':'pause'} onPress={this.onPausePress}/>
+                {this.renderSlider()}
+            </View>
+        )
+    }
+
+    render() {
+        let {video, eventList} = this.state;
+        let tempEventList = eventList
+        let {cdnUrl} = video || {};
+        if (eventList.length > 5) tempEventList = tempEventList.slice(0, 4)
+        if (typeof cdnUrl === 'string') return (
+            <ScrollView
+                contentContainerStyle={{paddingHorizontal: 12}}
+            >
+                {this.renderVideo()}
 
             </ScrollView>
         )

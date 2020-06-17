@@ -6,19 +6,20 @@ import ScrollableTabView from 'react-native-scrollable-tab-view'
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Colors} from '../utils/AppConfig';
 import _ from 'lodash'
-import Media from "../screens/Media";
-import CameraStream from '../screens/CameraStream';
+import CameraStream from '../screens/details/CameraStream';
 
 import {createDrawerNavigator,DrawerItem, DrawerContentScrollView,} from "@react-navigation/drawer";
 import {DrawerActions} from "@react-navigation/native";
 import EditCamera from "../screens/editcamera";
-
+import {getMovingEvents} from "../utils/ApiUtils";
+import AsyncStorage from "@react-native-community/async-storage";
+import data from '../utils/sample'
+import CameraVideos from "../screens/details/CameraVideos";
+import CustomTabBar from "../components/CustomTabBar";
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
 const WIDTH = Dimensions.get('window').width;
-const CameraDrawer = () => {
 
-}
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
@@ -90,11 +91,25 @@ const CameraTabs = (props) => {
     const {navigation} = props;
     const params = _.get(props, 'route.params.params')
     const settingRef = useRef();
-
+    const [events, setEvents]= useState(data.events)
     useLayoutEffect(() => {
         const onPressSetting = () => {
             navigation && navigation.dispatch(DrawerActions.toggleDrawer());
         }
+        let {camera} = params
+        const getVideo = async (callback)=>{
+            let userToken = await AsyncStorage.getItem('userToken')
+             getMovingEvents({userToken, camera },callback, )
+        }
+
+        getVideo((res)=>{
+            console.log(res)
+            if(Array.isArray(res)){
+                setEvents(res)
+            }
+        });
+
+
         navigation.setOptions({
             headerRight: (
                 <View>
@@ -114,34 +129,18 @@ const CameraTabs = (props) => {
             [props];
     });
 
-
-    const TabNavigator= ()=>
-        <ScrollableTabView
-        // initialRouteName={AppRoute.CAMERA_STREAM}
-        // shifting={true}
-        // sceneAnimationEnabled={false}
-        // tabBarOptions={{
-        //     style: {borderRadius: 8, backgroundColor: Colors.screen},
-        //     pressColor: Colors.light,
-        //     activeTintColor: Colors.purple_blue,
-        //     inactiveTintColor: Colors.text,
-        // }}
-
-    >
-            <CameraStream tabLabel="Stream" {...params}/>
-            <Media tabLabel="Media" {...params}/>
-        {/*<Tab.Screen*/}
-        {/*    name={AppRoute.CAMERA_STREAM}*/}
-        {/*    initialParams={params}*/}
-        {/*    component={CameraStream}/>*/}
-        {/*<Tab.Screen*/}
-        {/*    options={{*/}
-        {/*        tabBarIcon: 'bell-outline',*/}
-        {/*    }}*/}
-        {/*    name={AppRoute.MEDIA}*/}
-        {/*    initialParams={params}*/}
-        {/*    component={Media}/>*/}
-    </ScrollableTabView>
+   const detailScreens = ()=>
+       <ScrollableTabView
+           // tabBarUnderlineColor="#EDEEEE"
+           // tabBarBackgroundColor="#4A90E2"
+           // tabBarActiveTextColor="#FFFFFF"
+           // tabBarTextStyle={{ fontSize: 15, lineHeight: 21, align }}
+           // tabBarInactiveTextColor="#B6CFD7"
+           // renderTabBar={() => <CustomTabBar someProp={'here'}/>}
+       >
+           <CameraStream tabLabel="Stream" {...params} />
+           <CameraVideos tabLabel="Media" events={events}/>
+       </ScrollableTabView>
 
     return (
         <Drawer.Navigator initialRouteName={'Camera'}
@@ -149,7 +148,7 @@ const CameraTabs = (props) => {
                           drawerType={'front'}
                           drawerContent={(props) => <DrawerContent {...props}/>}
                          >
-            <Drawer.Screen name={'Camera'} component={TabNavigator} initialParams={params}/>
+            <Drawer.Screen name={'Camera'} component={events.length>0 ?detailScreens: CameraStream} initialParams={params}/>
             <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
         </Drawer.Navigator>
 

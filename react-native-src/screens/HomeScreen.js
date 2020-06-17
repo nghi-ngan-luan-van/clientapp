@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Dimensions, FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppRoute} from '../navigation/app-routes';
-import {HOST_URL} from '../utils/AppConst';
 import {Colors} from '../utils/AppConfig'
+import {getUserCameras} from "../utils/ApiUtils";
 
 const WIDTH = Dimensions.get('window').width;
+
 export const Header = ({navigation = {}}) => (
     <View
         style={{
@@ -14,39 +15,41 @@ export const Header = ({navigation = {}}) => (
             alignItems: 'center',
             justifyContent: 'center',
             padding: 12,
+            paddingTop:Platform.OS === 'ios' ? 60:0
         }}>
         <Text style={styles.title}>Clomera</Text>
     </View>
 );
 
-export default HomeScreen = (props) => {
-    const [cameras, setCameras] = useState([]);
+export default function HomeScreen(props) {
+    const [cameras, setCameras] = useState(props.route && props.route.params && props.route.params.result);
+    const [link, setLink] = useState('https://vjs.zencdn.net/v/oceans.mp4')
+    const vlcref = useRef()
+    // paused={this.state.paused}
+    // onProgress={this.onProgress.bind(this)}
+    // onEnd={this.onEnded.bind(this)}
+    // onBuffering={this.onBuffering.bind(this)}
+    // onError={this._onError}
+    // onStopped={this.onStopped.bind(this)}
+    // onPlaying={this.onPlaying.bind(this)}
+    // onPaused={this.onPaused.bind(this)}
 
     useEffect(() => {
-        fetchData();
-    }, []);
-    const fetchData = async () => {
-        let token = await AsyncStorage.getItem('userToken');
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            redirect: 'follow',
-        };
-        const fetchUrl = HOST_URL + 'camera/listcam';
-
-        await fetch(fetchUrl, requestOptions)
-            .then((response) => response.text())
-            .then((result) => {
-
-                if (result && result.statusCode == 403) {
+        if (!Array.isArray(cameras) || cameras.length === 0) {
+            getCameras((response) => {
+                if (response && response.result) {
+                    setCameras(response.result)
                 }
-                setCameras(JSON.parse(result).result);
             })
-            .catch((error) => console.log('error', error));
-    };
+        }
 
+    }, []);
+
+    const getCameras = async (callback) => {
+        let userToken = await AsyncStorage.getItem('userToken');
+        console.log('getCamera')
+        await getUserCameras({userToken}, callback);
+    }
     const onPress = (camera) => () => {
         const {navigation} = props || {};
         navigation &&
@@ -65,7 +68,13 @@ export default HomeScreen = (props) => {
     };
 
     const testThumbnail = require('../assets/test.jpg');
-
+    const url = 'https://clientapp.sgp1.digitaloceanspaces.com/5ed3e22848d6943ed70ec47f/10_6_2020/_002.mp4'
+    const url1 = 'https://clientapp.sgp1.digitaloceanspaces.com/5ed3e22848d6943ed70ec47f/10_6_2020/_003.mp4';
+    const link2 = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    // as pause
+    const [pause1, setpause1] = useState(false)
+    const [pause2, setpause2] = useState(true)
+    const [pause3, setpause3] = useState(true)
     const renderCamera = ({item, index}) => (
         <View>
             <Text style={styles.cameraName}>{String(item.name)}</Text>
@@ -82,7 +91,11 @@ export default HomeScreen = (props) => {
             </TouchableOpacity>
         </View>
     );
-
+    const onPressTest = () => {
+        vlcref.play();
+    }
+// console.log(vlcref)
+// console.log(link)
     return (
         <View style={styles.container}>
             <Image
@@ -90,12 +103,15 @@ export default HomeScreen = (props) => {
                 source={require('../assets/background.png')}
             />
             <Header navigation={props.navigation}/>
-
+            {/*<VLCPlayerView*/}
+            {/*    source={{uri:link}}*/}
+            {/*/>*/}
             <FlatList
                 contentContainerStyle={styles.list}
-                keyExtractor={({item, index}) => index}
+                keyExtractor={(item, index) => 'item' + index}
+                // keyExtractor={({item, index}) => index}
                 data={cameras}
-                renderItem={(cam) => renderCamera(cam)}
+                renderItem={renderCamera}
             />
             <TouchableOpacity
                 style={styles.iconAdd}

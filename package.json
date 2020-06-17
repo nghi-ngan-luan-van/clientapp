@@ -27,6 +27,8 @@
     "@react-navigation/stack": "^5.4.1",
     "@ui-kitten/components": "^4.4.1",
     "@ui-kitten/eva-icons": "^4.4.1",
+    "awesome-react-native-video-controls": "^1.0.7",
+    "axios": "^0.19.2",
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",

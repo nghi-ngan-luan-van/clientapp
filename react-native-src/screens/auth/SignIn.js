@@ -10,6 +10,8 @@ import {
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-community/google-signin';
+import {Input} from "react-native-elements";
+import {Colors} from "../../utils/AppConfig";
 
 GoogleSignin.configure();
 
@@ -24,6 +26,18 @@ export function SignInForm() {
             <View style={{height: 30}}/>
 
             <View style={styles.emailContainer}>
+                {/*<Input*/}
+                {/*    inputContainerStyle={styles.input}*/}
+                {/*    label=""*/}
+                {/*    keyboardType="numeric"EmaileftIcon*/}
+                {/*    l={{type: 'antdesign', name: 'edit'}}*/}
+                {/*    maxLength={10}*/}
+                {/*    style={{height: '36'}}*/}
+                {/*    // defaultValue={camera && camera.port && camera.port.toString()}*/}
+                {/*    onChangeText={(value) => {*/}
+                {/*        setEmail(value);*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <TextInput style={styles.textInput}
                            placeholder="Email"
                            value={email}
@@ -136,7 +150,7 @@ const styles = StyleSheet.create({
     background: {
         top: 0,
         width,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
         // height: height * 0.4,
 
     },
@@ -210,6 +224,13 @@ const styles = StyleSheet.create({
         color: '#5B5A5A',
         letterSpacing: 6
     },
+    // input: {
+    //     padding: 5,
+    //     backgroundColor: Colors.screen,
+    //     borderBottomWidth: 0,
+    //     borderRadius: 8,
+    //     justifyContent: 'center',
+    // },
     textInput: {
         color: '#989899',
         flex: 1,

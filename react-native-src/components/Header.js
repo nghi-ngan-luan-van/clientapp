@@ -1,12 +1,13 @@
-import {Image, Text, TouchableOpacity, View, StyleSheet, Dimensions} from 'react-native';
+import {Image, Text, TouchableOpacity, View, StyleSheet, Dimensions, Platform} from 'react-native';
 import React from 'react';
 import _ from 'lodash'
 import {Colors} from "../utils/AppConfig";
 const {width} = Dimensions.get('window')
-const HEADER_HEIGHT = 60;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? 120 :60;
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: Platform.OS === 'ios' ? 60 :0,
     height: HEADER_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',

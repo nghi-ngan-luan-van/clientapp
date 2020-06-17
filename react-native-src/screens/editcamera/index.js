@@ -131,5 +131,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
     },
-    input: {padding: 5, backgroundColor: Colors.screen, borderBottomWidth: 0, borderRadius: 8,}
+    input: {
+        padding: 5,
+        backgroundColor: Colors.screen,
+        borderBottomWidth: 0,
+        borderRadius: 8,
+    }
 });

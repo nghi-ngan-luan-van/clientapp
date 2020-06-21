@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect,useEffect, useRef, useState} from 'react';
 import {Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch} from 'react-native';
 
 import { Icon} from 'react-native-elements';
@@ -15,14 +15,10 @@ import {getMovingEvents} from "../utils/ApiUtils";
 import AsyncStorage from "@react-native-community/async-storage";
 import data from '../utils/sample'
 import CameraVideos from "../screens/details/CameraVideos";
-import CustomTabBar from "../components/CustomTabBar";
-const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
-const WIDTH = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -92,7 +88,7 @@ const CameraTabs = (props) => {
     const params = _.get(props, 'route.params.params')
     const settingRef = useRef();
     const [events, setEvents]= useState(data.events)
-    useLayoutEffect(() => {
+    useEffect(() => {
         const onPressSetting = () => {
             navigation && navigation.dispatch(DrawerActions.toggleDrawer());
         }
@@ -107,7 +103,6 @@ const CameraTabs = (props) => {
                 setEvents(res)
             }
         });
-
 
         navigation.setOptions({
             headerRight: (
@@ -124,9 +119,8 @@ const CameraTabs = (props) => {
 
         </View>
             ),
-        }),
-            [props];
-    });
+        });
+    },[props]);
 
    const detailScreens = ()=>
        <ScrollableTabView
@@ -142,7 +136,7 @@ const CameraTabs = (props) => {
                           drawerType={'front'}
                           drawerContent={(props) => <DrawerContent {...props}/>}
                          >
-            <Drawer.Screen name={'Camera'} component={events.length>0 ?detailScreens: CameraStream} initialParams={params}/>
+            <Drawer.Screen name={'Camera'} component={events.length>0 ? detailScreens: CameraStream} initialParams={params}/>
             <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
         </Drawer.Navigator>
 

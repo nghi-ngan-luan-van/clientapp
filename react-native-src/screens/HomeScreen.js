@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {AppRoute} from '../navigation/app-routes';
 import {Colors} from '../utils/AppConfig'
 import {getUserCameras} from "../utils/ApiUtils";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -69,7 +70,7 @@ export default function HomeScreen(props) {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Image
                 style={styles.backgroundImg}
                 source={require('../assets/background.png')}
@@ -90,7 +91,7 @@ export default function HomeScreen(props) {
                     source={require('../assets/plus.png')}
                 />
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -104,12 +105,9 @@ const styles = StyleSheet.create({
     },
     header:
         {
-            top: 0,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            padding: 12,
-            paddingTop: Platform.OS === 'ios' ? 60 : 0
         },
     list: {
         paddingHorizontal: 12,

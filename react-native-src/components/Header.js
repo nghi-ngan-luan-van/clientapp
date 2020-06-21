@@ -7,7 +7,6 @@ const HEADER_HEIGHT = Platform.OS === 'ios' ? 120 :60;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === 'ios' ? 60 :0,
     height: HEADER_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
 
 //22215B
 export default Header = (props) => {
-  const {options={}, navigation={}, scene, titleMode} = props;
+  const {options={}, scene, titleMode} = props;
   const title =
     options.headerTitle !== undefined
       ? options.headerTitle

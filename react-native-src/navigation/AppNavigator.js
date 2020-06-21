@@ -52,12 +52,16 @@ export default function AppNavigator() {
                 await getUserCameras(
                     {userToken},
                     (response) => {
+                        if(response){
                         state.isLoading = false;
                         dispatch({type: 'RESTORE_TOKEN', token: userToken, data: response})
-                    },
-                    () => {
-                        dispatch({type: 'RESTORE_TOKEN', token: null})
-                    }
+                        }
+                        else{
+                                dispatch({type: 'RESTORE_TOKEN', token: null})
+                            }
+                        }
+                    ,
+
                 )
             } catch (e) {
                 // Restoring token failed

@@ -1,245 +1,88 @@
 import React from 'react';
-import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, TextInput,Alert} from 'react-native';
-import {AuthContext} from '../../navigation/AppNavigator'
-import {AppRoute} from "../../navigation/app-routes";
+import {
+    Dimensions,
+    Image,
+    Keyboard,
+    KeyboardAvoidingView,
+    StyleSheet,
+    Text,
+    TouchableWithoutFeedback,
+    View,
+} from 'react-native';
+import { AuthContext } from '../../navigation/AppNavigator';
+import { AppRoute } from '../../navigation/app-routes';
 
-const BACKGROUND = require('../../assets/backgroung_cloud.png')
-const {width, height} = Dimensions.get('window')
+const BACKGROUND = require('../../assets/background_image.png');
+const { width, height } = Dimensions.get('window');
 import {
     GoogleSignin,
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-community/google-signin';
-import {Input} from "react-native-elements";
-import {Colors} from "../../utils/AppConfig";
-
+import { Button, Input } from 'react-native-elements';
+import { Colors } from '../../utils/AppConfig';
 GoogleSignin.configure();
 
-export function SignInForm() {
-    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
-    const [password, setPassword] = React.useState('123456');
+import { useSafeArea } from 'react-native-safe-area-context';
+import SignInForm from './SignInForm';
 
-    const {signIn} = React.useContext(AuthContext);
+export default function SignIn() {
+    const insets = useSafeArea();
     return (
-        <View style={styles.container}>
-            <Text style={styles.welcome}>WELCOME</Text>
-            <View style={{height: 30}}/>
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={[styles.contentContainer, { paddingBottom: insets.bottom }]}>
+                    <View style={[styles.topView, { paddingTop: insets.top }]}>
+                        <Image
+                            style={{ height: 180, width: 180, borderRadius: 90 }}
+                            source={require('../../assets/camera.gif')}
+                        />
+                        <Text
+                            style={{
+                                fontSize: 40,
+                                marginTop: 20,
+                                fontWeight: 'bold',
+                                color: Colors.brandy_rose,
+                            }}
+                        >
+                            C L O M E R A
+                        </Text>
+                    </View>
 
-            <View style={styles.emailContainer}>
-
-                <TextInput style={styles.textInput}
-                           placeholder="Email"
-                           value={email}
-                           onChangeText={setEmail}
-                           keyboardType="email-address"/>
-            </View>
-            <View style={styles.passwordContainer}>
-                <TextInput style={styles.textInput}
-                           value={password}
-                           onChangeText={setPassword}
-                           placeholder="Password"
-                           secureTextEntry={true}/>
-            </View>
-
-            <TouchableOpacity style={[styles.button,{marginTop:32, width: width -48}]}
-                              onPress={() => signIn({email: email.toLowerCase(), password})}
-            >
-                <Text style={{fontWeight: 'bold', color: 'white'}}>SIGN IN</Text>
-            </TouchableOpacity>
-        </View>
-    )
-}
-
-export function SignIn(props) {
-    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
-    const [password, setPassword] = React.useState('123456');
-    const [userInfo, setUserInfo] = React.useState('123456');
-    const [error, setError] = React.useState(null);
-
-    const {signIn} = React.useContext(AuthContext);
-
-    const _signIn = async () => {
-        try {
-            await GoogleSignin.hasPlayServices();
-            const userInfor = await GoogleSignin.signIn();
-            setUserInfo( userInfor);
-            console.log(userInfor)
-        } catch (error) {
-            switch (error.code) {
-                case statusCodes.SIGN_IN_CANCELLED:
-                    // sign in was cancelled
-                    Alert.alert('cancelled');
-                    break;
-                case statusCodes.IN_PROGRESS:
-                    // operation (eg. sign in) already in progress
-                    Alert.alert('in progress');
-                    break;
-                case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-                    // android only
-                    Alert.alert('play services not available or outdated');
-                    break;
-                default:
-                    Alert.alert('Something went wrong', error.toString());
-                    setError({
-                        error,
-                    });
-            }
-        }
-    };
-
-    const onPressSignIn = ()=>{
-        let {navigation} = props;
-        navigation && navigation.navigate(AppRoute.SIGN_IN_FORM);
-    }
-    return (
-        <View style={styles.container}>
-            <Image style={styles.background}
-                   source={BACKGROUND}/>
-            <Text style={{
-                color: '#7B7F9E',
-                flex: 0.4,
-                width: width * 0.7,
-                marginLeft: 18,
-                fontSize: 15,
-                textAlign: 'left',
-                alignSelf: 'flex-start'
-            }}>this is app lorem ipsum dolor sit amet consectetur adipiscing elit. aliquam tincidunt elementum sem non luctus</Text>
-            <View style={[styles.row, {width, paddingHorizontal: 12}]}>
-                <TouchableOpacity style={[styles.button, {backgroundColor: '#fff', borderWidth: 0.3}]}>
-                    <Image source={require('../../assets/ic_cloud_left.png')} style={styles.icon}/>
-                    <Text style={{color: '#567DF4'}}>SignUp</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.button]} onPress={onPressSignIn}>
-                    <Text style={{color: '#fff'}}>SignIn</Text>
-                    <Image source={require('../../assets/ic_next.png')} style={styles.icon}/>
-                </TouchableOpacity>
-
-            </View>
-            <Text style={{padding:12, }}> or using </Text>
-            <GoogleSigninButton
-                style={{ width: 200, height: 48 }}
-                size={GoogleSigninButton.Size.Wide}
-                color={GoogleSigninButton.Color.Dark}
-                onPress={_signIn}
-                // disabled={this.state.isSigninInProgress}
-            />
-        </View>
+                    <SignInForm
+                        style={{
+                            marginTop: -height / 8,
+                        }}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    contentContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: Colors.screen,
+    },
+    topView: {
+        width,
+        flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        flex: 1,
-        backgroundColor: '#fff',
-        padding: 12,
+        backgroundColor: Colors.purple_blue,
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 40,
     },
-    background: {
-        top: 0,
-        width,
-        resizeMode: 'cover',
-        // height: height * 0.4,
-
+    title: {
+        fontWeight: 'bold',
     },
-    row: {
-        // flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        alignContent: 'space-between'
-
+    shadow: {
+        shadowOffset: { width: 10, height: 10 },
+        shadowColor: Colors.arapawa,
+        shadowOpacity: 0.4,
+        elevation: 5,
     },
-    button: {
-        // flex:1,
-        backgroundColor: '#567DF4',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        padding: 6,
-        height: 50,
-        width: 150
-    },
-    icon: {
-        alignSelf: 'center',
-        width: 30,
-        height: 12,
-        resizeMode: 'contain',
-    },
-
-    normalText: {
-        color: '#5B5A5A',
-        fontSize: 12,
-        alignItems: 'center',
-        textAlign: 'center',
-        width: 330,
-    },
-    createText: {
-        color: '#FF7260',
-        fontSize: 12,
-        alignItems: 'center',
-        textAlign: 'center',
-        width: 330,
-    },
-    forgotText: {
-        color: '#5B5A5A',
-        fontSize: 12,
-        alignItems: 'flex-end',
-        textAlign: 'right',
-        width: 330,
-    },
-    logoContiner: {
-        height: 170,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-    },
-    welcome: {
-        fontSize: 25,
-        color: '#5B5A5A',
-        letterSpacing: 6
-    },
-    textInput: {
-        color: '#989899',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 14,
-        padding:6
-    },
-
-    buttonText: {
-        color: 'white',
-        fontSize: 12
-    },
-    emailContainer: {
-        width: 325,
-        borderColor: '#CFD0D1',
-        borderWidth: 1,
-        height: 50,
-        // padding: 10,
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-        borderBottomWidth: 0,
-        backgroundColor: '#F5F6F7'
-    },
-    passwordContainer: {
-        width: 325,
-        borderColor: '#CFD0D1',
-        borderWidth: 1,
-        height: 50,
-        // padding: 10,
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
-        backgroundColor: '#F5F6F7'
-
-    }
-
 });

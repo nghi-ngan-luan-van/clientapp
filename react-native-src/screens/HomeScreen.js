@@ -1,144 +1,129 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    Dimensions,
+    FlatList,
+    Image,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {AppRoute} from '../navigation/app-routes';
-import {Colors} from '../utils/AppConfig'
-import {getUserCameras} from "../utils/ApiUtils";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { AppRoute } from '../navigation/app-routes';
+import { Colors } from '../utils/AppConfig';
+import { getUserCameras } from '../utils/ApiUtils';
+import { Icon } from 'react-native-elements';
 
 const WIDTH = Dimensions.get('window').width;
 
-export const Header = ({navigation = {}}) => (
-    <View
-        style={styles.header}>
-        <Text style={styles.title}>Home</Text>
-    </View>
-);
-
 export default function HomeScreen(props) {
-    const [cameras, setCameras] = useState(props.route && props.route.params && props.route.params.result);
+    const [cameras, setCameras] = useState(
+        props.route && props.route.params && props.route.params.result
+    );
     useEffect(() => {
         if (!Array.isArray(cameras) || cameras.length === 0) {
-            getCameras((response) => {
+            getCameras(response => {
                 if (response && response.result) {
-                    setCameras(response.result)
+                    setCameras(response.result);
                 }
-            })
+            });
         }
+    }, [cameras]);
 
-    }, []);
-
-    const getCameras = async (callback) => {
+    const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
-        console.log('getCamera')
-        await getUserCameras({userToken}, callback);
-    }
-    const onPress = (camera) => () => {
-        const {navigation} = props || {};
+        console.log('getCamera');
+        await getUserCameras({ userToken }, callback);
+    };
+    const onPress = camera => () => {
+        const { navigation } = props || {};
         navigation &&
-        navigation.navigate(AppRoute.CAMERA_DETAIL, {
+            navigation.navigate(AppRoute.CAMERA_DETAIL, {
                 screen: AppRoute.CAMERA_STREAM,
                 params: {
                     camera: camera,
                     cameras: cameras,
-                }
-            }
-        );
+                },
+            });
     };
     const onPressAdd = () => {
-        const {navigation} = props || {};
-        navigation && navigation.push(AppRoute.ADD_CAMERA)
+        const { navigation } = props || {};
+        navigation && navigation.push(AppRoute.ADD_CAMERA);
     };
 
     const testThumbnail = require('../assets/test.jpg');
 
-    const renderCamera = ({item, index}) => (
-        <View style={[{backgroundColor: Colors.light,marginBottom:12, borderRadius:12,padding :12,shadowColor:'#000', shadowOffset:{width: 5,height: 5}, shadowOpacity:0.4}]}>
+    const renderCamera = ({ item, index }) => (
+        <View
+            style={[
+                {
+                    backgroundColor: Colors.light,
+                    marginBottom: 12,
+                    borderRadius: 12,
+                    padding: 12,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 5, height: 5 },
+                    shadowOpacity: 0.4,
+                },
+            ]}
+        >
             <Text style={styles.cameraName}>{String(item.name)}</Text>
-            <TouchableOpacity key={index} onPress={onPress(item)} >
+            <TouchableOpacity key={index} onPress={onPress(item)}>
                 <Image
                     source={testThumbnail}
                     resizeMode={'cover'}
-                    style={[{height: CARD_HEIGHT - 48, width: CARD_WIDTH - 24, borderRadius: 12, alignSelf:'center'}]}
+                    style={[
+                        {
+                            height: CARD_HEIGHT - 48,
+                            width: CARD_WIDTH - 24,
+                            borderRadius: 12,
+                            alignSelf: 'center',
+                        },
+                    ]}
                 />
-                <Image
-                    source={require('../assets/ic_video_play.png')}
-                    style={styles.iconPlay}
-                />
+                <Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />
             </TouchableOpacity>
         </View>
     );
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Image
-                style={styles.backgroundImg}
-                source={require('../assets/background.png')}
-            />
-            <Header navigation={props.navigation}/>
-
+        <View style={styles.container}>
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={(item, index) => 'item' + index}
                 data={cameras}
                 renderItem={renderCamera}
             />
-            <TouchableOpacity
-                style={styles.iconAdd}
-                onPress={onPressAdd}>
-                <Image
-                    style={{width: 60, height: 60}}
-                    source={require('../assets/plus.png')}
-                />
-            </TouchableOpacity>
-        </SafeAreaView>
+            <Icon
+                type={'font-awesome'}
+                name={'plus-circle'}
+                color={Colors.grey}
+                onPress={onPressAdd}
+                size={50}
+                // raised={true}
+                // style={{ position: 'absolute', top: 100, bottom: 0, elevation: 99 }}
+            />
+            {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
+            {/*</Icon>*/}
+        </View>
     );
-};
+}
 
-const CARD_WIDTH = (WIDTH - 24);
+const CARD_WIDTH = WIDTH - 24;
 const CARD_HEIGHT = (CARD_WIDTH / 7) * 4;
 const ICON_SIZE = 42;
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Colors.screen,
-        flex: 1,
-    },
-    header:
-        {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-        },
-    list: {
-        paddingHorizontal: 12,
-
-    },
-    row: {
-        flex: 1,
-        justifyContent: 'space-between',
-    },
-    cardView: {
-        borderRadius: 16,
-        width: CARD_WIDTH,
-        marginBottom: 12,
-        height: CARD_HEIGHT,
-
-    },
-    title: {
-        color: Colors.text,
-        fontSize: 38,
-        fontWeight: 'bold',
-    },
     backgroundImg: {
         position: 'absolute',
-        top: 0,
         right: 0,
+        top: -50,
         width: WIDTH,
-        overflow: 'hidden',
+        // overflow: 'hidden',
     },
     camera: {
-        overflow: 'hidden',
         flex: 1,
+        overflow: 'hidden',
         paddingBottom: 12,
         width: WIDTH,
     },
@@ -149,36 +134,62 @@ const styles = StyleSheet.create({
         // marginTop: 15,
         marginBottom: 10,
     },
-    iconPlay: {
-        position: 'absolute',
-        alignContent: 'center',
-        tintColor: Colors.white,
-        height: ICON_SIZE,
-        width: ICON_SIZE,
-        opacity: 1,
-        top: (CARD_HEIGHT - ICON_SIZE) / 2,
-        left: (CARD_WIDTH - ICON_SIZE) / 2,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        // elevation: 5,
+    cardView: {
+        borderRadius: 16,
+        height: CARD_HEIGHT,
+        marginBottom: 12,
+        width: CARD_WIDTH,
+    },
+    container: {
+        backgroundColor: Colors.screen,
+        flex: 1,
+    },
+    header: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
     },
     iconAdd: {
+        elevation: 10,
         position: 'absolute',
-        top: 60,
         right: 24,
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
-            width: 0,
+            width: 10,
+            height: 10,
+        },
+        shadowOpacity: 0.4,
+        shadowRadius: 3.84,
+        top: 0,
+    },
+    iconPlay: {
+        alignContent: 'center',
+        height: ICON_SIZE,
+        left: (CARD_WIDTH - ICON_SIZE) / 2,
+        opacity: 1,
+        position: 'absolute',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 5,
             height: 2,
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 10,
-    }
-
+        tintColor: Colors.white,
+        top: (CARD_HEIGHT - ICON_SIZE) / 2 - 20,
+        width: ICON_SIZE,
+        // elevation: 5,
+    },
+    list: {
+        paddingHorizontal: 12,
+    },
+    row: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+    title: {
+        color: Colors.text,
+        fontSize: 38,
+        fontWeight: 'bold',
+    },
 });

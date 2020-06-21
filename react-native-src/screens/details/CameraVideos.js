@@ -267,10 +267,11 @@ export default class CameraVideos extends Component {
 
     renderControls() {
     }
+    renderBackgroundVideo = () => {
+        return this.renderVideo()
+    }
 
-    renderVideo = () => {
-        let {video, eventList} = this.state;
-        let tempEventList = eventList
+    renderVideo = (video) => {
         let {cdnUrl} = video || {};
         return (
             <View>
@@ -313,7 +314,7 @@ export default class CameraVideos extends Component {
             <ScrollView
                 contentContainerStyle={{paddingHorizontal: 12}}
             >
-                {this.renderVideo()}
+                {this.renderVideo(video)}
 
             </ScrollView>
         )

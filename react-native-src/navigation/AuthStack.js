@@ -5,6 +5,7 @@ import { AuthState } from '@observer';
  * Import screen container componnents
  */
 import Login from './Login';
+
 // import AuthLoading from "./AuthLoading";
 // import AuthPhone from './AuthPhone';
 // import AuthOTP from './AuthOTP';
@@ -22,7 +23,7 @@ const AuthStacks = {
     // PROFILE: <Stack.Screen name="AuthProfile" component={EnterProfile} />,
     LOGIN: <Stack.Screen name="Login" component={Login} />,
     LOGGED: <Stack.Screen name="MainScreen" component={Home} />,
-}
+};
 
 export default class AuthStack extends React.Component {
     constructor(props) {
@@ -31,20 +32,19 @@ export default class AuthStack extends React.Component {
         this.listener = this.authState.attach(this.onChangeAuthState);
         this.state = {
             authState: AuthState.LOADING,
-            animationState: false
-        }
+            animationState: false,
+        };
     }
 
     componentDidMount() {
-        this.authState.getData().then((data) => {
-            const { authState } = data || {}
+        this.authState.getData().then(data => {
+            const { authState } = data || {};
             if (authState == AuthState.LOGIN || authState == AuthState.LOGGED) {
                 this.authState.setData({ authState: AuthState.LOGIN });
-            }
-            else {
+            } else {
                 this.authState.setData({ authState: AuthState.SIGNUP });
             }
-        })
+        });
     }
 
     componentWillUnmount() {
@@ -53,14 +53,18 @@ export default class AuthStack extends React.Component {
 
     onChangeAuthState = ({ authState }) => {
         this.setState({ authState });
-    }
+    };
 
     render() {
         const { authState, animationState } = this.state;
         return (
-            <Stack.Navigator initialRouteName='AuthLoading' headerMode="none" screenOptions={{ animationEnabled: animationState }}>
+            <Stack.Navigator
+                initialRouteName="AuthLoading"
+                headerMode="none"
+                screenOptions={{ animationEnabled: animationState }}
+            >
                 {AuthStacks[authState] ? AuthStacks[authState] : AuthStacks.SIGNUP}
             </Stack.Navigator>
-        )
+        );
     }
 }

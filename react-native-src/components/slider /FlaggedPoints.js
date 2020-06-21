@@ -16,7 +16,6 @@ class FlaggedPoint extends React.Component {
             sliderLength=100,
         } = this.props;
         const duration = end > start ? end - start : 1;
-        // console.log((start / total) * sliderLength - sliderLength)
         return (
             <View
                 style={[

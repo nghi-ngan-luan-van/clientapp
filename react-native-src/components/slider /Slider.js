@@ -506,7 +506,7 @@ export default class Slider extends Component {
                         ]}
                     />
 
-                    <FlaggedPoints list={data} sliderLength={sliderLength}/>
+                    <FlaggedPoints  sliderLength={sliderLength}/>
 
                     <View
                         style={[

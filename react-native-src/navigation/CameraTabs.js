@@ -103,7 +103,6 @@ const CameraTabs = (props) => {
         }
 
         getVideo((res)=>{
-            console.log(res)
             if(Array.isArray(res)){
                 setEvents(res)
             }
@@ -132,12 +131,6 @@ const CameraTabs = (props) => {
    const detailScreens = ()=>
        <ScrollableTabView
            locked
-           // tabBarUnderlineColor="#EDEEEE"
-           // tabBarBackgroundColor="#4A90E2"
-           // tabBarActiveTextColor="#FFFFFF"
-           // tabBarTextStyle={{ fontSize: 15, lineHeight: 21, align }}
-           // tabBarInactiveTextColor="#B6CFD7"
-           // renderTabBar={() => <CustomTabBar someProp={'here'}/>}
        >
            <CameraStream tabLabel="Stream" {...params} />
            <CameraVideos tabLabel="Media" events={events}/>

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AppRoute} from '../navigation/app-routes';
@@ -9,31 +9,13 @@ const WIDTH = Dimensions.get('window').width;
 
 export const Header = ({navigation = {}}) => (
     <View
-        style={{
-            top: 0,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 12,
-            paddingTop:Platform.OS === 'ios' ? 60:0
-        }}>
-        <Text style={styles.title}>Clomera</Text>
+        style={styles.header}>
+        <Text style={styles.title}>Home</Text>
     </View>
 );
 
 export default function HomeScreen(props) {
     const [cameras, setCameras] = useState(props.route && props.route.params && props.route.params.result);
-    const [link, setLink] = useState('https://vjs.zencdn.net/v/oceans.mp4')
-    const vlcref = useRef()
-    // paused={this.state.paused}
-    // onProgress={this.onProgress.bind(this)}
-    // onEnd={this.onEnded.bind(this)}
-    // onBuffering={this.onBuffering.bind(this)}
-    // onError={this._onError}
-    // onStopped={this.onStopped.bind(this)}
-    // onPlaying={this.onPlaying.bind(this)}
-    // onPaused={this.onPaused.bind(this)}
-
     useEffect(() => {
         if (!Array.isArray(cameras) || cameras.length === 0) {
             getCameras((response) => {
@@ -68,21 +50,15 @@ export default function HomeScreen(props) {
     };
 
     const testThumbnail = require('../assets/test.jpg');
-    const url = 'https://clientapp.sgp1.digitaloceanspaces.com/5ed3e22848d6943ed70ec47f/10_6_2020/_002.mp4'
-    const url1 = 'https://clientapp.sgp1.digitaloceanspaces.com/5ed3e22848d6943ed70ec47f/10_6_2020/_003.mp4';
-    const link2 = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    // as pause
-    const [pause1, setpause1] = useState(false)
-    const [pause2, setpause2] = useState(true)
-    const [pause3, setpause3] = useState(true)
+
     const renderCamera = ({item, index}) => (
-        <View>
+        <View style={[{backgroundColor: Colors.light,marginBottom:12, borderRadius:12,padding :12,shadowColor:'#000', shadowOffset:{width: 5,height: 5}, shadowOpacity:0.4}]}>
             <Text style={styles.cameraName}>{String(item.name)}</Text>
-            <TouchableOpacity key={index} onPress={onPress(item)} style={styles.cardView}>
+            <TouchableOpacity key={index} onPress={onPress(item)} >
                 <Image
                     source={testThumbnail}
                     resizeMode={'cover'}
-                    style={styles.cardView}
+                    style={[{height: CARD_HEIGHT - 48, width: CARD_WIDTH - 24, borderRadius: 12, alignSelf:'center'}]}
                 />
                 <Image
                     source={require('../assets/ic_video_play.png')}
@@ -91,11 +67,7 @@ export default function HomeScreen(props) {
             </TouchableOpacity>
         </View>
     );
-    const onPressTest = () => {
-        vlcref.play();
-    }
-// console.log(vlcref)
-// console.log(link)
+
     return (
         <View style={styles.container}>
             <Image
@@ -103,13 +75,10 @@ export default function HomeScreen(props) {
                 source={require('../assets/background.png')}
             />
             <Header navigation={props.navigation}/>
-            {/*<VLCPlayerView*/}
-            {/*    source={{uri:link}}*/}
-            {/*/>*/}
+
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={(item, index) => 'item' + index}
-                // keyExtractor={({item, index}) => index}
                 data={cameras}
                 renderItem={renderCamera}
             />
@@ -117,7 +86,7 @@ export default function HomeScreen(props) {
                 style={styles.iconAdd}
                 onPress={onPressAdd}>
                 <Image
-                    style={{width: 42, height: 42}}
+                    style={{width: 60, height: 60}}
                     source={require('../assets/plus.png')}
                 />
             </TouchableOpacity>
@@ -133,6 +102,15 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.screen,
         flex: 1,
     },
+    header:
+        {
+            top: 0,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            padding: 12,
+            paddingTop: Platform.OS === 'ios' ? 60 : 0
+        },
     list: {
         paddingHorizontal: 12,
 
@@ -170,7 +148,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: Colors.text,
         flex: 1,
-        marginTop: 15,
+        // marginTop: 15,
         marginBottom: 10,
     },
     iconPlay: {
@@ -193,9 +171,7 @@ const styles = StyleSheet.create({
     },
     iconAdd: {
         position: 'absolute',
-        width: 42,
-        height: 42,
-        bottom: 40,
+        top: 60,
         right: 24,
         shadowColor: "#000",
         shadowOffset: {

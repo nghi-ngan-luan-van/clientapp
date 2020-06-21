@@ -135,30 +135,32 @@ export default class CameraVideos extends Component {
 // target: 5323
 
 
-        if( this.tmpDuration!= event.duration ){
-            this.tmpDuration = event.duration
-        }
-        let currentRate = (this.bufferTime + event.currentTime) / 1000;// from ms to s
-        let loadingSuccess = false;
-        if (currentRate > 0 || this.state.currentRate > 0) {
-            loadingSuccess = true;
-        }
-        // console.log(this.totalTime)
-        // console.log(this.bufferTime)
-        // console.log(currentTime)
-        // if (!this.changingSlider) {
-            if (currentRate === 0 || currentRate === this.state.currentRate * 1000) {
-            } else {
-                this.setState({
-                    loadingSuccess: loadingSuccess,
-                    isLoading: false,
-                    isError: false,
-                    progress: event.position,
-                    currentTime: event.currentTime,
-                    currentRate: (currentRate * 100 )/this.totalTime,//it is a rate
-                });
-            }
+        // if( this.tmpDuration!= event.duration ){
+        //     this.tmpDuration = event.duration
         // }
+        // let currentRate = (this.bufferTime + event.currentTime) / 1000;// from ms to s
+        // let loadingSuccess = false;
+        // if (currentRate > 0 || this.state.currentRate > 0) {
+        //     loadingSuccess = true;
+        // }
+        // // console.log(this.totalTime)
+        // // console.log(this.bufferTime)
+        // // console.log(currentTime)
+        // if (!this.changeSlider) {
+        //     if (currentRate === 0 || currentRate === this.state.currentRate * 1000) {
+        //     } else {
+        //         this.setState({
+        //             loadingSuccess: loadingSuccess,
+        //             isLoading: false,
+        //             isError: false,
+        //             progress: event.position,
+        //             currentTime: event.currentTime,
+        //             currentRate: (currentRate * 100 )/this.totalTime,//it is a rate
+        //         });
+        //     }
+        // }
+
+
     }
     onBuffering=()=>{
 
@@ -166,76 +168,87 @@ export default class CameraVideos extends Component {
     onPaused=()=>{}
 
     onValueChange=(values)=>{
-        // this.changeSlider=true;
+        this.changeSlider=true;
         // this.vlcRefs
-        console.log(value)
+        // console.log(value)
+        // let value = values[0];
+        // let {index = 0} = this.state.video || {}
+        // // let estTime =  value /100 * this.totalTime;
+        // // let msEstTime = estTime * 1000;
+        // let seekTime =0;
+        // let {currentRate, currentTime, backupList} = this.state;
+        // let diff = value - currentRate;
+        // if(diff < 0){
+        //     //move back
+        //     seekTime = - diff *10000* this.totalTime;//to ms
+        //
+        //     //if same video
+        //     if(seekTime < currentTime){
+        //         this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
+        //         this.setState({seek:seekTime + (diff * 1000)})
+        //     }
+        //     // if not same video
+        //     else{
+        //         //check can seek
+        //         if(index === 0){
+        //             this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
+        //             this.setState({seek:0})
+        //         }
+        //         else{
+        //             this.setState({
+        //                 video:this.state.backupList[index-1]
+        //             },()=>{
+        //                 this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
+        //             })
+        //         }
+        //     }
+        // }else{
+        //     seekTime = diff *10000* this.totalTime;//to ms
+        //
+        //     //if same video
+        //     if(seekTime + currentTime < this.tmpDuration){
+        //         this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
+        //         this.setState({seek:(currentTime + diff )* 1000})
+        //     }
+        //     // if not same video
+        //     else{
+        //         //check can seek
+        //         if(index === (backupList.length-1)){//cant seek
+        //             this.vlcPlayer.seek && this.vlcPlayer.seek(1);
+        //             this.setState({seek:1})
+        //         }
+        //         else{
+        //             // this.setState({
+        //             //     video:this.state.backupList[index+1]
+        //             // },()=>{
+        //                 // console.log('this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();\n',this.vlcPlayer)
+        //                 // this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();
+        //                 //
+        //                 // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime-(this.tmpDuration-currentTime));
+        //                 // // this.setState({seek: seekTime-(this.tmpDuration-currentTime)/1000})
+        //
+        //             // }
+        //         // )
+        //         }
+        //     }
+        // }
+        // // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(value*10);
+        // // this.setState({
+        // //     currentRate: 0
+        // // },this.setState({
+        // //     currentRate: value
+        // // }))
+    }
+    onChangeFinish = (values)=>{
+        this.changeSlider = false
         let value = values[0];
-        let {index = 0} = this.state.video || {}
-        // let estTime =  value /100 * this.totalTime;
-        // let msEstTime = estTime * 1000;
-        let seekTime =0;
-        let {currentRate, currentTime, backupList} = this.state;
+
+        let {currentRate} = this.state;
         let diff = value - currentRate;
-        if(diff < 0){
-            //move back
-            seekTime = - diff *10000* this.totalTime;//to ms
-
-            //if same video
-            if(seekTime < currentTime){
-                this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
-                this.setState({seek:seekTime + (diff * 1000)})
-            }
-            // if not same video
-            else{
-                //check can seek
-                if(index === 0){
-                    this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
-                    this.setState({seek:0})
-                }
-                else{
-                    this.setState({
-                        video:this.state.backupList[index-1]
-                    },()=>{
-                        this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
-                    })
-                }
-            }
-        }else{
-            seekTime = diff *10000* this.totalTime;//to ms
-
-            //if same video
-            if(seekTime + currentTime < this.tmpDuration){
-                this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
-                this.setState({seek:(currentTime + diff )* 1000})
-            }
-            // if not same video
-            else{
-                //check can seek
-                if(index === (backupList.length-1)){//cant seek
-                    this.vlcPlayer.seek && this.vlcPlayer.seek(1);
-                    this.setState({seek:1})
-                }
-                else{
-                    // this.setState({
-                    //     video:this.state.backupList[index+1]
-                    // },()=>{
-                        // console.log('this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();\n',this.vlcPlayer)
-                        // this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();
-                        //
-                        // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime-(this.tmpDuration-currentTime));
-                        // // this.setState({seek: seekTime-(this.tmpDuration-currentTime)/1000})
-
-                    // }
-                // )
-                }
-            }
-        }
-        // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(value*10);
-        // this.setState({
-        //     currentRate: 0
-        // },this.setState({
-        //     currentRate: value
-        // }))
+        this.setState({
+            currentRate: value,
+            seek: (diff * this.tmpDuration/100)/this.totalTime
+        })
     }
 
     renderSlider() {
@@ -243,9 +256,10 @@ export default class CameraVideos extends Component {
         return (
             <Slider
                 min={0}
-                max={100}
+                max={12*3600*1000}
                 values={[currentRate]}
                 onChange={this.onValueChange}
+                onChangeFinish={this.onChangeFinish}
             />
         )
 

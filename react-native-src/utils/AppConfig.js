@@ -8,7 +8,6 @@ module.exports = {
         alert: "#ff1b48",
         light:"#EEF2FE",
         purple_blue:"#22215B",
-
         light_purple_blue:'#5553cf',
     }
 }

@@ -43,7 +43,8 @@ export default function HomeScreen(props) {
                 screen: AppRoute.CAMERA_STREAM,
                 params: {
                     camera: camera,
-                    cameras: cameras,
+                    // cameras: cameras,
+                    // userToken: userToken,
                 },
             });
     };
@@ -62,9 +63,9 @@ export default function HomeScreen(props) {
                     marginBottom: 12,
                     borderRadius: 12,
                     padding: 12,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 5, height: 5 },
-                    shadowOpacity: 0.4,
+                    shadowColor: Colors.grey,
+                    shadowOffset: { width: 2, height: 2, right: 2 },
+                    shadowOpacity: 0.2,
                 },
             ]}
         >

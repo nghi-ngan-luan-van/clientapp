@@ -3,7 +3,6 @@ import { Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch } f
 
 import { Icon } from 'react-native-elements';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Colors } from '../utils/AppConfig';
 import _ from 'lodash';
 import CameraStream from '../screens/details/CameraStream';
@@ -18,8 +17,9 @@ import { getMovingEvents } from '../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import data from '../utils/sample';
 import CameraVideos from '../screens/details/CameraVideos';
+import CustomTab from '../components/CustomTab';
 const Drawer = createDrawerNavigator();
-
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
@@ -32,6 +32,13 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         color: Colors.text,
+    },
+
+    containerTab: {
+        flex: 1,
+        // marginTop: 18,
+        backgroundColor: Colors.pigeon_post,
+        // border
     },
 });
 
@@ -83,7 +90,7 @@ const CameraTabs = props => {
     const { navigation } = props;
     const params = _.get(props, 'route.params.params');
     const settingRef = useRef();
-    const [events, setEvents] = useState(data.events);
+    const [events, setEvents] = useState([]);
     useEffect(() => {
         const onPressSetting = () => {
             navigation && navigation.dispatch(DrawerActions.toggleDrawer());
@@ -95,33 +102,55 @@ const CameraTabs = props => {
         };
 
         getVideo(res => {
+            console.log('getVideo_type', typeof res);
             if (Array.isArray(res)) {
                 setEvents(res);
+                console.log('getVideo', events);
             }
-        });
-
-        // navigation.setOptions({
-        //     headerRight: (
-        //         <View>
-        //         <TouchableOpacity
-        //             ref={settingRef}
-        //             onPress={onPressSetting}
-        //         >
-        //             <Image
-        //                 source={require('../assets/ic_settings.png')}
-        //                 style={styles.rightButton}
-        //             />
-        //         </TouchableOpacity>
-        //
-        // </View>
-        //     ),
-        // });
+        }).then();
     }, [navigation, params, props]);
 
+    const renderTabBar = props => () => {
+        let { tabs, goToPage, activeTab } = props;
+        return (
+            <View style={styles.tabs}>
+                {tabs.map((tab, i) => (
+                    <TouchableOpacity
+                        key={tab}
+                        onPress={() => goToPage(i)}
+                        style={[
+                            styles.tab,
+                            activeTab === i ? styles.activeTab : styles.inactiveTab,
+                        ]}
+                    >
+                        <Text.Title
+                            font={{ type: activeTab === i ? 'bold' : 'regular' }}
+                            style={{ color: activeTab === i ? '#222222' : '#8d919d' }}
+                        >
+                            {tab}
+                        </Text.Title>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        );
+    };
+
     const detailScreens = () => (
-        <ScrollableTabView locked>
-            <CameraStream tabLabel="Stream" {...params} />
-            <CameraVideos tabLabel="Media" events={events} />
+        <ScrollableTabView
+            // tabBarBackgroundColor={Colors.screen}
+            // tabBarActiveTextColor={Colors.violet}
+            initialPage={0}
+            // onChangeTab={onChangeTab}
+            // onScroll={onScrollTab}
+            style={styles.containerTab}
+            renderTabBar={props => <CustomTab {...props} />}
+            locked={false}
+            contentProps={{
+                keyboardShouldPersistTaps: 'always',
+            }}
+        >
+            <CameraStream tabLabel="Camera trực tiếp" {...params} />
+            <CameraVideos tabLabel="Thư viện " events={events} />
         </ScrollableTabView>
     );
 
@@ -134,7 +163,7 @@ const CameraTabs = props => {
         >
             <Drawer.Screen
                 name={'Camera'}
-                component={events.length > 0 ? detailScreens : CameraStream}
+                component={!events || events.length > 0 ? detailScreens : CameraStream}
                 initialParams={params}
             />
             <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />

@@ -1,46 +1,35 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { SafeAreaView, FlatList } from "react-native";
-import styles, { _container } from "./Timeline.style";
-import Item from "./components/Item/Item";
-
+import React from 'react';
+import { SafeAreaView, FlatList, StyleSheet, Dimensions } from 'react-native';
+import Item from './components/Item/Item';
+// import { isAndroid, ScreenHeight, ScreenWidth } from '@freakycoder/react-native-helpers';
+const { width, height } = Dimensions.get('window');
+const styles = StyleSheet.create({
+    listStyle: {
+        width: width,
+        // maxHeight: isAndroid ? ScreenHeight / 2 - 32 : null,
+    },
+    contentContainerStyle: {
+        alignItems: 'center',
+        paddingTop: 24,
+    },
+});
 const Timeline = props => {
-  const { data, backgroundColor } = props;
-  renderItem = list => {
-    const { item, index } = list;
-    const isLastMember = index === data.length - 1;
+    const { data, backgroundColor } = props;
+
+    const renderItem = ({ item, index }) => {
+        const isLastMember = index === data.length - 1;
+        return <Item item={item} isLastMember={isLastMember} />;
+    };
+
     return (
-      <Item
-        {...props}
-        data={item}
-        list={item.data}
-        isLastMember={isLastMember}
-      />
+        <FlatList
+            data={data}
+            style={styles.listStyle}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.contentContainerStyle}
+        />
     );
-  };
-
-  return (
-    <SafeAreaView style={_container(backgroundColor)}>
-      <FlatList
-        data={data}
-        style={styles.listStyle}
-        renderItem={renderItem.bind(this)}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.contentContainerStyle}
-        {...props}
-      />
-    </SafeAreaView>
-  );
-};
-
-Timeline.propTypes = {
-  data: PropTypes.array,
-  backgroundColor: PropTypes.string
-};
-
-Timeline.defaultProps = {
-  data: [1, 2, 3, 4, 5],
-  backgroundColor: "#fdfdfd"
 };
 
 export default Timeline;

@@ -20,9 +20,9 @@ export const get = (url, message, callback) => {
 
 export const post = (url, message, callback) => {
     let { data, headers } = message;
-    console.log('post message', message);
+    console.log('post message', headers);
     axios
-        .post(url, data, { headers: headers, timeout: 3000 })
+        .post(url, data, { headers: headers })
         .then(response => {
             if (response.data && typeof callback === 'function') {
                 callback(response.data);
@@ -30,6 +30,7 @@ export const post = (url, message, callback) => {
         })
         .catch(error => {
             console.warn('[err] ApiUtils post' + url, error);
+            callback && callback();
         });
 };
 
@@ -46,7 +47,8 @@ export const signIn = (params, callback) => {
     }
 };
 
-export const getUserCameras = (params, callback) => {
+export const getUserCameras = async (params, callback) => {
+    // const userToken = await AsyncStorage.getItem('userToken');
     let { userToken } = params;
     let message = {
         headers: {

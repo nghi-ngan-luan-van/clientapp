@@ -1,11 +1,11 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import HomeNavigator from './HomeNavigator';
 import * as React from 'react';
 import Welcome from '../screens/Welcome';
 import AsyncStorage from '@react-native-community/async-storage';
-import {AuthNavigator} from "./AuthNavigator";
-import {AppRoute} from "./app-routes";
-import {getUserCameras, signIn} from "../utils/ApiUtils";
+import { AuthNavigator } from './AuthNavigator';
+import { AppRoute } from './app-routes';
+import { getUserCameras, signIn } from '../utils/ApiUtils';
 
 export const AuthContext = React.createContext();
 const Stack = createStackNavigator();
@@ -20,7 +20,7 @@ export default function AppNavigator() {
                         userToken: action.token,
                         isLoading: false,
                         isSignout: false,
-                        data: action.data
+                        data: action.data,
                     };
                 case 'SIGN_IN':
                     return {
@@ -41,7 +41,7 @@ export default function AppNavigator() {
             isSignout: false,
             userToken: null,
             data: [],
-        },
+        }
     );
 
     React.useEffect(() => {
@@ -49,25 +49,18 @@ export default function AppNavigator() {
             let userToken;
             try {
                 userToken = await AsyncStorage.getItem('userToken');
-                await getUserCameras(
-                    {userToken},
-                    (response) => {
-                        if(response){
+                await getUserCameras({ userToken }, response => {
+                    if (response) {
                         state.isLoading = false;
-                        dispatch({type: 'RESTORE_TOKEN', token: userToken, data: response})
-                        }
-                        else{
-                                dispatch({type: 'RESTORE_TOKEN', token: null})
-                            }
-                        }
-                    ,
-
-                )
+                        dispatch({ type: 'RESTORE_TOKEN', token: userToken, data: response });
+                    } else {
+                        dispatch({ type: 'RESTORE_TOKEN', token: null });
+                    }
+                });
             } catch (e) {
                 // Restoring token failed
-                console.warn('Restoring token failed')
+                console.warn('Restoring token failed');
             }
-
         };
 
         bootstrapAsync();
@@ -75,26 +68,26 @@ export default function AppNavigator() {
 
     const authContext = React.useMemo(
         () => ({
-            signIn: async (data) => {
+            signIn: async data => {
                 try {
-                    await signIn(data,
-                        async (result) => {
-                            let {token} = result
-                            if (!token) alert('Wrong email or password, please try again');
-                            await AsyncStorage.setItem('userToken', token);
-                            dispatch({type: 'SIGN_IN', token: token});
-                        })
+                    await signIn(data, async result => {
+                        let { token } = result;
+                        if (!token) {
+                            alert('Wrong email or password, please try again');
+                        }
+                        await AsyncStorage.setItem('userToken', token);
+                        dispatch({ type: 'SIGN_IN', token: token });
+                    });
                 } catch (e) {
-                    console.warn('Signin Error')
+                    console.warn('Signin Error');
                 }
-
             },
-            signOut: () => dispatch({type: 'SIGN_OUT'}),
-            signUp: async (data) => {
-                dispatch({type: 'SIGN_IN', token: 'dummy-auth-token'});
+            signOut: () => dispatch({ type: 'SIGN_OUT' }),
+            signUp: async data => {
+                dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
             },
         }),
-        [],
+        []
     );
 
     return (
@@ -102,9 +95,9 @@ export default function AppNavigator() {
             <Stack.Navigator headerMode="none">
                 {state.userToken == null ? (
                     state.isLoading === true ? (
-                        <Stack.Screen name="Welcome" component={Welcome}/>
+                        <Stack.Screen name="Welcome" component={Welcome} />
                     ) : (
-                        <Stack.Screen name={AppRoute.SIGN_IN} component={AuthNavigator}/>
+                        <Stack.Screen name={AppRoute.SIGN_IN} component={AuthNavigator} />
                     )
                 ) : (
                     <Stack.Screen

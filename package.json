@@ -13,6 +13,9 @@
     "test": "jest",
     "lint": "eslint ."
   },
+  "resolutions": {
+    "@react-native-community/cli-debugger-ui": "4.7.0"
+  },
   "dependencies": {
     "@eva-design/eva": "^1.4.0",
     "@freakycoder/react-native-helpers": "^0.1.3",

@@ -6,7 +6,7 @@ import data from '../../utils/sample';
 import { Colors } from '../../utils/AppConfig';
 import { BACK_UP_TIME } from '../../utils/AppConst';
 import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
-import Slider from '../../components/slider /Slider';
+import Slider from '../../components/slider/Slider';
 import Timeline from '../../components/TimeLine/Timeline';
 import moment from 'moment';
 const styles = StyleSheet.create({

@@ -71,3 +71,17 @@ export const getMovingEvents = (params, callback) => {
 
     post(HOST_URL + 'camera/savedvideo', message, callback);
 };
+
+export const getBackupVideo = (params, callback) => {
+    let { camera = {}, userToken } = params;
+    let { _id } = camera;
+    let message = {
+        data: { _id: _id },
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+            // timeout:2000,
+        },
+    };
+
+    post(HOST_URL + 'camera/recordedvideo', message, callback);
+};

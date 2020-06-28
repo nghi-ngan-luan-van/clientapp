@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Button, Input} from 'react-native-elements';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Button, Input } from 'react-native-elements';
 import _ from 'lodash';
 import AsyncStorage from '@react-native-community/async-storage';
-import {AppRoute} from '../../navigation/app-routes';
-import {Colors} from '../../utils/AppConfig'
+import { AppRoute } from '../../navigation/app-routes';
+import { Colors } from '../../utils/AppConfig';
+import { HOST_URL } from '../../utils/AppConst';
 
 export default function EditCamera(props) {
     const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
     const [isEnabled, setIsEnabled] = useState(camera.backupMode);
-    const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const [newName, setNewName] = useState(camera.name);
     const [newIP, setNewIP] = useState(camera.ip);
     const [newPort, setNewPort] = useState(camera.port);
@@ -42,30 +43,30 @@ export default function EditCamera(props) {
             redirect: 'follow',
         };
 
-        fetch('http://165.22.98.234/camera/edit', requestOptions)
-            .then((response) => response.text())
-            .then((result) => {
+        fetch(HOST_URL + 'camera/edit', requestOptions)
+            .then(response => response.text())
+            .then(result => {
                 console.log(result);
-                let {navigation} = props;
+                let { navigation } = props;
                 navigation && navigation.push(AppRoute.HOME, {});
             });
     };
     const onJumpToMode = () => {
-        const {navigation} = props;
+        const { navigation } = props;
         navigation &&
-        navigation.navigate(AppRoute.CAMERA_EDIT_MODE, {
-            camera: camera,
-        });
+            navigation.navigate(AppRoute.CAMERA_EDIT_MODE, {
+                camera: camera,
+            });
     };
     return (
         <View style={styles.container}>
             <Input
                 inputContainerStyle={styles.input}
                 label="Camera Name"
-                rightIcon={{type: 'antdesign', name: 'edit'}}
-                leftIconContainerStyle={{margin: 10}}
+                rightIcon={{ type: 'antdesign', name: 'edit' }}
+                leftIconContainerStyle={{ margin: 10 }}
                 defaultValue={camera.name}
-                onChangeText={(value) => {
+                onChangeText={value => {
                     setNewName(value);
                 }}
             />
@@ -74,17 +75,17 @@ export default function EditCamera(props) {
                 disabled
                 inputContainerStyle={styles.input}
                 label="RTSP Url"
-                rightIcon={{type: 'antdesign', name: 'location-arrow'}}
-                style={{height: '36'}}
+                rightIcon={{ type: 'antdesign', name: 'location-arrow' }}
+                style={{ height: '36' }}
                 defaultValue={camera.rtspUrl}
             />
             <Input
                 inputContainerStyle={styles.input}
                 label="IP"
-                rightIcon={{type: 'antdesign', name: 'edit'}}
-                style={{height: '36'}}
+                rightIcon={{ type: 'antdesign', name: 'edit' }}
+                style={{ height: '36' }}
                 defaultValue={camera.ip}
-                onChangeText={(value) => {
+                onChangeText={value => {
                     setNewIP(value);
                 }}
             />
@@ -93,11 +94,11 @@ export default function EditCamera(props) {
                 inputContainerStyle={styles.input}
                 label="Port"
                 keyboardType="numeric"
-                rightIcon={{type: 'antdesign', name: 'edit'}}
+                rightIcon={{ type: 'antdesign', name: 'edit' }}
                 maxLength={10}
-                style={{height: '36'}}
+                style={{ height: '36' }}
                 defaultValue={camera && camera.port && camera.port.toString()}
-                onChangeText={(value) => {
+                onChangeText={value => {
                     setNewPort(Number.parseInt(value));
                 }}
             />
@@ -109,7 +110,6 @@ export default function EditCamera(props) {
                 // style={styles.btn}
                 onPress={onUpdateCamera}
             />
-
         </View>
     );
 }
@@ -118,13 +118,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 12,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     btn: {
-        padding: 10
+        padding: 10,
     },
     title: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     switchBtn: {
         paddingBottom: 10,
@@ -136,5 +136,5 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.screen,
         borderBottomWidth: 0,
         borderRadius: 8,
-    }
+    },
 });

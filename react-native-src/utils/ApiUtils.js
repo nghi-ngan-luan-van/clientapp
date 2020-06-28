@@ -76,12 +76,12 @@ export const getBackupVideo = (params, callback) => {
     let { camera = {}, userToken } = params;
     let { _id } = camera;
     let message = {
-        data: { _id: _id },
+        // data: { _id: _id },
         headers: {
             Authorization: `Bearer ${userToken}`,
             // timeout:2000,
         },
     };
 
-    post(HOST_URL + 'camera/recordedvideo', message, callback);
+    get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
 };

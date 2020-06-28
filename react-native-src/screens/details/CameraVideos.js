@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Image, StyleSheet, Text, View } from 'react-native';
 import { filterVideo } from './DetailsHelper';
 import { Button } from 'react-native-elements';
 import data from '../../utils/sample';
@@ -9,9 +9,9 @@ import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 import Slider from '../../components/slider/Slider';
 import Timeline from '../../components/TimeLine/Timeline';
 import moment from 'moment';
+
 const styles = StyleSheet.create({
     video: {
-        position: 'relative',
         justifyContent: 'center',
         alignItems: 'center',
         height: 300,
@@ -26,6 +26,20 @@ export default class CameraVideos extends Component {
             video: {},
             backupList: props.events,
             cdnUrl: '',
+
+            frontVideoState: {
+                seek: 0,
+                isLoading: true,
+                isError: false,
+                paused: false,
+                animating: true,
+            },
+
+            backVideo: {
+                seek: 0,
+                isLoading: true,
+                isError: false,
+            },
             seek: 0,
 
             next: true,
@@ -37,19 +51,16 @@ export default class CameraVideos extends Component {
             totalTime: 0.0,
             paused: false,
             animating: true,
+            currentDay: '',
         };
         this.vlcRefs = [];
-        this.vlcPlayer = null;
-        // this.totalTime = 0;
         this.bufferTime = 0;
         this.tmpDuration = 0;
-        this.changeSlide = false;
         this.records = [];
     }
 
     componentDidMount() {
         let { events } = this.props;
-        // console.log('componentDidMount', events);
         let filtered = filterVideo(this.state.backupList);
         this.setState(
             {
@@ -57,12 +68,10 @@ export default class CameraVideos extends Component {
                 video: filtered[0],
             },
             () => {
-                this.totalTime = this.state.backupList.length * BACK_UP_TIME;
                 console.log(this.state.video);
             }
         );
 
-        let tmpTimeStart;
         let arr = [];
         let record = data.record;
         let groupArr = [];
@@ -73,11 +82,6 @@ export default class CameraVideos extends Component {
             if (index === record.length - 1) {
                 item.duration = 10000;
             } else {
-                // let start = moment(Number(record[index + 1].timeStart)); // some random moment in time (in ms)
-                // let end = moment(Number(item.timeStart)); // some random moment after start (in ms)
-                // let diff = end.diff(start);
-
-                // item.duration = moment.utc(diff).format('HH:mm:ss.SSS');
                 let diff = Number(record[index + 1].timeStart) - Number(item.timeStart);
                 let tmpDiff = moment.duration(diff, 'milliseconds');
                 let hours =
@@ -108,41 +112,73 @@ export default class CameraVideos extends Component {
     _onError = e => {
         // [bavv add end]
         console.log('_onError');
-        console.log(e);
-        this.reloadSuccess = false;
-        this.setState({
-            isError: true,
-        });
     };
 
     onPausePress = () => {
-        console.log('this_pause', this.state.paused);
-        this.setState({
-            paused: !this.state.paused,
-        });
+        let { paused } = this.state.frontVideoState;
+        console.log('this_pause', paused);
+
+        this.setState(prevState => ({
+            frontVideoState: {
+                // object that we want to update
+                ...prevState.frontVideoState, // keep all other key-value pairs
+                paused: !paused,
+            },
+        }));
     };
 
     onEnded = () => {
-        let { video, backupList } = this.state;
-
-        this.bufferTime = this.bufferTime + this.tmpDuration;
-        // console.log()
-        if (video.index < backupList.length - 1) {
-            this.setState({
-                video: this.state.backupList[video.index + 1],
-                animating: true,
-            });
-        }
+        console.log('onEnded');
+        //
+        // let { video, backupList } = this.state;
+        //
+        // this.bufferTime = this.bufferTime + this.tmpDuration;
+        // if (video.index < backupList.length - 1) {
+        //     this.setState({
+        //         video: this.state.backupList[video.index + 1],
+        //         animating: true,
+        //     });
+        // }
     };
     onStopped = () => {
         console.log('onStopped');
     };
+
+    onBuffering = e => {
+        console.log('_onBuffering', e);
+        let { paused, animating } = this.state.frontVideoState;
+        if (!animating) {
+            this.setState(prevState => ({
+                frontVideoState: {
+                    // object that we want to update
+                    ...prevState.frontVideoState, // keep all other key-value pairs
+                    paused: !paused,
+                },
+            }));
+        }
+    };
     onPlaying = () => {
         console.log('onPlaying');
-        this.setState({
-            // paused:!this.state.paused
-            animating: false,
-        });
+        this.setState(prevState => ({
+            frontVideoState: {
+                // object that we want to update
+                ...prevState.frontVideoState, // keep all other key-value pairs
+                animating: false,
+            },
+        }));
+        // this.frontVideo &&
+        //     typeof this.frontVideo.play === 'function' &&
+        //     this.frontVideo.play(false);
+
+        // let { paused } = this.state.frontVideoState;
+        // this.setState(prevState => ({
+        //     frontVideoState: {
+        //         // object that we want to update
+        //         ...prevState.frontVideoState, // keep all other key-value pairs
+        //         paused: !paused,
+        //         animating: false, // update the value of specific key
+        //     },
+        // }));
     };
     onError = () => {
         console.log('onError');
@@ -152,187 +188,111 @@ export default class CameraVideos extends Component {
     };
 
     _onOpen = () => {
-        this.setState({ paused: false });
+        console.log('_open');
+        // this.setState({ paused: false });
     };
 
     onProgress = (event = {}) => {
-        // console.log('onProgress_', event)
-        /* console.log(
-    'position=' +
-    event.position +
-    ',currentTime=' +
-    event.currentTime +
-    ',remainingTime=' +
-    event.remainingTime,
-    );*/
-        //      currentTime: 154
-        // duration: 8108
-        // position: 0.018963739275932312
-        // remainingTime: -7966
-        // target: 5323
-        // if( this.tmpDuration!= event.duration ){
-        //     this.tmpDuration = event.duration
-        // }
-        // let currentRate = (this.bufferTime + event.currentTime) / 1000;// from ms to s
-        // let loadingSuccess = false;
-        // if (currentRate > 0 || this.state.currentRate > 0) {
-        //     loadingSuccess = true;
-        // }
-        // // console.log(this.totalTime)
-        // // console.log(this.bufferTime)
-        // // console.log(currentTime)
-        // if (!this.changeSlider) {
-        //     if (currentRate === 0 || currentRate === this.state.currentRate * 1000) {
-        //     } else {
-        //         this.setState({
-        //             loadingSuccess: loadingSuccess,
-        //             isLoading: false,
-        //             isError: false,
-        //             progress: event.position,
-        //             currentTime: event.currentTime,
-        //             currentRate: (currentRate * 100 )/this.totalTime,//it is a rate
-        //         });
-        //     }
-        // }
-    };
-    onBuffering = () => {};
-    onPaused = () => {};
-
-    onValueChange = values => {
-        this.changeSlider = true;
-        // this.vlcRefs
-        // console.log(value)
-        // let value = values[0];
-        // let {index = 0} = this.state.video || {}
-        // // let estTime =  value /100 * this.totalTime;
-        // // let msEstTime = estTime * 1000;
-        // let seekTime =0;
-        // let {currentRate, currentTime, backupList} = this.state;
-        // let diff = value - currentRate;
-        // if(diff < 0){
-        //     //move back
-        //     seekTime = - diff *10000* this.totalTime;//to ms
-        //
-        //     //if same video
-        //     if(seekTime < currentTime){
-        //         this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
-        //         this.setState({seek:seekTime + (diff * 1000)})
-        //     }
-        //     // if not same video
-        //     else{
-        //         //check can seek
-        //         if(index === 0){
-        //             this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
-        //             this.setState({seek:0})
-        //         }
-        //         else{
-        //             this.setState({
-        //                 video:this.state.backupList[index-1]
-        //             },()=>{
-        //                 this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(0);
-        //             })
-        //         }
-        //     }
-        // }else{
-        //     seekTime = diff *10000* this.totalTime;//to ms
-        //
-        //     //if same video
-        //     if(seekTime + currentTime < this.tmpDuration){
-        //         this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime);
-        //         this.setState({seek:(currentTime + diff )* 1000})
-        //     }
-        //     // if not same video
-        //     else{
-        //         //check can seek
-        //         if(index === (backupList.length-1)){//cant seek
-        //             this.vlcPlayer.seek && this.vlcPlayer.seek(1);
-        //             this.setState({seek:1})
-        //         }
-        //         else{
-        //             // this.setState({
-        //             //     video:this.state.backupList[index+1]
-        //             // },()=>{
-        //                 // console.log('this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();\n',this.vlcPlayer)
-        //                 // this.vlcPlayer&& this.vlcPlayer && this.vlcPlayer.resume();
-        //                 //
-        //                 // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(seekTime-(this.tmpDuration-currentTime));
-        //                 // // this.setState({seek: seekTime-(this.tmpDuration-currentTime)/1000})
-        //
-        //             // }
-        //         // )
-        //         }
-        //     }
-        // }
-        // // this.vlcPlayer&& this.vlcPlayer.seek && this.vlcPlayer.seek(value*10);
-        // // this.setState({
-        // //     currentRate: 0
-        // // },this.setState({
-        // //     currentRate: value
-        // // }))
-    };
-    onChangeFinish = values => {
-        this.changeSlider = false;
-        let value = values[0];
-
-        let { currentRate } = this.state;
-        let diff = value - currentRate;
-        this.setState({
-            currentRate: value,
-            seek: (diff * this.tmpDuration) / 100 / this.totalTime,
-        });
+        console.log('onProgress_', event);
     };
 
-    renderSlider() {
-        let { currentRate } = this.state;
+    onPaused = () => {
+        console.log('onPaused');
+    };
+
+    renderFrontVideo = () => {
+        let { cdnUrl } = this.state.video || {};
+        let { paused, seek, animating } = this.state.frontVideoState || {};
+
         return (
-            <Slider
-                min={0}
-                max={12 * 3600 * 1000}
-                values={[currentRate]}
-                onChange={this.onValueChange}
-                onChangeFinish={this.onChangeFinish}
-            />
-        );
-    }
+            <View style={[styles.video, { backgroundColor: Colors.white }]}>
+                <Text>{cdnUrl}</Text>
 
-    renderControls() {}
-    renderBackgroundVideo = () => {
-        return this.renderVideo();
+                <VLCPlayer
+                    autoplay={false}
+                    ref={ref => (this.frontVideo = ref)}
+                    paused={paused}
+                    seek={seek}
+                    style={styles.video}
+                    source={{ uri: cdnUrl }} //this.state.url
+                    videoAspectRatio={'16:9'}
+                    onProgress={event => this.onProgress(event)}
+                    onEnd={this.onEnded}
+                    onEnded={() => {
+                        console.log('lalala');
+                    }}
+                    onStopped={() => {
+                        console.log('stop');
+                    }}
+                    onPlaying={this.onPlaying}
+                    onBuffering={this.onBuffering}
+                    onPaused={this.onPaused}
+                    progressUpdateInterval={250}
+                    // onError={this._onError}
+                    onOpen={this._onOpen}
+                    onLoadStart={this._onLoadStart}
+                />
+                <ActivityIndicator
+                    color={'red'}
+                    style={{ position: 'absolute' }}
+                    size={'large'}
+                    animating={animating}
+                />
+            </View>
+        );
+    };
+
+    renderBackVideo = () => {
+        let { video } = this.state;
+
+        let { cdnUrl } = this.state.video || {};
+        let { paused, seek, animating } = this.state.frontVideoState || {};
+
+        return (
+            <View style={[styles.video, { backgroundColor: Colors.white }]}>
+                <Text>{cdnUrl}</Text>
+
+                <VLCPlayer
+                    autoplay={false}
+                    ref={ref => (this.frontVideo = ref)}
+                    paused={paused}
+                    seek={seek}
+                    style={styles.video}
+                    source={{ uri: cdnUrl }} //this.state.url
+                    videoAspectRatio={'16:9'}
+                    onProgress={event => this.onProgress(event)}
+                    onEnd={this.onEnded}
+                    onEnded={() => {
+                        console.log('lalala');
+                    }}
+                    onStopped={() => {
+                        console.log('stop');
+                    }}
+                    onPlaying={this.onPlaying}
+                    onBuffering={this.onBuffering}
+                    onPaused={this.onPaused}
+                    progressUpdateInterval={250}
+                    // onError={this._onError}
+                    onOpen={this._onOpen}
+                    onLoadStart={this._onLoadStart}
+                />
+                <ActivityIndicator
+                    color={'red'}
+                    style={{ position: 'absolute' }}
+                    size={'large'}
+                    animating={animating}
+                />
+            </View>
+        );
     };
 
     renderVideo = video => {
-        let { cdnUrl } = video || {};
+        let { cdnUrl, index } = video || {};
         return (
             <View>
-                <View style={[styles.video, { backgroundColor: Colors.black }]}>
-                    <VLCPlayer
-                        autoplay={false}
-                        ref={ref => (this.vlcPlayer = ref)}
-                        paused={this.state.paused}
-                        seek={this.state.seek}
-                        style={styles.video}
-                        source={{ uri: cdnUrl }} //this.state.url
-                        videoAspectRatio={'16:9'}
-                        onProgress={event => this.onProgress(event)}
-                        onEnd={this.onEnded}
-                        // onEnded={this.onEnded}
-                        onStopped={this.onEnded}
-                        onPlaying={this.onPlaying}
-                        onBuffering={this.onBuffering}
-                        onPaused={this.onPaused}
-                        progressUpdateInterval={250}
-                        onError={this._onError}
-                        onOpen={this._onOpen}
-                        onLoadStart={this._onLoadStart}
-                    />
-                    <ActivityIndicator
-                        style={{ position: 'absolute' }}
-                        size={'large'}
-                        animating={this.state.animating}
-                    />
-                </View>
+                {/*{this.renderBackgroundVideo()}*/}
+                {this.renderFrontVideo()}
                 <Button title={this.state.paused ? 'play' : 'pause'} onPress={this.onPausePress} />
-                {this.renderSlider()}
             </View>
         );
     };
@@ -349,15 +309,15 @@ export default class CameraVideos extends Component {
         if (eventList.length > 5) {
             tempEventList = tempEventList.slice(0, 4);
         }
-        // if (typeof cdnUrl === 'string') {
-        //     return (
-        //         <ScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
-        //             {/*{this.renderVideo(video)}*/}
-        //             {this.renderTimeline}
-        //         </ScrollView>
-        //     );
-        // } else {
-        return <View style={{}}>{this.renderTimeline()}</View>;
-        // }
+        if (typeof cdnUrl === 'string') {
+            return (
+                <ScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
+                    {this.renderVideo()}
+                    {this.renderTimeline}
+                </ScrollView>
+            );
+        } else {
+            return <View style={{}}>{this.renderTimeline()}</View>;
+        }
     }
 }

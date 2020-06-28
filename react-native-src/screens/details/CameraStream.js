@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { StyleSheet, View, Text, Switch, Alert, Button, Image } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Colors } from '../../utils/AppConfig';
+import { HOST_URL } from '../../utils/AppConst';
 import _ from 'lodash';
 import { AppRoute } from '../../navigation/app-routes';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -8,15 +9,7 @@ import Orientation from 'react-native-orientation';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 
 export default function CameraStream(props) {
-    const [camera, setCamera] = useState(_.get(props, 'camera', {}));
-
-    const goToMedia = () => {
-        let { navigation } = props;
-        navigation &&
-            navigation.navigate(AppRoute.MEDIA, {
-                cameraId: camera && camera._id,
-            });
-    };
+    const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
 
     const renderAlertDelete = () => {
         return Alert.alert(
@@ -40,7 +33,7 @@ export default function CameraStream(props) {
                             redirect: 'follow',
                         };
 
-                        fetch('http://165.22.98.234/camera/delete', requestOptions)
+                        fetch(HOST_URL + 'camera/delete', requestOptions)
                             .then(response => response.text())
                             .then(result => {
                                 let { navigation } = props;
@@ -57,7 +50,7 @@ export default function CameraStream(props) {
             { cancelable: false }
         );
     };
-    // console.log(camera)
+
     return (
         !!camera && (
             <View style={styles.container}>
@@ -66,7 +59,7 @@ export default function CameraStream(props) {
                     url={camera.rtspUrl}
                     Orientation={Orientation}
                     // ggUrl={'https://clientapp.sgp1.digitaloceanspaces.com/5e9471d6cbeb62504f03bc0b/5ed3e22848d6943ed70ec47f/1591588229691.mp4'}
-                    // showGG={true}
+                    showGG={false}
                     showTitle={true}
                     title={camera.name}
                     showBack={true}

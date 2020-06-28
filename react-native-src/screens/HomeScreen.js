@@ -33,9 +33,9 @@ export default function HomeScreen(props) {
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
-        console.log('getCamera');
         await getUserCameras({ userToken }, callback);
     };
+
     const onPress = camera => () => {
         const { navigation } = props || {};
         navigation &&
@@ -56,34 +56,35 @@ export default function HomeScreen(props) {
     const testThumbnail = require('../assets/test.jpg');
 
     const renderCamera = ({ item, index }) => (
-        <View
-            style={[
-                {
-                    backgroundColor: Colors.light,
-                    marginBottom: 12,
-                    borderRadius: 12,
-                    padding: 12,
-                    shadowColor: Colors.grey,
-                    shadowOffset: { width: 2, height: 2, right: 2 },
-                    shadowOpacity: 0.2,
-                },
-            ]}
-        >
-            <Text style={styles.cameraName}>{String(item.name)}</Text>
+        <View style={styles.card}>
             <TouchableOpacity key={index} onPress={onPress(item)}>
                 <Image
                     source={testThumbnail}
                     resizeMode={'cover'}
                     style={[
                         {
-                            height: CARD_HEIGHT - 48,
-                            width: CARD_WIDTH - 24,
-                            borderRadius: 12,
+                            height: CARD_HEIGHT,
+                            width: CARD_WIDTH,
                             alignSelf: 'center',
+                            overflow: 'hidden',
                         },
                     ]}
                 />
-                <Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />
+                <View style={styles.nameRow}>
+                    <Image
+                        source={require('../assets/cctv.png')}
+                        style={{ width: 18, height: 18 }}
+                    />
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                        <Text style={styles.cameraName}>{String(item.name)}</Text>
+                        <Text style={{ fontSize: 10 }}>Live</Text>
+                    </View>
+                    <Image
+                        source={require('../assets/video.png')}
+                        style={{ width: 30, height: 30 }}
+                    />
+                </View>
+                {/*<Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />*/}
             </TouchableOpacity>
         </View>
     );
@@ -102,8 +103,6 @@ export default function HomeScreen(props) {
                 color={Colors.grey}
                 onPress={onPressAdd}
                 size={50}
-                // raised={true}
-                // style={{ position: 'absolute', top: 100, bottom: 0, elevation: 99 }}
             />
             {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
             {/*</Icon>*/}
@@ -112,7 +111,7 @@ export default function HomeScreen(props) {
 }
 
 const CARD_WIDTH = WIDTH - 24;
-const CARD_HEIGHT = (CARD_WIDTH / 7) * 4;
+const CARD_HEIGHT = (CARD_WIDTH / 16) * 9;
 const ICON_SIZE = 42;
 const styles = StyleSheet.create({
     backgroundImg: {
@@ -128,12 +127,27 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
         width: WIDTH,
     },
-    cameraName: {
-        fontSize: 14,
-        color: Colors.text,
+    nameRow: {
+        alignContent: 'center',
         flex: 1,
-        // marginTop: 15,
-        marginBottom: 10,
+        alignItems: 'center',
+        flexDirection: 'row',
+        padding: 12,
+    },
+    cameraName: {
+        fontSize: 16,
+        color: Colors.violet,
+        flex: 1,
+        // margin: 12,
+        fontWeight: 'bold',
+    },
+    card: {
+        backgroundColor: Colors.white,
+        marginBottom: 12,
+        borderRadius: 12,
+        shadowColor: Colors.grey,
+        shadowOffset: { width: 2, height: 2, right: 2 },
+        shadowOpacity: 0.2,
     },
     cardView: {
         borderRadius: 16,

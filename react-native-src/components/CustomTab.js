@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     activeTab: {
         borderTopLeftRadius: 16,
         borderTopRightRadius: 16,
-        backgroundColor: Colors.pigeon_post,
+        backgroundColor: Colors.white,
     },
 
     inactiveTab: {

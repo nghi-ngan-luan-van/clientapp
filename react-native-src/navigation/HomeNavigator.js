@@ -71,7 +71,6 @@ export default class HomeNavigator extends React.PureComponent {
                 headerMode="float"
             >
                 <Stack.Screen
-                    headerMode={'none'}
                     name={AppRoute.HOME}
                     component={HomeScreen}
                     options={({ route }) => ({
@@ -92,7 +91,18 @@ export default class HomeNavigator extends React.PureComponent {
                     initialParams={this.props.route && this.props.route.params}
                 />
                 <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
-                <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={CameraTabs} />
+                <Stack.Screen
+                    name={AppRoute.CAMERA_DETAIL}
+                    component={CameraTabs}
+                    options={({ route }) => ({
+                        // header: () => {
+                        //     return ( <View/>);
+                        // },
+                        // headerShown:false,
+                        // headerTitle: 'Hello',
+                        headerStyle: { backgroundColor: Colors.screen },
+                    })}
+                />
                 <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
                 <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />

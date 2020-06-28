@@ -1,6 +1,6 @@
-import React from "react";
-import {ActivityIndicator, View, StyleSheet} from "react-native";
-import {VLCPlayer} from "react-native-vlc-media-player";
+import React from 'react';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { VLCPlayer } from 'react-native-vlc-media-player';
 
 const styles = StyleSheet.create({
     loading: {
@@ -13,8 +13,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-})
-
+});
 
 export default class VideoPlayer extends React.Component {
     constructor(props) {
@@ -31,81 +30,58 @@ export default class VideoPlayer extends React.Component {
             volume: 200,
             muted: false,
             isError: false,
-            next:true,
+            next: true,
             isLoading: true,
-
         };
         this.touchTime = 0;
         this.viewingTime = 0;
         this.initSuccess = false;
     }
 
-    _onError = e => {
+    _onError = e => {};
 
-    };
+    onProgress(event) {}
 
-    onProgress(event) {
+    onPausePress = () => {};
 
-    }
-
-
-
-    onPausePress=()=>{
-
-    }
-
-
-
-    onEnded = () =>{
-
-    }
+    onEnded = () => {};
     onStopped = () => {
-        console.log('onStopped')
-    }
+        console.log('onStopped');
+    };
     onPlaying = () => {
-        console.log('onPlaying')
-    }
+        console.log('onPlaying');
+    };
     onError = () => {
-        console.log('onError')
-    }
+        console.log('onError');
+    };
     _onLoadStart = e => {
         console.log('_onLoadStart');
         // this.setState({
         //     paused:!this.state.paused
         // })
+    };
 
+    _onOpen = () => {
+        this.setState({ paused: false });
+    };
 
-
-    }
-
-    _onOpen=()=>{
-        this.setState({paused:false})
-    }
-
-    _renderLoading = ()=>{
+    _renderLoading = () => {
         // let { showAd, isEndAd, isAd, pauseByAutoplay} = this.props;
         // let { showLoading, showAdLoading } = this.state;
         // if(!pauseByAutoplay && showLoading){
-            return(
-                <View style={styles.loading}>
-                    <ActivityIndicator size={'large'} animating={true} color="#fff" />
-                </View>
-            )
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator size={'large'} animating={true} color="#fff" />
+            </View>
+        );
         // }
         // return null;
-    }
-
+    };
 
     render() {
-        let {
-            onEnd,
-            style,
-            isAd,
-            url,
+        let { onEnd, style, isAd, url } = this.props;
 
-        } = this.props;
-
-        let { width, height} = this.state;
+        let { width, height } = this.state;
 
         let source = {};
         if (url) {
@@ -116,20 +92,19 @@ export default class VideoPlayer extends React.Component {
             }
         }
 
-
         return (
-            <View style={[{flex:1},style]}>
-                <View style={{flex:1}} onLayout={this.onLayout}>
+            <View style={[{ flex: 1 }, style]}>
+                <View style={{ flex: 1 }} onLayout={this.onLayout}>
                     <VLCPlayer
                         autoplay={false}
                         // key={index}
-                        ref={ref => (this.vlcRefs.push(ref))}
+                        ref={ref => (this.vlcRef = ref)}
                         paused={this.state.paused}
                         //seek={this.state.seek}
                         style={styles.video}
-                        source={{uri: url}}//this.state.url
+                        source={{ uri: url }} //this.state.url
                         videoAspectRatio={'16:9'}
-                        onProgress={(event)=>this.onProgress(event)}
+                        onProgress={event => this.onProgress(event)}
                         onEnd={this.onEnded}
                         // onEnded={this.onEnded}
                         onStopped={this.onEnded}
@@ -140,12 +115,10 @@ export default class VideoPlayer extends React.Component {
                         onError={this._onError}
                         onOpen={this._onOpen}
                         onLoadStart={this._onLoadStart}
-
                     />
                 </View>
                 {this._renderLoading()}
             </View>
         );
     }
-
 }

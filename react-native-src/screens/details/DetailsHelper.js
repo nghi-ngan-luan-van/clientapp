@@ -29,9 +29,9 @@ export const formatList = listVideo => {
     }
     return eventVideoArray;
 };
-export const countDateEvents = eventsList => {};
 export const filterVideo = listVideo => {
     let eventVideoArray = [];
+
     if (Array.isArray(listVideo) && listVideo.length > 0) {
         for (let i = 0; i < listVideo.length; i++) {
             let { cdnUrl } = listVideo[i];

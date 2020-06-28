@@ -13,9 +13,8 @@ import {
 } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import EditCamera from '../screens/editcamera';
-import { getMovingEvents } from '../utils/ApiUtils';
+import { getBackupVideo, getMovingEvents } from '../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
-import data from '../utils/sample';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';
 const Drawer = createDrawerNavigator();
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     containerTab: {
         flex: 1,
         // marginTop: 18,
-        backgroundColor: Colors.pigeon_post,
+        backgroundColor: Colors.white,
         // border
     },
 });
@@ -98,16 +97,16 @@ const CameraTabs = props => {
         let { camera } = params;
         const getVideo = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
-            getMovingEvents({ userToken, camera }, callback);
+            await getBackupVideo({ userToken, camera }, callback);
         };
 
         getVideo(res => {
             console.log('getVideo_type', typeof res);
+            console.log('getVideo____________', res);
             if (Array.isArray(res)) {
                 setEvents(res);
-                console.log('getVideo', events);
             }
-        }).then();
+        }).then(console.log('getVideo_navigation', events));
     }, [navigation, params, props]);
 
     const renderTabBar = props => () => {

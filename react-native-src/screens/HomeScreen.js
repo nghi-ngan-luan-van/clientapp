@@ -14,14 +14,20 @@ import { AppRoute } from '../navigation/app-routes';
 import { Colors } from '../utils/AppConfig';
 import { getUserCameras } from '../utils/ApiUtils';
 import { Icon } from 'react-native-elements';
-
 const WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen(props) {
     const [cameras, setCameras] = useState(
         props.route && props.route.params && props.route.params.result
     );
+    const [reload, setReload] = useState( props.route && props.route.params && props.route.params.reload)
+
     useEffect(() => {
+        console.log("reload",reload)
+
+        // if (props.route.params.reload) {
+        //     reloadPage()
+        // }
         if (!Array.isArray(cameras) || cameras.length === 0) {
             getCameras(response => {
                 if (response && response.result) {
@@ -30,6 +36,8 @@ export default function HomeScreen(props) {
             });
         }
     }, [cameras]);
+    console.log("cameras",cameras,)
+    const reloadPage =()=> window.location.reload.bind(window.location);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
@@ -54,12 +62,14 @@ export default function HomeScreen(props) {
     };
 
     const testThumbnail = require('../assets/test.jpg');
+    const renderCamera = ({ item, index }) => {
+        const thumnail ={ uri: item.thumbnail};
 
-    const renderCamera = ({ item, index }) => (
+        return(
         <View style={styles.card}>
             <TouchableOpacity key={index} onPress={onPress(item)}>
                 <Image
-                    source={testThumbnail}
+                    source={thumnail.uri? thumnail : testThumbnail}
                     resizeMode={'cover'}
                     style={[
                         {
@@ -87,10 +97,10 @@ export default function HomeScreen(props) {
                 {/*<Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />*/}
             </TouchableOpacity>
         </View>
-    );
-
+    )};
     return (
         <View style={styles.container}>
+        
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={(item, index) => 'item' + index}

@@ -85,3 +85,18 @@ export const getBackupVideo = (params, callback) => {
 
     get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
 };
+
+// export const testConnectionCamera = (params, callback) => {
+//     let { rtspUrl = {}, userToken } = params;
+//     let data = {
+//         rtspUrl: rtspUrl,
+//     };
+//     let  headers = {
+//             Authorization: `Bearer ${userToken}`,
+//         }
+//     try {
+//         post(HOST_URL + 'camera/testconnection', { data: data },{headers}, callback);
+//     } catch (e) {
+//         console.warn('[err] ApiUtils test connection', e);
+//     }
+// };

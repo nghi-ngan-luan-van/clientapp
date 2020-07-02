@@ -8,8 +8,9 @@ export default class CalendarPicker extends Component {
 
         this.state = {
             items: {},
+            data: this.props.data,
         };
-        this.data = this.props.data;
+        console.log('asdfghjk', this.props.data);
         this.markedDates = {
             // '2017-05-08': { textColor: '#43515c' },
             // '2017-05-09': { textColor: '#43515c' },
@@ -22,21 +23,75 @@ export default class CalendarPicker extends Component {
         };
         // this.loadItems = this.props.data;
     }
-
-    componentDidMount = () => {
-        this.data = this.formatData(this.data);
+    getDerivedStateFromProps = (prevState, nextProps) => {
+        if (prevState.data !== nextProps.data) {
+            return {
+                data: nextProps.data,
+            };
+        }
     };
 
-    formatData = data => {
-        if (!data) {
-            return data;
-        } else {
-            let newData = [];
-            data.map((item, index) => {
-                let { timeStart } = item;
-            });
-            return newData;
-        }
+    componentDidMount = () => {
+        this.groupTime;
+    };
+
+    // loadItems = day => {
+    //     setTimeout(() => {
+    //         // for (let i = -15; i < 85; i++) {
+    //         const time = day.timestamp;
+    //         const strTime = this.timeToString(time);
+    //
+    //         if (!this.state.items[strTime]) {
+    //             this.state.items[strTime] = [];
+    //             const numItems = 2;
+    //             // const numItems = Math.floor(Math.random() * 3 + 1);
+    //             for (let j = 0; j < numItems; j++) {
+    //                 this.state.items[strTime].push({
+    //                     name: 'Item for ' + strTime + ' #' + j,
+    //                     height: Math.max(50, Math.floor(Math.random() * 150)),
+    //                 });
+    //             }
+    //         }
+    //         // }
+    //         const newItems = {};
+    //         Object.keys(this.state.items).forEach(key => {
+    //             newItems[key] = this.state.items[key];
+    //         });
+    //         this.setState({
+    //             items: newItems,
+    //         });
+    //     }, 1000);
+    // };
+
+    groupTime = () => {
+        let listVideo = this.state.data;
+        console.log('listvideo______', listVideo);
+        let eventVideoArray = [];
+        let { items } = this.state;
+        setTimeout(() => {
+            if (Array.isArray(listVideo) && listVideo.length > 0) {
+                for (let i = 0; i < listVideo.length; i++) {
+                    let { timeStart, timeEnd, cdnUrl } = listVideo[i];
+                    if (cdnUrl !== null) {
+                        //format data: [{date: '...', data:[{...}]}]
+                        const strTime = this.timeToString(timeStart);
+
+                        if (!items[strTime]) {
+                            items[strTime] = [];
+                            items[strTime].push(listVideo[i]);
+                        }
+                        console.log(items);
+                        const newItems = {};
+                        Object.keys(items).forEach(key => {
+                            newItems[key] = items[key];
+                        });
+                        this.setState({
+                            items: newItems,
+                        });
+                    }
+                }
+            }
+        }, 1000);
     };
 
     render() {
@@ -52,7 +107,7 @@ export default class CalendarPicker extends Component {
                 onDayChange={day => {
                     console.log('day changed');
                 }}
-                // selected={'2017-05-16'}
+                selected={'2020-06-10'}
                 renderItem={this.renderItem}
                 renderEmptyDate={this.renderEmptyDate}
                 rowHasChanged={this.rowHasChanged}
@@ -118,11 +173,12 @@ export default class CalendarPicker extends Component {
     };
 
     renderItem = item => {
+        console.log('item', item);
         return (
             <TouchableOpacity
                 testID={'ITEM'}
-                style={[styles.item, { height: item.height }]}
-                onPress={() => Alert.alert(item.name)}
+                style={[styles.item, { height: 50 }]}
+                onPress={() => Alert.alert(item.cdnUrl)}
             >
                 <Text>{item.name}</Text>
             </TouchableOpacity>

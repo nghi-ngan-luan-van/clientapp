@@ -67,6 +67,7 @@ export default class CameraVideos extends Component {
         let userToken = await AsyncStorage.getItem('userToken');
         await getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
+                // console.log('eventlist', respond);
                 this.setState({ eventList: respond });
             }
         });
@@ -275,6 +276,7 @@ export default class CameraVideos extends Component {
         let { video, eventList } = this.state;
         let tempEventList = eventList;
         let { cdnUrl } = video || {};
+        console.log('eventlist', eventList);
         if (eventList.length > 5) {
             tempEventList = tempEventList.slice(0, 4);
         }
@@ -284,7 +286,9 @@ export default class CameraVideos extends Component {
                     {this.renderVideo()}
 
                     <Text>Calendar</Text>
-                    <CalendarPicker data={eventList} callback={this.getDate} />
+                    {!!(eventList.length > 0) && (
+                        <CalendarPicker data={eventList} callback={this.getDate} />
+                    )}
                 </View>
             );
         } else {

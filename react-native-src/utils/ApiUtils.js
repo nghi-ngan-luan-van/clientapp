@@ -44,6 +44,7 @@ export const signIn = (params, callback) => {
         post(HOST_URL + 'auth/login', { data: data }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils signIn', e);
+        callback();
     }
 };
 
@@ -62,14 +63,14 @@ export const getMovingEvents = (params, callback) => {
     let { camera = {}, userToken } = params;
     let { _id } = camera;
     let message = {
-        data: { _id: _id },
+        // data: { _id: _id },
         headers: {
             Authorization: `Bearer ${userToken}`,
             // timeout:2000,
         },
     };
 
-    post(HOST_URL + 'camera/savedvideo', message, callback);
+    get(HOST_URL + 'camera/savedvideo/' + _id, message, callback);
 };
 
 export const getBackupVideo = (params, callback) => {

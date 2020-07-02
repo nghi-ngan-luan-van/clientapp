@@ -94,15 +94,13 @@ const CameraTabs = props => {
         const onPressSetting = () => {
             navigation && navigation.dispatch(DrawerActions.toggleDrawer());
         };
-        let { camera } = params;
+        const { camera } = params;
         const getVideo = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
             await getBackupVideo({ userToken, camera }, callback);
         };
 
         getVideo(res => {
-            console.log('getVideo_type', typeof res);
-            console.log('getVideo____________', res);
             if (Array.isArray(res)) {
                 setEvents(res);
             }
@@ -122,12 +120,12 @@ const CameraTabs = props => {
                             activeTab === i ? styles.activeTab : styles.inactiveTab,
                         ]}
                     >
-                        <Text.Title
+                        <Text
                             font={{ type: activeTab === i ? 'bold' : 'regular' }}
                             style={{ color: activeTab === i ? '#222222' : '#8d919d' }}
                         >
                             {tab}
-                        </Text.Title>
+                        </Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -149,7 +147,7 @@ const CameraTabs = props => {
             }}
         >
             <CameraStream tabLabel="Camera trực tiếp" {...params} />
-            <CameraVideos tabLabel="Thư viện " events={events} />
+            <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} />
         </ScrollableTabView>
     );
 

@@ -9,7 +9,10 @@ import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 import Slider from '../../components/slider/Slider';
 import Timeline from '../../components/TimeLine/Timeline';
 import moment from 'moment';
-
+import CalendarPicker from '../../components/CalendarPicker';
+import AgendaView from 'react-native-calendars/src/agenda';
+import { getMovingEvents } from '../../utils/ApiUtils';
+import AsyncStorage from '@react-native-community/async-storage';
 const styles = StyleSheet.create({
     video: {
         justifyContent: 'center',
@@ -31,14 +34,13 @@ export default class CameraVideos extends Component {
                 seek: 0,
                 isLoading: true,
                 isError: false,
-                paused: false,
                 animating: true,
             },
-
-            backVideo: {
+            backVideoState: {
                 seek: 0,
                 isLoading: true,
                 isError: false,
+                animating: true,
             },
             seek: 0,
 
@@ -49,7 +51,7 @@ export default class CameraVideos extends Component {
             currentTime: 0.0,
             currentRate: 0.0,
             totalTime: 0.0,
-            paused: false,
+            // paused: false,
             animating: true,
             currentDay: '',
         };
@@ -59,8 +61,16 @@ export default class CameraVideos extends Component {
         this.records = [];
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         let { events } = this.props;
+        let camera = this.props.camera;
+        let userToken = await AsyncStorage.getItem('userToken');
+        await getMovingEvents({ userToken, camera }, respond => {
+            if (Array.isArray(respond)) {
+                this.setState({ eventList: respond });
+            }
+        });
+
         let filtered = filterVideo(this.state.backupList);
         this.setState(
             {
@@ -107,8 +117,10 @@ export default class CameraVideos extends Component {
         });
         this.records = arr;
         this.groupsRecord = groupArr;
-    }
-
+    };
+    getDate = day => {
+        console.log(day);
+    };
     _onError = e => {
         // [bavv add end]
         console.log('_onError');
@@ -129,16 +141,28 @@ export default class CameraVideos extends Component {
 
     onEnded = () => {
         console.log('onEnded');
-        //
-        // let { video, backupList } = this.state;
-        //
-        // this.bufferTime = this.bufferTime + this.tmpDuration;
-        // if (video.index < backupList.length - 1) {
-        //     this.setState({
-        //         video: this.state.backupList[video.index + 1],
-        //         animating: true,
-        //     });
-        // }
+        let { video, backupList } = this.state;
+
+        let { index = -1 } = video || {};
+        if (index + 1 < backupList.length) {
+            let nextVideo = backupList[index + 1];
+
+            this.setState(prevState => ({
+                video: nextVideo,
+                frontVideoState: {
+                    ...prevState.frontVideoState, // keep all other key-value pairs
+                    animating: true,
+                },
+            }));
+        } else {
+            this.setState(prevState => ({
+                frontVideoState: {
+                    // object that we want to update
+                    ...prevState.frontVideoState, // keep all other key-value pairs
+                    animating: false,
+                },
+            }));
+        }
     };
     onStopped = () => {
         console.log('onStopped');
@@ -147,15 +171,15 @@ export default class CameraVideos extends Component {
     onBuffering = e => {
         console.log('_onBuffering', e);
         let { paused, animating } = this.state.frontVideoState;
-        if (!animating) {
-            this.setState(prevState => ({
-                frontVideoState: {
-                    // object that we want to update
-                    ...prevState.frontVideoState, // keep all other key-value pairs
-                    paused: !paused,
-                },
-            }));
-        }
+        // if (!animating) {
+        //     this.setState(prevState => ({
+        //         frontVideoState: {
+        //             // object that we want to update
+        //             ...prevState.frontVideoState, // keep all other key-value pairs
+        //             paused: !paused,
+        //         },
+        //     }));
+        // }
     };
     onPlaying = () => {
         console.log('onPlaying');
@@ -166,19 +190,6 @@ export default class CameraVideos extends Component {
                 animating: false,
             },
         }));
-        // this.frontVideo &&
-        //     typeof this.frontVideo.play === 'function' &&
-        //     this.frontVideo.play(false);
-
-        // let { paused } = this.state.frontVideoState;
-        // this.setState(prevState => ({
-        //     frontVideoState: {
-        //         // object that we want to update
-        //         ...prevState.frontVideoState, // keep all other key-value pairs
-        //         paused: !paused,
-        //         animating: false, // update the value of specific key
-        //     },
-        // }));
     };
     onError = () => {
         console.log('onError');
@@ -197,7 +208,7 @@ export default class CameraVideos extends Component {
     };
 
     onPaused = () => {
-        console.log('onPaused');
+        console.log('_onPaused');
     };
 
     renderFrontVideo = () => {
@@ -206,23 +217,22 @@ export default class CameraVideos extends Component {
 
         return (
             <View style={[styles.video, { backgroundColor: Colors.white }]}>
-                <Text>{cdnUrl}</Text>
-
                 <VLCPlayer
                     autoplay={false}
                     ref={ref => (this.frontVideo = ref)}
-                    paused={paused}
+                    // paused={paused}
                     seek={seek}
                     style={styles.video}
                     source={{ uri: cdnUrl }} //this.state.url
                     videoAspectRatio={'16:9'}
-                    onProgress={event => this.onProgress(event)}
+                    // onProgress={event => this.onProgress(event)}
                     onEnd={this.onEnded}
                     onEnded={() => {
                         console.log('lalala');
                     }}
                     onStopped={() => {
                         console.log('stop');
+                        // this.frontVideo.resume();
                     }}
                     onPlaying={this.onPlaying}
                     onBuffering={this.onBuffering}
@@ -232,56 +242,21 @@ export default class CameraVideos extends Component {
                     onOpen={this._onOpen}
                     onLoadStart={this._onLoadStart}
                 />
-                <ActivityIndicator
-                    color={'red'}
-                    style={{ position: 'absolute' }}
-                    size={'large'}
-                    animating={animating}
-                />
-            </View>
-        );
-    };
-
-    renderBackVideo = () => {
-        let { video } = this.state;
-
-        let { cdnUrl } = this.state.video || {};
-        let { paused, seek, animating } = this.state.frontVideoState || {};
-
-        return (
-            <View style={[styles.video, { backgroundColor: Colors.white }]}>
-                <Text>{cdnUrl}</Text>
-
-                <VLCPlayer
-                    autoplay={false}
-                    ref={ref => (this.frontVideo = ref)}
-                    paused={paused}
-                    seek={seek}
-                    style={styles.video}
-                    source={{ uri: cdnUrl }} //this.state.url
-                    videoAspectRatio={'16:9'}
-                    onProgress={event => this.onProgress(event)}
-                    onEnd={this.onEnded}
-                    onEnded={() => {
-                        console.log('lalala');
+                <Text
+                    style={{
+                        // position: 'absolute',
+                        backgroundColor: '#fff',
+                        alignSelf: 'flex-start',
                     }}
-                    onStopped={() => {
-                        console.log('stop');
-                    }}
-                    onPlaying={this.onPlaying}
-                    onBuffering={this.onBuffering}
-                    onPaused={this.onPaused}
-                    progressUpdateInterval={250}
-                    // onError={this._onError}
-                    onOpen={this._onOpen}
-                    onLoadStart={this._onLoadStart}
-                />
-                <ActivityIndicator
-                    color={'red'}
-                    style={{ position: 'absolute' }}
-                    size={'large'}
-                    animating={animating}
-                />
+                >
+                    {cdnUrl}
+                </Text>
+                {/*<ActivityIndicator*/}
+                {/*    color={'red'}*/}
+                {/*    style={{ position: 'absolute' }}*/}
+                {/*    size={'large'}*/}
+                {/*    animating={animating}*/}
+                {/*/>*/}
             </View>
         );
     };
@@ -290,16 +265,10 @@ export default class CameraVideos extends Component {
         let { cdnUrl, index } = video || {};
         return (
             <View>
-                {/*{this.renderBackgroundVideo()}*/}
                 {this.renderFrontVideo()}
                 <Button title={this.state.paused ? 'play' : 'pause'} onPress={this.onPausePress} />
             </View>
         );
-    };
-    renderTimeline = () => {
-        // console.log('recordrecord', data.record);
-
-        return <Timeline data={this.groupsRecord} />;
     };
 
     render() {
@@ -311,13 +280,15 @@ export default class CameraVideos extends Component {
         }
         if (typeof cdnUrl === 'string') {
             return (
-                <ScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
+                <View style={{ paddingHorizontal: 12, flex: 1 }}>
                     {this.renderVideo()}
-                    {this.renderTimeline}
-                </ScrollView>
+
+                    <Text>Calendar</Text>
+                    <CalendarPicker data={eventList} callback={this.getDate} />
+                </View>
             );
         } else {
-            return <View style={{}}>{this.renderTimeline()}</View>;
+            return <View style={{}} />;
         }
     }
 }

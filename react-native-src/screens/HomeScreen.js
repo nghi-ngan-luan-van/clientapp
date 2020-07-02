@@ -20,11 +20,10 @@ export default function HomeScreen(props) {
     const [cameras, setCameras] = useState(
         props.route && props.route.params && props.route.params.result
     );
-    const [reload, setReload] = useState( props.route && props.route.params && props.route.params.reload)
+    const [refresh, setRefresh] = useState(false);
+    const [userToken, setuserToken] = useState('');
 
     useEffect(() => {
-        console.log("reload",reload)
-
         // if (props.route.params.reload) {
         //     reloadPage()
         // }
@@ -36,11 +35,12 @@ export default function HomeScreen(props) {
             });
         }
     }, [cameras]);
-    console.log("cameras",cameras,)
-    const reloadPage =()=> window.location.reload.bind(window.location);
+    console.log('cameras', cameras);
+    // const reloadPage =()=> window.location.reload.bind(window.location);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
+        setuserToken(userToken);
         await getUserCameras({ userToken }, callback);
     };
 
@@ -63,49 +63,59 @@ export default function HomeScreen(props) {
 
     const testThumbnail = require('../assets/test.jpg');
     const renderCamera = ({ item, index }) => {
-        const thumnail ={ uri: item.thumbnail};
+        const thumnail = { uri: item.thumbnail };
 
-        return(
-        <View style={styles.card}>
-            <TouchableOpacity key={index} onPress={onPress(item)}>
-                <Image
-                    source={thumnail.uri? thumnail : testThumbnail}
-                    resizeMode={'cover'}
-                    style={[
-                        {
-                            height: CARD_HEIGHT,
-                            width: CARD_WIDTH,
-                            alignSelf: 'center',
-                            overflow: 'hidden',
-                        },
-                    ]}
-                />
-                <View style={styles.nameRow}>
+        return (
+            <View style={styles.card}>
+                <TouchableOpacity key={index} onPress={onPress(item)}>
                     <Image
-                        source={require('../assets/cctv.png')}
-                        style={{ width: 18, height: 18 }}
+                        source={thumnail.uri ? thumnail : testThumbnail}
+                        resizeMode={'cover'}
+                        style={[
+                            {
+                                height: CARD_HEIGHT,
+                                width: CARD_WIDTH,
+                                alignSelf: 'center',
+                                overflow: 'hidden',
+                            },
+                        ]}
                     />
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                        <Text style={styles.cameraName}>{String(item.name)}</Text>
-                        <Text style={{ fontSize: 10 }}>Live</Text>
+                    <View style={styles.nameRow}>
+                        <Image
+                            source={require('../assets/cctv.png')}
+                            style={{ width: 18, height: 18 }}
+                        />
+                        <View style={{ flex: 1, marginLeft: 10 }}>
+                            <Text style={styles.cameraName}>{String(item.name)}</Text>
+                            <Text style={{ fontSize: 10 }}>Live</Text>
+                        </View>
+                        <Image
+                            source={require('../assets/video.png')}
+                            style={{ width: 30, height: 30 }}
+                        />
                     </View>
-                    <Image
-                        source={require('../assets/video.png')}
-                        style={{ width: 30, height: 30 }}
-                    />
-                </View>
-                {/*<Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />*/}
-            </TouchableOpacity>
-        </View>
-    )};
+                    {/*<Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />*/}
+                </TouchableOpacity>
+            </View>
+        );
+    };
     return (
         <View style={styles.container}>
-        
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={(item, index) => 'item' + index}
                 data={cameras}
                 renderItem={renderCamera}
+                refreshing={refresh}
+                onRefresh={async () => {
+                    setRefresh(true);
+                    await getUserCameras({ userToken }, response => {
+                        if (response && response.result) {
+                            setCameras(response.result);
+                        }
+                        setRefresh(false);
+                    });
+                }}
             />
             <Icon
                 type={'font-awesome'}

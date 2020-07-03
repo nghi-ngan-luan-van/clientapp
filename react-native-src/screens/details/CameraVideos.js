@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     video: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 300,
+        height: 200,
         width: '100%',
     },
 });
@@ -127,6 +127,9 @@ export default class CameraVideos extends Component {
         console.log('_onError');
     };
 
+    setVideo =(obj) =>{
+        this.setState({video:obj})
+    }
     onPausePress = () => {
         let { paused } = this.state.frontVideoState;
         console.log('this_pause', paused);
@@ -273,10 +276,11 @@ export default class CameraVideos extends Component {
     };
 
     render() {
+        console.log('this.state',this.state)
         let { video, eventList } = this.state;
         let tempEventList = eventList;
         let { cdnUrl } = video || {};
-        console.log('eventlist', eventList);
+        // console.log('eventlist', eventList);
         if (eventList.length > 5) {
             tempEventList = tempEventList.slice(0, 4);
         }
@@ -284,10 +288,8 @@ export default class CameraVideos extends Component {
             return (
                 <View style={{ paddingHorizontal: 12, flex: 1 }}>
                     {this.renderVideo()}
-
-                    <Text>Calendar</Text>
                     {!!(eventList.length > 0) && (
-                        <CalendarPicker data={eventList} callback={this.getDate} />
+                        <CalendarPicker setVideo={this.setVideo} data={eventList} callback={this.getDate} />
                     )}
                 </View>
             );

@@ -24,9 +24,7 @@ export default function HomeScreen(props) {
     const [userToken, setuserToken] = useState('');
 
     useEffect(() => {
-        // if (props.route.params.reload) {
-        //     reloadPage()
-        // }
+      
         if (!Array.isArray(cameras) || cameras.length === 0) {
             getCameras(response => {
                 if (response && response.result) {
@@ -36,7 +34,6 @@ export default function HomeScreen(props) {
         }
     }, [cameras]);
     console.log('cameras', cameras);
-    // const reloadPage =()=> window.location.reload.bind(window.location);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');

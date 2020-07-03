@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import AgendaView from 'react-native-calendars/src/agenda';
+import moment from 'moment';
+import VideoPlayer from './VLCPlayer/VideoPlayer';
+import { VLCPlayer } from 'react-native-vlc-media-player';
 
 export default class CalendarPicker extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            items: {},
+            items:{ },
             data: this.props.data,
         };
         console.log('asdfghjk', this.props.data);
+        this.newData={};
         this.markedDates = {
             // '2017-05-08': { textColor: '#43515c' },
             // '2017-05-09': { textColor: '#43515c' },
@@ -19,81 +23,81 @@ export default class CalendarPicker extends Component {
             // '2017-05-22': { endingDay: true, color: 'gray' },
             // '2017-05-24': { startingDay: true, color: 'gray' },
             // '2017-05-25': { color: 'gray' },
-            '2020-07-02': { startingDay: true, endingDay: true, color: 'pink' },
+            // '2020-07-02': { startingDay: true, endingDay: true, color: 'pink' },
         };
         // this.loadItems = this.props.data;
     }
-    getDerivedStateFromProps = (prevState, nextProps) => {
-        if (prevState.data !== nextProps.data) {
-            return {
-                data: nextProps.data,
-            };
-        }
-    };
-
     componentDidMount = () => {
-        this.groupTime;
+    };
+    componentDidUpdate=()=>{
+        console.log('componentDidUpdate')
+    }
+    groupTime = () => {
+        this.state.data.forEach((value,index,arr)=>{
+            const date = moment(Number(value.timeStart)).startOf('day');
+            const strDate=this.timeToString(date)
+                if (!this.newData[strDate])
+                {
+                    this.newData[strDate]=[]
+                }
+                this.newData[strDate].push(value)
+        })
+       console.log('newData',this.newData)
+      
     };
 
-    // loadItems = day => {
-    //     setTimeout(() => {
-    //         // for (let i = -15; i < 85; i++) {
-    //         const time = day.timestamp;
-    //         const strTime = this.timeToString(time);
-    //
-    //         if (!this.state.items[strTime]) {
-    //             this.state.items[strTime] = [];
-    //             const numItems = 2;
-    //             // const numItems = Math.floor(Math.random() * 3 + 1);
-    //             for (let j = 0; j < numItems; j++) {
-    //                 this.state.items[strTime].push({
-    //                     name: 'Item for ' + strTime + ' #' + j,
-    //                     height: Math.max(50, Math.floor(Math.random() * 150)),
-    //                 });
-    //             }
-    //         }
-    //         // }
-    //         const newItems = {};
-    //         Object.keys(this.state.items).forEach(key => {
-    //             newItems[key] = this.state.items[key];
-    //         });
-    //         this.setState({
-    //             items: newItems,
-    //         });
-    //     }, 1000);
-    // };
-
-    groupTime = () => {
-        let listVideo = this.state.data;
-        console.log('listvideo______', listVideo);
-        let eventVideoArray = [];
-        let { items } = this.state;
+    loadItems = day => {
         setTimeout(() => {
-            if (Array.isArray(listVideo) && listVideo.length > 0) {
-                for (let i = 0; i < listVideo.length; i++) {
-                    let { timeStart, timeEnd, cdnUrl } = listVideo[i];
-                    if (cdnUrl !== null) {
-                        //format data: [{date: '...', data:[{...}]}]
-                        const strTime = this.timeToString(timeStart);
-
-                        if (!items[strTime]) {
-                            items[strTime] = [];
-                            items[strTime].push(listVideo[i]);
-                        }
-                        console.log(items);
-                        const newItems = {};
-                        Object.keys(items).forEach(key => {
-                            newItems[key] = items[key];
-                        });
-                        this.setState({
-                            items: newItems,
-                        });
-                    }
-                }
+            const time = day.timestamp;
+            const strTime = this.timeToString(time);
+            console.log('time',time,'strTime',strTime)
+            this.newData={}
+            this.groupTime()
+            if (!this.newData[strTime]){
+                this.newData[strTime]=[]
             }
+            console.log('this.newData',this.newData)
+            let newItems=this.state.items
+            newItems[strTime]=this.newData[strTime]
+            this.setState({items:newItems})
         }, 1000);
     };
 
+    renderVideoByItem =(item) =>{
+        console.log('renderVideoByItem')
+        // hien thi video
+    }
+    renderItem = item => {
+        console.log('item', item);
+        const d = new Date(parseInt(item.timeStart));
+        const n = d.toLocaleTimeString();
+        return (
+            <TouchableOpacity
+                testID={'ITEM'}
+                style={[styles.item, { height: 50 }]}
+                onPress={() => this.renderVideoByItem(item)}
+            >
+                <Text>{item.filePath? `Video: ${item.filePath}`: `Chuyển động lúc ${n}`}</Text>
+            </TouchableOpacity>
+        );
+    };
+
+    renderEmptyDate = () => {
+        return (
+            <View style={styles.emptyDate}>
+                <Text>Không có video !</Text>
+            </View>
+        );
+    };
+
+    rowHasChanged = (r1, r2) => {
+        return r1.name !== r2.name;
+    };
+
+    timeToString = time => {
+        const date = new Date(time);
+        return date.toISOString().split('T')[0];
+    };
     render() {
         return (
             <AgendaView
@@ -107,12 +111,12 @@ export default class CalendarPicker extends Component {
                 onDayChange={day => {
                     console.log('day changed');
                 }}
-                selected={'2020-06-10'}
+                // selected={'2020-06-10'}
                 renderItem={this.renderItem}
                 renderEmptyDate={this.renderEmptyDate}
-                rowHasChanged={this.rowHasChanged}
+                // rowHasChanged={this.rowHasChanged}
                 markingType={'period'}
-                markedDates={this.markedDates}
+                // markedDates={this.markedDates}
                 monthFormat={'yyyy/MM'}
                 theme={{
                     backgroundColor: '#ffffff',
@@ -132,75 +136,17 @@ export default class CalendarPicker extends Component {
                     textMonthFontSize: 16,
                     textDayHeaderFontSize: 16,
                 }}
-                // theme={{
-                //     agendaDayTextColor: 'yellow',
-                //     agendaDayNumColor: 'green',
-                //     agendaTodayColor: 'red',
-                //     agendaKnobColor: 'blue',
-                // }}
+                theme={{
+                    agendaDayTextColor: 'orange',
+                    agendaDayNumColor: 'green',
+                    agendaTodayColor: 'red',
+                    agendaKnobColor: 'blue',
+                }}
                 // renderDay={(day, item) => <Text>{day ? day.day : '_item'}</Text>}
                 hideExtraDays={false}
             />
         );
     }
-
-    loadItems = day => {
-        setTimeout(() => {
-            // for (let i = -15; i < 85; i++) {
-            const time = day.timestamp;
-            const strTime = this.timeToString(time);
-
-            if (!this.state.items[strTime]) {
-                this.state.items[strTime] = [];
-                const numItems = 2;
-                // const numItems = Math.floor(Math.random() * 3 + 1);
-                for (let j = 0; j < numItems; j++) {
-                    this.state.items[strTime].push({
-                        name: 'Item for ' + strTime + ' #' + j,
-                        height: Math.max(50, Math.floor(Math.random() * 150)),
-                    });
-                }
-            }
-            // }
-            const newItems = {};
-            Object.keys(this.state.items).forEach(key => {
-                newItems[key] = this.state.items[key];
-            });
-            this.setState({
-                items: newItems,
-            });
-        }, 1000);
-    };
-
-    renderItem = item => {
-        console.log('item', item);
-        return (
-            <TouchableOpacity
-                testID={'ITEM'}
-                style={[styles.item, { height: 50 }]}
-                onPress={() => Alert.alert(item.cdnUrl)}
-            >
-                <Text>{item.name}</Text>
-            </TouchableOpacity>
-        );
-    };
-
-    renderEmptyDate = () => {
-        return (
-            <View style={styles.emptyDate}>
-                <Text>This is empty date!</Text>
-            </View>
-        );
-    };
-
-    rowHasChanged = (r1, r2) => {
-        return r1.name !== r2.name;
-    };
-
-    timeToString = time => {
-        const date = new Date(time);
-        return date.toISOString().split('T')[0];
-    };
 }
 
 const styles = StyleSheet.create({
@@ -216,5 +162,11 @@ const styles = StyleSheet.create({
         height: 15,
         flex: 1,
         paddingTop: 30,
+    },
+    video: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 300,
+        width: '100%',
     },
 });

@@ -67,7 +67,6 @@ export default class CameraVideos extends Component {
         let userToken = await AsyncStorage.getItem('userToken');
         await getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
-                // console.log('eventlist', respond);
                 this.setState({ eventList: respond });
             }
         });
@@ -123,13 +122,12 @@ export default class CameraVideos extends Component {
         console.log(day);
     };
     _onError = e => {
-        // [bavv add end]
         console.log('_onError');
     };
 
-    setVideo =(obj) =>{
-        this.setState({video:obj})
-    }
+    setVideo = obj => {
+        this.setState({ video: obj });
+    };
     onPausePress = () => {
         let { paused } = this.state.frontVideoState;
         console.log('this_pause', paused);
@@ -168,6 +166,7 @@ export default class CameraVideos extends Component {
             }));
         }
     };
+
     onStopped = () => {
         console.log('onStopped');
     };
@@ -231,18 +230,11 @@ export default class CameraVideos extends Component {
                     videoAspectRatio={'16:9'}
                     // onProgress={event => this.onProgress(event)}
                     onEnd={this.onEnded}
-                    onEnded={() => {
-                        console.log('lalala');
-                    }}
-                    onStopped={() => {
-                        console.log('stop');
-                        // this.frontVideo.resume();
-                    }}
+                    onStopped={this.onStopped}
                     onPlaying={this.onPlaying}
                     onBuffering={this.onBuffering}
                     onPaused={this.onPaused}
                     progressUpdateInterval={250}
-                    // onError={this._onError}
                     onOpen={this._onOpen}
                     onLoadStart={this._onLoadStart}
                 />
@@ -270,27 +262,29 @@ export default class CameraVideos extends Component {
         return (
             <View>
                 {this.renderFrontVideo()}
-                <Button title={this.state.paused ? 'play' : 'pause'} onPress={this.onPausePress} />
+                {/*<Button title={this.state.paused ? 'play' : 'pause'} onPress={this.onPausePress} />*/}
             </View>
         );
     };
 
     render() {
-        console.log('this.state',this.state)
+        console.log('this.state', this.state);
         let { video, eventList } = this.state;
         let tempEventList = eventList;
         let { cdnUrl } = video || {};
-        // console.log('eventlist', eventList);
         if (eventList.length > 5) {
             tempEventList = tempEventList.slice(0, 4);
         }
         if (typeof cdnUrl === 'string') {
             return (
-                <View style={{ paddingHorizontal: 12, flex: 1 }}>
+                <View style={{ flex: 1 }}>
                     {this.renderVideo()}
-                    {!!(eventList.length > 0) && (
-                        <CalendarPicker setVideo={this.setVideo} data={eventList} callback={this.getDate} />
-                    )}
+                    <View style={{ height: 30 }} />
+                    <CalendarPicker
+                        setVideo={this.setVideo}
+                        data={eventList}
+                        callback={this.getDate}
+                    />
                 </View>
             );
         } else {

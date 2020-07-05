@@ -24,7 +24,6 @@ export default function HomeScreen(props) {
     const [userToken, setuserToken] = useState('');
 
     useEffect(() => {
-      
         if (!Array.isArray(cameras) || cameras.length === 0) {
             getCameras(response => {
                 if (response && response.result) {
@@ -78,10 +77,10 @@ export default function HomeScreen(props) {
                         ]}
                     />
                     <View style={styles.nameRow}>
-                        <Image
-                            source={require('../assets/cctv.png')}
-                            style={{ width: 18, height: 18 }}
-                        />
+                        {/*<Image*/}
+                        {/*    source={require('../assets/cctv.png')}*/}
+                        {/*    style={{ width: 18, height: 18 }}*/}
+                        {/*/>*/}
                         <View style={{ flex: 1, marginLeft: 10 }}>
                             <Text style={styles.cameraName}>{String(item.name)}</Text>
                             <Text style={{ fontSize: 10 }}>Live</Text>
@@ -173,7 +172,7 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
     },
     container: {
-        backgroundColor: Colors.screen,
+        backgroundColor: Colors.white,
         flex: 1,
     },
     header: {

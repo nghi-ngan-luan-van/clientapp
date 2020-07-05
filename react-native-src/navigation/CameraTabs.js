@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     containerTab: {
         flex: 1,
         // marginTop: 18,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         // border
     },
 });

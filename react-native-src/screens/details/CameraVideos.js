@@ -59,6 +59,7 @@ export default class CameraVideos extends Component {
         this.bufferTime = 0;
         this.tmpDuration = 0;
         this.records = [];
+        this.newData = {}
     }
 
     componentDidMount = async () => {
@@ -274,13 +275,31 @@ export default class CameraVideos extends Component {
             </View>
         );
     };
+    groupTime = () => {
+        this.state.eventList.forEach((value,index,arr)=>{
+            const date = moment(Number(value.timeStart)).startOf('day');
+            const strDate=this.timeToString(date)
+                if (!this.newData[strDate])
+                {
+                    this.newData[strDate]=[]
+                }
+                this.newData[strDate].push(value)
+        })
+       console.log('newData',this.newData)
+      
+    };
 
+    timeToString = time => {
+        const date = new Date(time);
+        return date.toISOString().split('T')[0];
+    };
     render() {
         console.log('this.state',this.state)
+        console.log('this.props',this.props)
         let { video, eventList } = this.state;
         let tempEventList = eventList;
         let { cdnUrl } = video || {};
-        // console.log('eventlist', eventList);
+        console.log('eventlist', eventList);
         if (eventList.length > 5) {
             tempEventList = tempEventList.slice(0, 4);
         }
@@ -289,7 +308,7 @@ export default class CameraVideos extends Component {
                 <View style={{ paddingHorizontal: 12, flex: 1 }}>
                     {this.renderVideo()}
                     {!!(eventList.length > 0) && (
-                        <CalendarPicker setVideo={this.setVideo} data={eventList} callback={this.getDate} />
+                        <CalendarPicker {...this.props} data={eventList} callback={this.getDate} />
                     )}
                 </View>
             );

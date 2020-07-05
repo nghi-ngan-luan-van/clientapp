@@ -19,5 +19,6 @@ export const AppRoute = {
   CAMERA_EDIT: 'Edit Camera Information',
   CAMERA_EDIT_MODE:'Edit Camera Mode',
   SETTINGS: 'Settings',
+  VIDEO_PLAYER_SCREEN: 'Video',
 
 }

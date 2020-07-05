@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Alert, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import AgendaView from 'react-native-calendars/src/agenda';
 import moment from 'moment';
+import { AppRoute } from '../navigation/app-routes';
 import VideoPlayer from './VLCPlayer/VideoPlayer';
 import { VLCPlayer } from 'react-native-vlc-media-player';
 
@@ -13,7 +14,6 @@ export default class CalendarPicker extends Component {
             items:{ },
             data: this.props.data,
         };
-        console.log('asdfghjk', this.props.data);
         this.newData={};
         this.markedDates = {
             // '2017-05-08': { textColor: '#43515c' },
@@ -42,7 +42,6 @@ export default class CalendarPicker extends Component {
                 }
                 this.newData[strDate].push(value)
         })
-       console.log('newData',this.newData)
       
     };
 
@@ -64,20 +63,22 @@ export default class CalendarPicker extends Component {
     };
 
     renderVideoByItem =(item) =>{
-        console.log('renderVideoByItem')
-        // hien thi video
+        let { navigation } = this.props;
+        console.log('renderVideoByItem',this.props )
+        navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, {video:item});
     }
     renderItem = item => {
         console.log('item', item);
         const d = new Date(parseInt(item.timeStart));
         const n = d.toLocaleTimeString();
+        console.log('n',n)
         return (
             <TouchableOpacity
                 testID={'ITEM'}
                 style={[styles.item, { height: 50 }]}
-                onPress={() => this.renderVideoByItem(item)}
+                onPress={() => item.filePath ? this.renderVideoByItem(item) : {}}
             >
-                <Text>{item.filePath? `Video: ${item.filePath}`: `Chuyển động lúc ${n}`}</Text>
+                <Text>{item.filePath? `Video: ${item.filePath} ⏰ ${n} `: `Chuyển động lúc ${n}`}</Text>
             </TouchableOpacity>
         );
     };

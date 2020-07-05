@@ -15,6 +15,7 @@ import Header from '../components/Header';
 import SettingsDrawer from './CameraTabs';
 import EditMode from '../screens/editcamera/EditMode';
 import CameraTabs from './CameraTabs';
+import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     backgroundImg: {
@@ -104,6 +105,8 @@ export default class HomeNavigator extends React.PureComponent {
                     })}
                 />
                 <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
+                <Stack.Screen name={AppRoute.VIDEO_PLAYER_SCREEN} component={VideoPlayerScreen} />
+
                 <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
                 <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
                 <Stack.Screen name={AppRoute.CAMERA_EDIT_MODE} component={EditMode} />

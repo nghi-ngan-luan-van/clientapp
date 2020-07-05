@@ -146,8 +146,8 @@ const CameraTabs = props => {
                 keyboardShouldPersistTaps: 'always',
             }}
         >
-            <CameraStream tabLabel="Camera trực tiếp" {...params} />
-            <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} />
+            <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
+            <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} {...props} />
         </ScrollableTabView>
     );
 

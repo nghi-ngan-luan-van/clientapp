@@ -10,7 +10,7 @@ import { VlCPlayerView } from 'react-native-vlc-media-player';
 
 export default function CameraStream(props) {
     const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
-
+    console.log('props',props)
     const renderAlertDelete = () => {
         return Alert.alert(
             'Warning',

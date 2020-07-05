@@ -128,8 +128,8 @@ export default class CameraVideos extends Component {
         console.log('_onError');
     };
 
-    setVideo =(obj) =>{
-        this.setState({video:obj})
+    setBackupList =(obj) =>{
+        this.setState({backupList:obj})
     }
     onPausePress = () => {
         let { paused } = this.state.frontVideoState;
@@ -219,7 +219,7 @@ export default class CameraVideos extends Component {
     renderFrontVideo = () => {
         let { cdnUrl } = this.state.video || {};
         let { paused, seek, animating } = this.state.frontVideoState || {};
-
+        console.log('this.state',this.state)
         return (
             <View style={[styles.video, { backgroundColor: Colors.white }]}>
                 <VLCPlayer
@@ -295,7 +295,7 @@ export default class CameraVideos extends Component {
                 <View style={{ paddingHorizontal: 12, flex: 1 }}>
                     {this.renderVideo()}
                     {!!(eventList.length > 0) && (
-                        <CalendarPicker {...this.props} data={eventList} callback={this.getDate} />
+                        <CalendarPicker {...this.props} setBackupList={this.setBackupList} data={eventList} callback={this.getDate} />
                     )}
                 </View>
             );

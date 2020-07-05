@@ -56,6 +56,7 @@ export default class CalendarPicker extends Component {
                 this.newData[strTime]=[]
             }
             console.log('this.newData',this.newData)
+            this.props.setBackupList(this.newData[strTime])
             let newItems=this.state.items
             newItems[strTime]=this.newData[strTime]
             this.setState({items:newItems})

@@ -9,47 +9,9 @@ import Orientation from 'react-native-orientation';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 
 export default function CameraStream(props) {
-    const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
-    console.log('props',props)
-    const renderAlertDelete = () => {
-        return Alert.alert(
-            'Warning',
-            'Do you want to permanently delete this camera ?',
-            [
-                {
-                    text: 'OK',
-                    onPress: async () => {
-                        const token = await AsyncStorage.getItem('userToken');
-                        let myHeaders = new Headers();
-                        myHeaders.append('Authorization', `Bearer ${token}`);
-                        myHeaders.append('Content-Type', 'application/json');
-
-                        let raw = JSON.stringify({ _id: camera._id });
-
-                        let requestOptions = {
-                            method: 'POST',
-                            headers: myHeaders,
-                            body: raw,
-                            redirect: 'follow',
-                        };
-
-                        fetch(HOST_URL + 'camera/delete', requestOptions)
-                            .then(response => response.text())
-                            .then(result => {
-                                let { navigation } = props;
-                                navigation && navigation.push(AppRoute.HOME, {});
-                            });
-                    },
-                },
-                {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel',
-                },
-            ],
-            { cancelable: false }
-        );
-    };
+    const [camera, setCamera] = useState(_.get(props, 'camera', {}));
+    const [isFull, setFull] = useState(false);
+    console.log('props', props);
 
     return (
         !!camera && (
@@ -58,22 +20,13 @@ export default function CameraStream(props) {
                     autoplay={false}
                     url={camera.rtspUrl}
                     Orientation={Orientation}
-                    // ggUrl={'https://clientapp.sgp1.digitaloceanspaces.com/5e9471d6cbeb62504f03bc0b/5ed3e22848d6943ed70ec47f/1591588229691.mp4'}
                     showGG={false}
                     showTitle={true}
                     title={camera.name}
-                    showBack={true}
+                    showBack={false}
                     onLeftPress={() => {}}
-                    startFullScreen={() => {
-                        this.setState({
-                            isFull: true,
-                        });
-                    }}
-                    closeFullScreen={() => {
-                        this.setState({
-                            isFull: false,
-                        });
-                    }}
+                    startFullScreen={() => setFull(true)}
+                    closeFullScreen={() => setFull(false)}
                 />
             </View>
         )
@@ -82,7 +35,7 @@ export default function CameraStream(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
     },
     selectMenu: {
         height: 50,

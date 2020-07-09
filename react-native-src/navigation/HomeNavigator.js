@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 });
 export default class HomeNavigator extends React.PureComponent {
     getHeaderTitle(route) {
-        console.log(route);
+        // console.log(route);
         // Access the tab navigator's state using `route.state`
         const routeName =
             route && route.name

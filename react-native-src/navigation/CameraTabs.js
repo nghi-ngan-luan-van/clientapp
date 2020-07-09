@@ -142,86 +142,42 @@ function DrawerContent(props) {
 }
 
 const CameraTabs = props => {
-    const { navigation } = props;
     const params = _.get(props, 'route.params.params');
-    const settingRef = useRef();
+    let { navigation } = props;
     const [events, setEvents] = useState([]);
     useEffect(() => {
-        const onPressSetting = () => {
-            navigation && navigation.dispatch(DrawerActions.toggleDrawer());
-        };
         const { camera } = params;
         const getVideo = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
-            await getBackupVideo({ userToken, camera }, callback);
+            getBackupVideo({ userToken, camera }, callback);
         };
 
         getVideo(res => {
             if (Array.isArray(res)) {
                 setEvents(res);
             }
-        }).then(console.log('getVideo_navigation', events));
-    }, [navigation, params, props]);
-
-    const renderTabBar = props => () => {
-        let { tabs, goToPage, activeTab } = props;
-        return (
-            <View style={styles.tabs}>
-                {tabs.map((tab, i) => (
-                    <TouchableOpacity
-                        key={tab}
-                        onPress={() => goToPage(i)}
-                        style={[
-                            styles.tab,
-                            activeTab === i ? styles.activeTab : styles.inactiveTab,
-                        ]}
-                    >
-                        <Text
-                            font={{ type: activeTab === i ? 'bold' : 'regular' }}
-                            style={{ color: activeTab === i ? '#222222' : '#8d919d' }}
-                        >
-                            {tab}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-        );
-    };
-
-    const detailScreens = () => (
-        <ScrollableTabView
-            // tabBarBackgroundColor={Colors.screen}
-            // tabBarActiveTextColor={Colors.violet}
-            initialPage={0}
-            // onChangeTab={onChangeTab}
-            // onScroll={onScrollTab}
-            style={styles.containerTab}
-            renderTabBar={props => <CustomTab {...props} />}
-            locked={false}
-            contentProps={{
-                keyboardShouldPersistTaps: 'always',
-            }}
-        >
-            <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
-            <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} {...props} />
-        </ScrollableTabView>
-    );
-
-    return (
-        <Drawer.Navigator
-            initialRouteName={'Camera'}
-            drawerPosition={'right'}
-            drawerType={'front'}
-            drawerContent={props => <DrawerContent {...props} />}
-        >
-            <Drawer.Screen
-                name={'Camera'}
-                component={!events || events.length > 0 ? detailScreens : CameraStream}
-                initialParams={params}
-            />
-            <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
-        </Drawer.Navigator>
-    );
+        });
+    }, []);
+    console.log('this is event in tabs', events);
+    if (events && events.length > 0) {
+        return <Detail events={events} params={params} navigation={navigation} />;
+    } else {
+        return <CameraStream {...params} navigation={navigation} />;
+    }
 };
 
+const Detail = ({ events, params, ...props }) => (
+    <ScrollableTabView
+        tabBarBackgroundColor={Colors.white}
+        tabBarActiveTextColor={Colors.violet}
+        initialPage={0}
+        locked={true}
+        contentProps={{
+            keyboardShouldPersistTaps: 'always',
+        }}
+    >
+        <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
+        <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} {...props} />
+    </ScrollableTabView>
+);
 module.exports = CameraTabs;

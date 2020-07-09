@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { HOST_URL } from './AppConst';
+import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import { AppRoute } from '../navigation/app-routes';
 
 export const get = (url, message, callback) => {
     // console.log('get message', message)
@@ -86,6 +89,45 @@ export const getBackupVideo = (params, callback) => {
 
     get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
 };
+// const renderAlertDelete = () => {
+//     return Alert.alert(
+//         'Warning',
+//         'Do you want to permanently delete this camera ?',
+//         [
+//             {
+//                 text: 'OK',
+//                 onPress: async () => {
+//                     const token = await AsyncStorage.getItem('userToken');
+//                     let myHeaders = new Headers();
+//                     myHeaders.append('Authorization', `Bearer ${token}`);
+//                     myHeaders.append('Content-Type', 'application/json');
+//
+//                     let raw = JSON.stringify({ _id: camera._id });
+//
+//                     let requestOptions = {
+//                         method: 'POST',
+//                         headers: myHeaders,
+//                         body: raw,
+//                         redirect: 'follow',
+//                     };
+//
+//                     fetch(HOST_URL + 'camera/delete', requestOptions)
+//                         .then(response => response.text())
+//                         .then(result => {
+//                             let { navigation } = props;
+//                             navigation && navigation.push(AppRoute.HOME, {});
+//                         });
+//                 },
+//             },
+//             {
+//                 text: 'Cancel',
+//                 onPress: () => console.log('Cancel Pressed'),
+//                 style: 'cancel',
+//             },
+//         ],
+//         { cancelable: false }
+//     );
+// };
 
 // export const testConnectionCamera = (params, callback) => {
 //     let { rtspUrl = {}, userToken } = params;

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View, Text, Button, Alert} from 'react-native';
-import {Input} from 'react-native-elements';
+import React, { Component } from 'react';
+import { View, Text, Button, Image } from 'react-native';
+import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import Loader from '../../components/LoadingModal';
@@ -11,9 +11,9 @@ class AddingCamera extends Component {
     this.state = {
       name: '',
       rtspUrl: '',
-      thumbnail:'',
-      isTestConnection:false,
-      loading:false,
+      thumbnail: null,
+      isTestConnection: false,
+      loading: false,
     };
     this.token = null;
   }
@@ -23,7 +23,7 @@ class AddingCamera extends Component {
   }
 
 
-  onTestCamera = async ()  => {
+  onTestCamera = async () => {
     const { rtspUrl, name } = this.state;
 
     this.setState({
@@ -49,26 +49,25 @@ class AddingCamera extends Component {
     };
 
     await fetch('http://128.199.211.44/camera/testconnection', requestOptions)
-    .then(response => {
-      console.log(response.status)
-      if (response.status !== 200)
-      {
-        alert("Test connection: Failed")
-        this.setState({loading:false})
-      }
-      else {
-        return response.text()
-      }
-    })
-    .then(result => {
-      console.log(result)
-      if (result) {
-        alert("Test connection: Successful")
-        this.setState({thumbnail:result.toString(),isTestConnection:true,loading:false},()=>{
-          console.log(this.state.thumbnail)
-        })
-      }
-    })
+      .then(response => {
+        console.log(response.status)
+        if (response.status !== 200) {
+          alert("Test connection: Failed")
+          this.setState({ loading: false })
+        }
+        else {
+          return response.text()
+        }
+      })
+      .then(result => {
+        console.log(result)
+        if (result) {
+          this.setState({ thumbnail: result.toString(), isTestConnection: true, loading: false }, () => {
+            console.log(this.state.thumbnail)
+          })
+          return alert("Test connection: Successful")
+        }
+      })
       .catch((error) => console.log('error', error));
 
   }
@@ -78,8 +77,8 @@ class AddingCamera extends Component {
     });
 
     //call api get all data of this user
-    let { rtspUrl, name,thumbnail } = this.state;
-  
+    let { rtspUrl, name, thumbnail } = this.state;
+
     let token = await AsyncStorage.getItem('userToken');
 
     var myHeaders = new Headers();
@@ -103,22 +102,21 @@ class AddingCamera extends Component {
     };
 
     await fetch('http://128.199.211.44/camera/add', requestOptions)
-    .then(response => {
-      console.log(response.status)
-      if (response.status !== 200)
-      {
-        alert("Adding camera: Failed")
-        this.setState({loading:false})
-      }
-      else {
-        return response.text()
-      }
-    })
+      .then(response => {
+        console.log(response.status)
+        if (response.status !== 200) {
+          alert("Adding camera: Failed")
+          this.setState({ loading: false })
+        }
+        else {
+          return response.text()
+        }
+      })
       .then((result) => {
         (result)
-        this.setState({loading:false})
-        const {navigation}=this.props
-        navigation.push(AppRoute.HOME,{reload:true})
+        this.setState({ loading: false })
+        const { navigation } = this.props
+        navigation.push(AppRoute.HOME, { reload: true })
       })
       .catch((error) => console.log('error', error));
   };
@@ -132,23 +130,32 @@ class AddingCamera extends Component {
     return (
       <View>
         <Loader
-          loading={this.state.loading} />
+          loading={this.state.loading}
+          url={this.state.thumbnail}
+        />
         <Input
           placeholder="Name"
-          leftIcon={{type: 'font-awesome', name: 'comment'}}
-          style={{height: '36'}}
-          onChangeText={(name) => this.setState({name})}
+          leftIcon={{ type: 'font-awesome', name: 'comment' }}
+          style={{ height: '36' }}
+          onChangeText={(name) => this.setState({ name })}
         />
 
         <Input
           placeholder="Url"
-          leftIcon={{type: 'font-awesome', name: 'comment'}}
-          style={{height: '36'}}
-          onChangeText={(rtspUrl) => this.setState({rtspUrl})}
+          leftIcon={{ type: 'font-awesome', name: 'comment' }}
+          style={{ height: '36' }}
+          onChangeText={(rtspUrl) => this.setState({ rtspUrl })}
         />
 
         <Button disabled={!this.state.isTestConnection} title={'ADD'} onPress={this.onAddCamera} />
         <Button title={'Test Connection'} onPress={this.onTestCamera} />
+        {this.state.thumbnail ? <Image source={{ uri: this.state.thumbnail }}
+          style={{
+            margin:10,
+            height: 250, width: 250, borderRadius: 10,
+            display: 'flex',
+            alignSelf: 'center',
+          }} /> : <View />}
 
       </View>
     );

@@ -11,10 +11,12 @@ export default class CalendarPicker extends Component {
         super(props);
 
         this.state = {
-            items:{ },
+            items: {},
             data: this.props.data,
+            recordVideos: this.props.backupList,
         };
-        this.newData={};
+        this.newData = {};
+        this.newBackupList = {};
         this.markedDates = {
             // '2017-05-08': { textColor: '#43515c' },
             // '2017-05-09': { textColor: '#43515c' },
@@ -27,59 +29,73 @@ export default class CalendarPicker extends Component {
         };
         // this.loadItems = this.props.data;
     }
-    componentDidMount = () => {
-    };
-    componentDidUpdate=()=>{
-        console.log('componentDidUpdate')
-    }
-    groupTime = () => {
-        this.state.data.forEach((value,index,arr)=>{
-            const date = moment(Number(value.timeStart)).startOf('day');
-            const strDate=this.timeToString(date)
-                if (!this.newData[strDate])
-                {
-                    this.newData[strDate]=[]
-                }
-                this.newData[strDate].push(value)
-        })
-      
-    };
+    componentDidMount = () => {};
 
+    groupTime = () => {
+        this.state.data.forEach((value, index, arr) => {
+            const date = moment(Number(value.timeStart)).startOf('day');
+            const strDate = this.timeToString(date);
+            if (!this.newData[strDate]) {
+                this.newData[strDate] = [];
+            }
+            this.newData[strDate].push(value);
+        });
+    };
+    groupBackupListTime = () => {
+        console.log(this.props);
+        let { recordVideos = [] } = this.state;
+        recordVideos.forEach((value, index, arr) => {
+            const date = moment(Number(value.timeStart)).startOf('day');
+            const strDate = this.timeToString(date);
+            if (!this.newBackupList[strDate]) {
+                this.newBackupList[strDate] = [];
+            }
+            this.newBackupList[strDate].push(value);
+        });
+    };
     loadItems = day => {
         setTimeout(() => {
             const time = day.timestamp;
             const strTime = this.timeToString(time);
-            console.log('time',time,'strTime',strTime)
-            this.newData={}
-            this.groupTime()
-            if (!this.newData[strTime]){
-                this.newData[strTime]=[]
+            console.log('time', time, 'strTime', strTime);
+            this.newData = {};
+            this.newBackupList = {};
+            this.groupTime();
+            this.groupBackupListTime();
+            if (!this.newData[strTime]) {
+                this.newData[strTime] = [];
             }
-            console.log('this.newData',this.newData)
-            this.props.setBackupList(this.newData[strTime])
-            let newItems=this.state.items
-            newItems[strTime]=this.newData[strTime]
-            this.setState({items:newItems})
+            if (!this.newBackupList[strTime]) {
+                this.newBackupList[strTime] = [];
+            }
+            console.log('this.newData', this.newData);
+            console.log('this.newbackupList ', this.newBackupList);
+            this.props.setBackupList(this.newBackupList[strTime]);
+            let newItems = this.state.items;
+            newItems[strTime] = this.newData[strTime];
+            this.setState({ items: newItems });
         }, 1000);
     };
 
-    renderVideoByItem =(item) =>{
+    renderVideoByItem = item => {
         let { navigation } = this.props;
-        console.log('renderVideoByItem',this.props )
-        navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, {video:item});
-    }
+        console.log('renderVideoByItem', this.props);
+        navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: item });
+    };
     renderItem = item => {
-        console.log('item', item);
+        // console.log('item', item);
         const d = new Date(parseInt(item.timeStart));
         const n = d.toLocaleTimeString();
-        console.log('n',n)
+        // console.log('n', n);
         return (
             <TouchableOpacity
                 testID={'ITEM'}
                 style={[styles.item, { height: 50 }]}
-                onPress={() => item.filePath ? this.renderVideoByItem(item) : {}}
+                onPress={() => (item.filePath ? this.renderVideoByItem(item) : {})}
             >
-                <Text>{item.filePath? `Video: ${item.filePath} ⏰ ${n} `: `Chuyển động lúc ${n}`}</Text>
+                <Text>
+                    {item.filePath ? `Video: ${item.filePath} ⏰ ${n} ` : `Chuyển động lúc ${n}`}
+                </Text>
             </TouchableOpacity>
         );
     };

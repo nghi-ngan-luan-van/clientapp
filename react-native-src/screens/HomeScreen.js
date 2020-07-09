@@ -14,6 +14,9 @@ import { AppRoute } from '../navigation/app-routes';
 import { Colors } from '../utils/AppConfig';
 import { getUserCameras } from '../utils/ApiUtils';
 import { Icon } from 'react-native-elements';
+import Orientation from 'react-native-orientation';
+import { useFocusEffect } from '@react-navigation/native';
+
 const WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen(props) {
@@ -22,6 +25,15 @@ export default function HomeScreen(props) {
     );
     const [refresh, setRefresh] = useState(false);
     const [userToken, setuserToken] = useState('');
+
+    useFocusEffect(() =>
+        Orientation.getOrientation((err, orientation) => {
+            console.log(`Current Device Orientation: ${orientation}`);
+            if (orientation === 'LANDSCAPE') {
+                Orientation.lockToPortrait();
+            }
+        })
+    );
 
     useEffect(() => {
         if (!Array.isArray(cameras) || cameras.length === 0) {
@@ -32,7 +44,6 @@ export default function HomeScreen(props) {
             });
         }
     }, [cameras]);
-    console.log('cameras', cameras);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
@@ -67,14 +78,7 @@ export default function HomeScreen(props) {
                     <Image
                         source={thumnail.uri ? thumnail : testThumbnail}
                         resizeMode={'cover'}
-                        style={[
-                            {
-                                height: CARD_HEIGHT,
-                                width: CARD_WIDTH,
-                                alignSelf: 'center',
-                                overflow: 'hidden',
-                            },
-                        ]}
+                        style={styles.thumbnail}
                     />
                     <View style={styles.nameRow}>
                         {/*<Image*/}
@@ -171,6 +175,14 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         width: CARD_WIDTH,
     },
+    thumbnail: {
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+        alignSelf: 'center',
+        overflow: 'hidden',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+    },
     container: {
         backgroundColor: Colors.white,
         flex: 1,
@@ -212,7 +224,7 @@ const styles = StyleSheet.create({
         // elevation: 5,
     },
     list: {
-        paddingHorizontal: 12,
+        padding: 12,
     },
     row: {
         flex: 1,

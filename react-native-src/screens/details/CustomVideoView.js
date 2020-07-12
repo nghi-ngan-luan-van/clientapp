@@ -25,11 +25,7 @@ export default class CustomVideoView extends Component {
         super(props);
         this.state = {
             currentRate: 0,
-            paused: false,
             seek: 0,
-            isLoading: true,
-            isError: false,
-            animating: true,
         };
     }
 

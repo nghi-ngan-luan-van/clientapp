@@ -14,11 +14,14 @@ import {
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 const { width } = Dimensions.get('window');
+import { signUp } from '../../utils/ApiUtils';
 import { AppRoute } from '../../navigation/app-routes';
+import {HOST_URL} from "../../utils/AppConst";
+
 const styles = StyleSheet.create({
     container: {
         width: width - 48,
-        padding: 12,
+        padding: 7,
         backgroundColor: Colors.whisper,
         borderRadius: 12,
     },
@@ -42,17 +45,18 @@ const styles = StyleSheet.create({
     text: { color: Colors.grey },
     button: {
         backgroundColor: Colors.brandy_rose,
-        paddingVertical: 16,
-        paddingHorizontal: 50,
+        paddingVertical: 8,
+        paddingHorizontal: 30,
         borderRadius: 40,
     },
 });
 
-export default function SignInForm(props) {
-    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
+export default function SignUpForm(props) {
+    const [email, setEmail] = React.useState('nn170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
-    console.log('props',props)
-    const { signIn } = React.useContext(AuthContext);
+    const [name, setName] = React.useState('nghi nguyen2');
+    console.log('props signup',props)
+    //const { signIn } = React.useContext(AuthContext);
     return (
         <View style={[{ flex: 1, justifyContent: 'space-between' }, props.style]}>
             <View style={[styles.container]}>
@@ -72,9 +76,25 @@ export default function SignInForm(props) {
                     inputStyle={styles.text}
                     onChangeText={value => setEmail(value)}
                     keyboardType="email-address"
-                    // errorMessage={'Vui lòng nhập email'}
+                // errorMessage={'Vui lòng nhập email'}
                 />
-
+                <Input
+                    placeholder="Nhập tên của bạn"
+                    leftIcon={{
+                        type: 'font-awesome',
+                        name: 'envelope',
+                        color: Colors.brandy_rose,
+                        size: 30,
+                    }}
+                    label={'Name'}
+                    labelStyle={styles.text}
+                    // style={styles}
+                    leftIconContainerStyle={styles.leftIconContainer}
+                    value={name}
+                    inputStyle={styles.text}
+                    onChangeText={value => setName(value)}
+                // errorMessage={'Vui lòng nhập email'}
+                />
                 <Input
                     placeholder="Nhập mật khẩu của bạn"
                     leftIcon={{
@@ -98,16 +118,30 @@ export default function SignInForm(props) {
             <Button
                 title={'Đăng kí'}
                 buttonStyle={styles.button}
-                onPress={() => {
+                onPress={async() => {
+                    let myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    
+                    let raw = JSON.stringify({"name":name,"email":email,"password":password});
+                    
+                    let requestOptions = {
+                      method: 'POST',
+                      headers: myHeaders,
+                      body: raw,
+                      redirect: 'follow'
+                    };
+                    
+                    await fetch("http://128.199.211.44/auth/register", requestOptions)                     
+                    .then(response => {
+                        console.log(response)
+                        if (response.status !== 204) {
+                            alert('Người dùng đã tồn tại');
+                        } else {
+                            alert('Đăng kí thành công');
+                        }
+                    })
                     const { navigation } = props || {};
-                    navigation && navigation.push(AppRoute.SIGN_UP);
-                }}
-            />
-            <Button
-                title={'Đăng nhập'}
-                buttonStyle={styles.button}
-                onPress={() => {
-                    signIn({ email, password });
+                    navigation && navigation.push(AppRoute.SIGN_IN)
                 }}
             />
         </View>

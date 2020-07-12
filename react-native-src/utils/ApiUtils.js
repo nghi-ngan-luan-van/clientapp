@@ -50,7 +50,20 @@ export const signIn = (params, callback) => {
         callback();
     }
 };
-
+export const signUp = (params, callback) => {
+    let {name, email, password } = params;
+    let data = {
+        name:name,
+        email: email,
+        password: password,
+    };
+    try {
+        post(HOST_URL + 'auth/register', { data: data }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils signUp', e);
+        callback();
+    }
+};
 export const getUserCameras = async (params, callback) => {
     // const userToken = await AsyncStorage.getItem('userToken');
     let { userToken } = params;

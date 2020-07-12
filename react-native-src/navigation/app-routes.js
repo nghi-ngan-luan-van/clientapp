@@ -3,6 +3,7 @@ export const AppRoute = {
   SIGN_IN:'Sign In',
   SIGN_IN_FORM:'Sign In Form',
   SIGN_UP :'Sign Up',
+  SIGN_UP_FORM:'Sign Up Form',
   RESET_PASSWORD : 'Reset Password',
   HOME : 'HomeScreen',
   TODO : 'ToDo',

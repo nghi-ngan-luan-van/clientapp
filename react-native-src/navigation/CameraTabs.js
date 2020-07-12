@@ -158,7 +158,7 @@ const CameraTabs = props => {
             }
         });
     }, []);
-    console.log('this is event in tabs', events);
+    // console.log('this is event in tabs', events);
     if (events && events.length > 0) {
         return <Detail events={events} params={params} navigation={navigation} />;
     } else {

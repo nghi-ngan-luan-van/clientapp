@@ -26,7 +26,7 @@ GoogleSignin.configure();
 import { useSafeArea } from 'react-native-safe-area-context';
 import SignInForm from './SignInForm';
 
-export default function SignIn() {
+export default function SignIn(props) {
     const insets = useSafeArea();
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
@@ -50,6 +50,7 @@ export default function SignIn() {
                     </View>
 
                     <SignInForm
+                        {...props}
                         style={{
                             marginTop: -height / 8,
                         }}

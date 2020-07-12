@@ -1,10 +1,30 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import CalendarPicker from '../../components/CalendarPicker';
 import { getMovingEvents } from '../../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CustomVideoView from './CustomVideoView';
+import Orientation from 'react-native-orientation';
 import moment from 'moment';
+import { ActivityIndicator, Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Colors } from '../../utils/AppConfig';
+import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
+import { VlCPlayerView } from 'react-native-vlc-media-player';
+import { Icon } from 'react-native-elements';
+import Slider from '../../components/slider/Slider';
+const { width } = Dimensions.get('window');
+const styles = StyleSheet.create({
+    video: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200,
+        width: '100%',
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        // justifyContent: 'space-around',
+    },
+});
 export default class CameraVideos extends Component {
     constructor(props) {
         super(props);
@@ -12,23 +32,18 @@ export default class CameraVideos extends Component {
             eventList: [],
             video: {},
             backupList: [],
-
             currentIndex: 0,
             frontVideoState: {
                 seek: 0,
                 isLoading: true,
                 isError: false,
-                animating: true,
-                paused: false,
             },
             backVideoState: {
                 seek: 0,
                 isLoading: true,
                 isError: false,
-                animating: true,
             },
             seek: 0,
-
             next: true,
             isLoading: true,
             isError: false,
@@ -39,6 +54,7 @@ export default class CameraVideos extends Component {
             paused: false,
             animating: true,
             currentDay: '',
+            isFull:false,
         };
         this.bufferTime = 0;
         this.tmpDuration = 0;
@@ -58,7 +74,7 @@ export default class CameraVideos extends Component {
         this.loadItems();
     };
 
-    componentWillUnmount() {}
+    componentWillUnmount() { }
 
     timeToString = time => {
         const date = new Date(time);
@@ -84,7 +100,7 @@ export default class CameraVideos extends Component {
         if (!this.newBackupList[strTime]) {
             this.newBackupList[strTime] = [];
         }
-        console.log('thiss.newbackupList ', this.newBackupList);
+        console.log('thiss.newbackupList2222 ', this.newBackupList);
         this.setState({ backupList: this.newBackupList[strTime] });
     };
     getDate = day => {
@@ -113,13 +129,17 @@ export default class CameraVideos extends Component {
         }
         console.log('onEnd');
     };
-    onStopped = () => {};
+    onStopped = () => { };
 
     onBuffering = e => {
         console.log('_onBuffering', e);
     };
     onPlaying = () => {
         console.log('onPlaying');
+        this.setState({
+            paused: !this.state.paused,
+            animating: false,
+        });
     };
     onError = () => {
         console.log('onError');
@@ -158,22 +178,61 @@ export default class CameraVideos extends Component {
     onPaused = () => {
         console.log('_onPaused');
     };
+    pause = () => {
+        this.setState({
+            paused: !this.state.paused,
+            animating: true, //to show pausing
+        });
+    };
 
     renderFrontVideo = () => {
-        let { currentIndex, backupList } = this.state;
+        const { currentIndex, backupList, paused, animating } = this.state;
         console.log('renderFrontVideo_currentIndex', currentIndex);
-        let { cdnUrl = '' } = backupList[currentIndex] || {};
+        const { cdnUrl = '' } = backupList[currentIndex] || {};
         console.log('renderFrontVideo_currentIndex', cdnUrl);
 
         // let { seek } = this.state.frontVideoState || {};
         return (
-            <CustomVideoView
-                cdnUrl={cdnUrl}
-                // seek={seek}
-                onEnd={this.onEnd}
-                onProgress={e => this.onProgress(e)}
-                onStopped={this.onStopped}
-            />
+            <View style={[styles.video, { backgroundColor: Colors.black }]}>
+                <VlCPlayerView
+                    autoplay={true}
+                    url={cdnUrl}
+                    Orientation={Orientation}
+                    ggUrl=""
+                    showGG={true}
+                    onEnd={this.onEnd}
+                    showTitle={true}
+                    title={cdnUrl}
+                    showBack={true}
+                    onLeftPress={() => { }}
+                    startFullScreen={() => {
+                        this.setState({
+                            isFull: true,
+                        });
+                    }}
+                    closeFullScreen={() => {
+                        this.setState({
+                            isFull: false,
+                        });
+                    }}
+                />
+                {/*{this.renderSlider()}*/}
+                {/* <Text
+                    style={{
+                        // position: 'absolute',
+                        backgroundColor: '#fff',
+                        alignSelf: 'flex-start',
+                    }}
+                >
+                    {cdnUrl}
+                </Text> */}
+                {/* <ActivityIndicator
+                    color={'white'}
+                    style={{ position: 'absolute' }}
+                    size={'large'}
+                    animating={animating}
+                /> */}
+            </View>
         );
     };
 
@@ -182,7 +241,7 @@ export default class CameraVideos extends Component {
         console.log('this.state', this.state);
         return (
             <View style={{ flex: 1 }}>
-                {this.renderFrontVideo()}
+                {/* {this.renderFrontVideo()} */}
 
                 <View style={{ height: 50 }} />
                 {!!(eventList.length > 0) && (

@@ -108,6 +108,7 @@ export default function AppNavigator() {
                         }}
                         initialParams={state.data}
                     />
+                    // <Stack.Screen name={AppRoute.SIGN_IN} component={AuthNavigator} />
                 )}
             </Stack.Navigator>
         </AuthContext.Provider>

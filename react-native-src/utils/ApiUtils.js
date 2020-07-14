@@ -51,9 +51,9 @@ export const signIn = (params, callback) => {
     }
 };
 export const signUp = (params, callback) => {
-    let {name, email, password } = params;
+    let { name, email, password } = params;
     let data = {
-        name:name,
+        name: name,
         email: email,
         password: password,
     };

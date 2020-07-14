@@ -35,13 +35,11 @@ export default function HomeScreen(props) {
     );
 
     useEffect(() => {
-        if (!Array.isArray(cameras) || cameras.length === 0) {
-            getCameras(response => {
-                if (response && response.result) {
-                    setCameras(response.result);
-                }
-            });
-        }
+        getCameras(response => {
+            if (response && response.result) {
+                setCameras(response.result);
+            }
+        });
     }, [cameras]);
 
     const getCameras = async callback => {

@@ -4,6 +4,7 @@ import { Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch } f
 import { Icon } from 'react-native-elements';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { Colors } from '../utils/AppConfig';
+import { HOST_URL } from '../utils/AppConst';
 import _ from 'lodash';
 import CameraStream from '../screens/details/CameraStream';
 import {
@@ -45,8 +46,61 @@ function DrawerContent(props) {
     const { navigation } = props;
     const camera = _.get(props, 'state.routes[0].params.camera', {});
     const [isEnabled, setIsEnabled] = useState(camera.backupMode);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const toggleSwitch = () => {
+        console.log(isEnabled);
+        setIsEnabled(previousState => !previousState);
+        if (isEnabled) {
+            onSwitchDetectMode();
+        } else {
+            onSwitchRecordMode();
+        }
+    };
+    const onSwitchDetectMode = async () => {
+        const token = await AsyncStorage.getItem('userToken');
+        let myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+        myHeaders.append('Content-Type', 'application/json');
 
+        let raw = JSON.stringify({ _id: camera._id });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow',
+        };
+
+        fetch(HOST_URL + 'camera/turndetect', requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                let { navigation } = props;
+                navigation && navigation.navigate('Camera');
+            });
+    };
+    const onSwitchRecordMode = async () => {
+        const token = await AsyncStorage.getItem('userToken');
+        let myHeaders = new Headers();
+        myHeaders.append('Authorization', `Bearer ${token}`);
+        myHeaders.append('Content-Type', 'application/json');
+
+        let raw = JSON.stringify({ _id: camera._id });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow',
+        };
+
+        fetch(HOST_URL + 'camera/recorddetect', requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                let { navigation } = props;
+                navigation && navigation.navigate('Camera');
+            });
+    };
     return (
         <DrawerContentScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
             <DrawerItem
@@ -89,8 +143,24 @@ const CameraTabs = props => {
     const params = _.get(props, 'route.params.params');
     let { navigation } = props;
     const [events, setEvents] = useState([]);
+
     useEffect(() => {
         const { camera } = params;
+        const onPressSetting = () => {
+            navigation && navigation.dispatch(DrawerActions.toggleDrawer());
+        };
+
+        navigation &&
+            navigation.setOptions({
+                headerRight: () => (
+                    <TouchableOpacity onPress={onPressSetting}>
+                        <Image
+                            source={require('../assets/ic_settings.png')}
+                            style={styles.rightButton}
+                        />
+                    </TouchableOpacity>
+                ),
+            });
         const getVideo = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
             getBackupVideo({ userToken, camera }, callback);
@@ -102,12 +172,29 @@ const CameraTabs = props => {
             }
         });
     }, []);
-    // console.log('this is event in tabs', events);
-    if (events && events.length > 0) {
-        return <Detail events={events} params={params} navigation={navigation} />;
-    } else {
-        return <CameraStream {...params} navigation={navigation} />;
-    }
+
+    // const detailScreens = () => (
+    //     <ScrollableTabView locked>
+    //         <CameraStream tabLabel="Stream" {...params} />
+    //         <CameraVideos tabLabel="Media" events={events} />
+    //     </ScrollableTabView>
+    // );
+
+    return (
+        <Drawer.Navigator
+            initialRouteName={'Camera'}
+            drawerPosition={'right'}
+            drawerType={'front'}
+            drawerContent={props => <DrawerContent {...props} />}
+        >
+            <Drawer.Screen
+                name={'Camera'}
+                component={events.length > 0 ? Detail : CameraStream}
+                initialParams={params}
+            />
+            <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
+        </Drawer.Navigator>
+    );
 };
 
 const Detail = ({ events, params, ...props }) => (
@@ -121,7 +208,12 @@ const Detail = ({ events, params, ...props }) => (
         }}
     >
         <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
-        <CameraVideos tabLabel="Thư viện " events={events} camera={params.camera} {...props} />
+        <CameraVideos
+            tabLabel="Thư viện "
+            events={events}
+            camera={params && params.camera}
+            {...props}
+        />
     </ScrollableTabView>
 );
 module.exports = CameraTabs;

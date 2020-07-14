@@ -64,7 +64,10 @@ export default class CameraVideos extends Component {
     }
 
     componentDidMount = async () => {
-        let camera = this.props.camera;
+        let camera =
+            this.props.camera || (this.props.route.params && this.props.route.params.camera);
+        console.log('this.props', camera);
+
         let userToken = await AsyncStorage.getItem('userToken');
         getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {

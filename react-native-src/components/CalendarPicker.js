@@ -94,10 +94,10 @@ export default class CalendarPicker extends Component {
     };
     renderItem = item => {
         // console.log('item', item);
-        const d = new Date(parseInt(item.timeStart));
+        const d = new Date(Number(item.timeStart));
         const n = d.toLocaleTimeString();
-        const end = new Date(parseInt(item.timeEnd)).toLocaleTimeString();
-        // console.log('n', n);
+        const end = new Date(Number(item.timeEnd)).toLocaleTimeString();
+        console.log('n', n);
         return (
             <TouchableOpacity
                 testID={'ITEM'}

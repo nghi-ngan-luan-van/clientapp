@@ -20,6 +20,8 @@ import SettingsDrawer from './CameraTabs';
 import EditMode from '../screens/editcamera/EditMode';
 import CameraTabs from './CameraTabs';
 import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
+// import { DrawerActions } from 'react-navigation-drawer';
+
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     backgroundImg: {
@@ -123,11 +125,19 @@ export default function HomeNavigator(props) {
                 name={AppRoute.CAMERA_DETAIL}
                 component={CameraTabs}
                 options={({ route }) => ({
-                    // header: () => {
-                    //     return ( <View/>);
-                    // },
-                    // headerShown:false,
-                    // headerTitle: 'Hello',
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => {
+                                // DrawerActions.toggleDrawer();
+                            }}
+                        >
+                            <Image
+                                style={{ margin: 12, width: 30, height: 30 }}
+                                source={require('../assets/ic_settings.png')}
+                            />
+                        </TouchableOpacity>
+                    ),
+
                     headerStyle: { backgroundColor: Colors.screen },
                 })}
             />

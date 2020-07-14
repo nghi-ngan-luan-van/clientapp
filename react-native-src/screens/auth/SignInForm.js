@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
 export default function SignInForm(props) {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
-    console.log('props',props)
     const { signIn } = React.useContext(AuthContext);
     return (
         <View style={[{ flex: 1, justifyContent: 'space-between' }, props.style]}>

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { AuthContext } from './AppNavigator';
 import { AppRoute } from './app-routes';
 import AddingCamera from '../screens/adding/AddingCamera';
 import HomeScreen from '../screens/HomeScreen';
@@ -9,6 +11,8 @@ import MediaDetail from '../screens/media/MediaDetail';
 import { Image, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
 import EditCamera from '../screens/editcamera/index';
 import { Colors } from '../utils/AppConfig';
+
+const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 import Header from '../components/Header';
@@ -23,8 +27,20 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
 });
-export default class HomeNavigator extends React.PureComponent {
-    getHeaderTitle(route) {
+
+// export const FeedStack = () => {
+//     return (
+//         <Stack.Navigator initialRouteName="Feed">
+//             <Stack.Screen name="Feed" component={Feed} options={{ headerTitle: 'Twitter' }} />
+//             <Stack.Screen name="Details" component={Details} options={{ headerTitle: 'Tweet' }} />
+//         </Stack.Navigator>
+//     );
+// };
+
+export default function HomeNavigator(props) {
+    const { signOut } = useContext(AuthContext);
+
+    const getHeaderTitle = route => {
         // console.log(route);
         // Access the tab navigator's state using `route.state`
         const routeName =
@@ -45,74 +61,84 @@ export default class HomeNavigator extends React.PureComponent {
             case 'Account':
                 return 'My account';
         }
-    }
-    render() {
-        return (
-            <Stack.Navigator
-                {...this.props}
-                initialRouteName={AppRoute.HOME}
-                screenOptions={({ route = {} }) => ({
-                    animationEnabled: true,
-                    // headerTransparent:true,
-                    headerBackTitleVisible: false,
-                    headerStyle: { backgroundColor: Colors.screen },
-                    headerTitle: this.getHeaderTitle(route),
-                    headerBackImage: () => (
-                        <Image
-                            style={{ width: 18, height: 18, marginLeft: 12 }}
-                            source={require('../assets/ic_back.png')}
-                        />
+    };
+
+    return (
+        //     <Drawer.Navigator drawerContent={() => <DrawerContent />}>
+        //         <Drawer.Screen name="Home" component={HomeScreen} />
+        //     </Drawer.Navigator>
+        <Stack.Navigator
+            {...props}
+            initialRouteName={AppRoute.HOME}
+            screenOptions={({ route = {} }) => ({
+                animationEnabled: true,
+                // headerTransparent:true,
+                headerBackTitleVisible: false,
+                headerStyle: { backgroundColor: Colors.screen },
+                headerTitle: getHeaderTitle(route),
+                headerBackImage: () => (
+                    <Image
+                        style={{ width: 18, height: 18, marginLeft: 12 }}
+                        source={require('../assets/ic_back.png')}
+                    />
+                ),
+                //     headerBackground:()=> <Image
+                //     // style={styles.backgroundImg}
+                //     source={require('../assets/background_image.png')}
+                // />
+                // header: (props) => ( <Header {...props}/>)
+            })}
+            headerMode="float"
+        >
+            <Stack.Screen
+                name={AppRoute.HOME}
+                component={HomeScreen}
+                options={({ route }) => ({
+                    // header: () => {
+                    //     return ( <View/>);
+                    // },
+                    // headerShown:false,
+                    // headerTitle: 'Hello',
+                    headerLeft: () => (
+                        <TouchableOpacity onPress={() => {}}>
+                            <Image
+                                style={{ margin: 12, width: 30, height: 30 }}
+                                source={require('../assets/ic_rainbow.png')}
+                            />
+                        </TouchableOpacity>
                     ),
-                    //     headerBackground:()=> <Image
-                    //     // style={styles.backgroundImg}
-                    //     source={require('../assets/background_image.png')}
-                    // />
-                    // header: (props) => ( <Header {...props}/>)
+                    headerRight: () => (
+                        <TouchableOpacity onPress={() => signOut()}>
+                            <Image
+                                style={{ margin: 12, width: 30, height: 30 }}
+                                source={require('../assets/ic_logout.png')}
+                            />
+                        </TouchableOpacity>
+                    ),
                 })}
-                headerMode="float"
-            >
-                <Stack.Screen
-                    name={AppRoute.HOME}
-                    component={HomeScreen}
-                    options={({ route }) => ({
-                        // header: () => {
-                        //     return ( <View/>);
-                        // },
-                        // headerShown:false,
-                        // headerTitle: 'Hello',
-                        headerLeft: () => (
-                            <TouchableOpacity>
-                                <Image
-                                    style={{ margin: 12, width: 30, height: 30 }}
-                                    source={require('../assets/ic_rainbow.png')}
-                                />
-                            </TouchableOpacity>
-                        ),
-                    })}
-                    initialParams={this.props.route && this.props.route.params}
-                />
-                <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
-                <Stack.Screen
-                    name={AppRoute.CAMERA_DETAIL}
-                    component={CameraTabs}
-                    options={({ route }) => ({
-                        // header: () => {
-                        //     return ( <View/>);
-                        // },
-                        // headerShown:false,
-                        // headerTitle: 'Hello',
-                        headerStyle: { backgroundColor: Colors.screen },
-                    })}
-                />
-                <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
-                <Stack.Screen name={AppRoute.VIDEO_PLAYER_SCREEN} component={VideoPlayerScreen} />
+                initialParams={props.route && props.route.params}
+            />
+            <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
+            <Stack.Screen
+                name={AppRoute.CAMERA_DETAIL}
+                component={CameraTabs}
+                options={({ route }) => ({
+                    // header: () => {
+                    //     return ( <View/>);
+                    // },
+                    // headerShown:false,
+                    // headerTitle: 'Hello',
+                    headerStyle: { backgroundColor: Colors.screen },
+                })}
+            />
+            <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
+            <Stack.Screen name={AppRoute.VIDEO_PLAYER_SCREEN} component={VideoPlayerScreen} />
 
-                <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
-                <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
-                <Stack.Screen name={AppRoute.CAMERA_EDIT_MODE} component={EditMode} />
+            <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
+            <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
+            <Stack.Screen name={AppRoute.CAMERA_EDIT_MODE} component={EditMode} />
 
-                <Stack.Screen name={AppRoute.SETTINGS} component={SettingsDrawer} />
-            </Stack.Navigator>
-        );
-    }
+            <Stack.Screen name={AppRoute.SETTINGS} component={SettingsDrawer} />
+        </Stack.Navigator>
+    );
 }

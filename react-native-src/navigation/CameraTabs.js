@@ -5,8 +5,6 @@ import { Icon } from 'react-native-elements';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { Colors } from '../utils/AppConfig';
 import _ from 'lodash';
-import {HOST_URL} from "../utils/AppConst";
-
 import CameraStream from '../screens/details/CameraStream';
 import {
     createDrawerNavigator,
@@ -47,62 +45,8 @@ function DrawerContent(props) {
     const { navigation } = props;
     const camera = _.get(props, 'state.routes[0].params.camera', {});
     const [isEnabled, setIsEnabled] = useState(camera.backupMode);
-    const toggleSwitch = () => {
-        console.log('isEnabled',isEnabled)
-        setIsEnabled(previousState => !previousState)
-        if (!isEnabled){
-            onSwitchRecordMode()
-        }
-        else {
-            onSwitchDetectMode()
-        }
-    };
-    const onSwitchDetectMode = async() =>{
-        const token = await AsyncStorage.getItem('userToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${token}`);
-        myHeaders.append('Content-Type', 'application/json');
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-        let raw = JSON.stringify({ _id: camera._id });
-
-        let requestOptions = {
-             method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-         };
-
-        fetch(HOST_URL + 'camera/turndetect', requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                console.log(result)
-                let { navigation } = props;
-                navigation && navigation.navigate('Camera');
-            });
-    }
-    const onSwitchRecordMode = async() =>{
-        const token = await AsyncStorage.getItem('userToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${token}`);
-        myHeaders.append('Content-Type', 'application/json');
-
-        let raw = JSON.stringify({ _id: camera._id });
-
-        let requestOptions = {
-             method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-         };
-
-        fetch(HOST_URL + 'camera/recorddetect', requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                console.log(result)
-                let { navigation } = props;
-                navigation && navigation.navigate('Camera');
-            });
-    }
     return (
         <DrawerContentScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
             <DrawerItem

@@ -54,7 +54,7 @@ export default class CameraVideos extends Component {
             paused: false,
             animating: true,
             currentDay: '',
-            isFull:false,
+            isFull: false,
         };
         this.bufferTime = 0;
         this.tmpDuration = 0;
@@ -74,7 +74,7 @@ export default class CameraVideos extends Component {
         this.loadItems();
     };
 
-    componentWillUnmount() { }
+    componentWillUnmount() {}
 
     timeToString = time => {
         const date = new Date(time);
@@ -109,9 +109,20 @@ export default class CameraVideos extends Component {
     _onError = e => {
         console.log('_onError');
     };
-
     setBackupList = obj => {
         this.setState({ backupList: obj });
+    };
+    onPausePress = () => {
+        let { paused } = this.state.frontVideoState;
+        console.log('this_pause', paused);
+
+        this.setState(prevState => ({
+            frontVideoState: {
+                // object that we want to update
+                ...prevState.frontVideoState, // keep all other key-value pairs
+                paused: !paused,
+            },
+        }));
     };
 
     onEnd = () => {
@@ -129,7 +140,7 @@ export default class CameraVideos extends Component {
         }
         console.log('onEnd');
     };
-    onStopped = () => { };
+    onStopped = () => {};
 
     onBuffering = e => {
         console.log('_onBuffering', e);
@@ -204,7 +215,7 @@ export default class CameraVideos extends Component {
                     showTitle={true}
                     title={cdnUrl}
                     showBack={true}
-                    onLeftPress={() => { }}
+                    onLeftPress={() => {}}
                     startFullScreen={() => {
                         this.setState({
                             isFull: true,

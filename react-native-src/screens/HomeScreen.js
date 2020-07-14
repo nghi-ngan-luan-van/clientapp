@@ -28,7 +28,6 @@ export default function HomeScreen(props) {
 
     useFocusEffect(() =>
         Orientation.getOrientation((err, orientation) => {
-            console.log(`Current Device Orientation: ${orientation}`);
             if (orientation === 'LANDSCAPE') {
                 Orientation.lockToPortrait();
             }

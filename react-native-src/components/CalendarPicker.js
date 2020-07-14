@@ -17,7 +17,7 @@ export default class CalendarPicker extends Component {
         };
         this.newData = {};
         this.newBackupList = {};
-        this.allData={}
+        this.allData = {};
         this.markedDates = {
             // '2017-05-08': { textColor: '#43515c' },
             // '2017-05-09': { textColor: '#43515c' },
@@ -43,7 +43,7 @@ export default class CalendarPicker extends Component {
         });
     };
     groupBackupListTime = () => {
-        console.log(this.props);
+        // console.log(this.props);
         let { recordVideos = [] } = this.state;
         recordVideos.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
@@ -61,7 +61,7 @@ export default class CalendarPicker extends Component {
             console.log('time', time, 'strTime', strTime);
             this.newData = {};
             this.newBackupList = {};
-            this.allData={};
+            this.allData = {};
             this.groupTime();
             this.groupBackupListTime();
             if (!this.newData[strTime]) {
@@ -70,12 +70,12 @@ export default class CalendarPicker extends Component {
             if (!this.newBackupList[strTime]) {
                 this.newBackupList[strTime] = [];
             }
-            this.allData=this.newData
+            this.allData = this.newData;
             console.log('this.allData ', this.allData);
 
             this.newBackupList[strTime].forEach((value, index, arr) => {
-                this.allData[strTime].push(value)
-            })
+                this.allData[strTime].push(value);
+            });
             console.log('this.newData', this.newData);
             console.log('this.newbackupList ', this.newBackupList);
             console.log('this.allData ', this.allData);
@@ -96,17 +96,19 @@ export default class CalendarPicker extends Component {
         // console.log('item', item);
         const d = new Date(parseInt(item.timeStart));
         const n = d.toLocaleTimeString();
-        const end = new Date(parseInt(item.timeEnd)).toLocaleTimeString()
+        const end = new Date(parseInt(item.timeEnd)).toLocaleTimeString();
         // console.log('n', n);
         return (
             <TouchableOpacity
                 testID={'ITEM'}
                 style={[styles.item, { height: 50 }]}
-                onPress={() => (item.cdnUrl!==null ? this.renderVideoByItem(item) : {})}
+                onPress={() => (item.cdnUrl !== null ? this.renderVideoByItem(item) : {})}
             >
                 <Text>
-                    {item.cdnUrl!==null ? `Video: ⏰ ${n} - ${end} ` : ` Phát hiện chuyển động ${n} - ${end}`}
-                </Text> 
+                    {item.cdnUrl !== null
+                        ? `Video: ⏰ ${n} - ${end} `
+                        : ` Phát hiện chuyển động ${n} - ${end}`}
+                </Text>
             </TouchableOpacity>
         );
     };

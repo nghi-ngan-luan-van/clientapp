@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CalendarPicker from '../../components/CalendarPicker';
-import { getMovingEvents } from '../../utils/ApiUtils';
+import { getMovingEvents,getBackupVideo } from '../../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CustomVideoView from './CustomVideoView';
 import Orientation from 'react-native-orientation';
@@ -74,7 +74,12 @@ export default class CameraVideos extends Component {
                 this.setState({ eventList: respond });
             }
         });
-        this.loadItems();
+        getBackupVideo({ userToken, camera }, respond => {
+            if (Array.isArray(respond)) {
+                this.setState({ backupList: respond });
+            }
+        });
+        // this.loadItems();
     };
 
     componentWillUnmount() {}
@@ -83,29 +88,29 @@ export default class CameraVideos extends Component {
         const date = new Date(time);
         return date.toISOString().split('T')[0];
     };
-    groupBackupListTime = () => {
-        let { events = [] } = this.props;
-        events.forEach((value, index, arr) => {
-            const date = moment(Number(value.timeStart)).startOf('day');
-            const strDate = this.timeToString(date);
-            if (!this.newBackupList[strDate]) {
-                this.newBackupList[strDate] = [];
-            }
-            this.newBackupList[strDate].push(value);
-        });
-    };
-    loadItems = () => {
-        const time = Date.now();
-        const strTime = this.timeToString(time);
-        console.log('time', time, 'strTime', strTime);
-        this.newBackupList = {};
-        this.groupBackupListTime();
-        if (!this.newBackupList[strTime]) {
-            this.newBackupList[strTime] = [];
-        }
-        console.log('thiss.newbackupList2222 ', this.newBackupList);
-        this.setState({ backupList: this.newBackupList[strTime] });
-    };
+    // groupBackupListTime = () => {
+    //     let { events = [] } = this.props;
+    //     events.forEach((value, index, arr) => {
+    //         const date = moment(Number(value.timeStart)).startOf('day');
+    //         const strDate = this.timeToString(date);
+    //         if (!this.newBackupList[strDate]) {
+    //             this.newBackupList[strDate] = [];
+    //         }
+    //         this.newBackupList[strDate].push(value);
+    //     });
+    // };
+    // loadItems = () => {
+    //     const time = Date.now();
+    //     const strTime = this.timeToString(time);
+    //     console.log('time', time, 'strTime', strTime);
+    //     this.newBackupList = {};
+    //     this.groupBackupListTime();
+    //     if (!this.newBackupList[strTime]) {
+    //         this.newBackupList[strTime] = [];
+    //     }
+    //     console.log('thiss.newbackupList2222 ', this.newBackupList);
+    //     this.setState({ backupList: this.newBackupList[strTime] });
+    // };
     getDate = day => {
         console.log(day);
     };
@@ -251,8 +256,8 @@ export default class CameraVideos extends Component {
     };
 
     render() {
-        let { eventList } = this.state;
-        console.log('this.state', this.state);
+        let { eventList,backupList } = this.state;
+        console.log('this.state', this.state.backupList);
         return (
             <View style={{ flex: 1 }}>
                 {/* {this.renderFrontVideo()} */}
@@ -261,7 +266,7 @@ export default class CameraVideos extends Component {
                 {!!(eventList.length > 0) && (
                     <CalendarPicker
                         {...this.props}
-                        backupList={this.props.events}
+                        backupList={backupList}
                         setBackupList={this.setBackupList}
                         data={eventList}
                         callback={this.getDate}

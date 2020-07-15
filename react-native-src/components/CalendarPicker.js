@@ -33,6 +33,7 @@ export default class CalendarPicker extends Component {
     componentDidMount = () => {};
 
     groupTime = () => {
+        console.log('this.state.data',this.state.data)
         this.state.data.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);
@@ -44,7 +45,8 @@ export default class CalendarPicker extends Component {
     };
     groupBackupListTime = () => {
         // console.log(this.props);
-        let { recordVideos = [] } = this.state;
+        let { recordVideos} = this.state;
+        console.log('recordVideos',recordVideos)
         recordVideos.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);

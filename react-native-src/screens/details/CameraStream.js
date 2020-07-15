@@ -44,7 +44,7 @@ export default function CameraStream(props) {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text>Switch mode</Text>
+                    {/* <Text>Switch mode</Text> */}
                 </View>
             </View>
         )

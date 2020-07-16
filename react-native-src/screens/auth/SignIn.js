@@ -55,6 +55,16 @@ export default function SignIn(props) {
                             marginTop: -height / 8,
                         }}
                     />
+                    <Button
+                        title={'Bạn chưa có tài khoản? Đăng kí'}
+                        type="outline"
+                        titleStyle={{ color: Colors.brandy_rose }}
+                        buttonStyle={{ borderRadius: 24, borderColor: Colors.screen }}
+                        onPress={() => {
+                            const { navigation } = props || {};
+                            navigation && navigation.push(AppRoute.SIGN_UP);
+                        }}
+                    />
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

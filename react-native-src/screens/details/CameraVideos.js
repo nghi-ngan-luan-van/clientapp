@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CalendarPicker from '../../components/CalendarPicker';
-import { getMovingEvents,getBackupVideo } from '../../utils/ApiUtils';
+import { getMovingEvents, getBackupVideo } from '../../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CustomVideoView from './CustomVideoView';
 import Orientation from 'react-native-orientation';
@@ -66,7 +66,6 @@ export default class CameraVideos extends Component {
     componentDidMount = async () => {
         let camera =
             this.props.camera || (this.props.route.params && this.props.route.params.camera);
-        console.log('this.props', camera);
 
         let userToken = await AsyncStorage.getItem('userToken');
         getMovingEvents({ userToken, camera }, respond => {
@@ -256,7 +255,7 @@ export default class CameraVideos extends Component {
     };
 
     render() {
-        let { eventList,backupList } = this.state;
+        let { eventList, backupList } = this.state;
         console.log('this.state', this.state.backupList);
         return (
             <View style={{ flex: 1 }}>

@@ -12,10 +12,11 @@ import { useSafeArea } from 'react-native-safe-area-context';
 const { width } = Dimensions.get('window');
 
 export default function CameraStream(props) {
-    const [camera, setCamera] = useState(_.get(props, 'camera', {}));
+    const propscam = props.camera || (props.route.params && props.route.params.camera);
+
+    const [camera, setCamera] = useState(propscam, {});
     const [isFull, setFull] = useState(false);
     const insets = useSafeArea();
-    console.log('props', props);
 
     return (
         !!camera && (

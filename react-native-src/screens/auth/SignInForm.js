@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.brandy_rose,
         paddingVertical: 16,
         paddingHorizontal: 50,
-        borderRadius: 40,
+        borderRadius: 24,
     },
 });
 
@@ -94,14 +94,7 @@ export default function SignInForm(props) {
                     onChangeText={value => setPassword(value)}
                 />
             </View>
-            <Button
-                title={'Đăng kí'}
-                buttonStyle={styles.button}
-                onPress={() => {
-                    const { navigation } = props || {};
-                    navigation && navigation.push(AppRoute.SIGN_UP);
-                }}
-            />
+
             <Button
                 title={'Đăng nhập'}
                 buttonStyle={styles.button}

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text, Button, Alert,Image } from 'react-native';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import Loader from '../../components/LoadingModal';
+import { HOST_URL } from '../../utils/AppConst';
 
 class AddingCamera extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class AddingCamera extends Component {
         this.state = {
             name: '',
             rtspUrl: '',
-            thumbnail: '',
+            thumbnail: 'nothing',
             isTestConnection: false,
             loading: false,
         };
@@ -43,7 +44,7 @@ class AddingCamera extends Component {
             redirect: 'follow',
         };
 
-        await fetch('http://128.199.211.44/camera/testconnection', requestOptions)
+        await fetch(HOST_URL+ 'camera/testconnection', requestOptions)
             .then(response => {
                 // console.log(response.status)
                 if (response.status !== 200) {
@@ -142,6 +143,11 @@ class AddingCamera extends Component {
                     onPress={this.onAddCamera}
                 />
                 <Button title={'Test Connection'} onPress={this.onTestCamera} />
+                <Image
+                    style={{height:200,width:200,opacity:this.state.thumbnail!==''? 1 :0}}
+                    source={{uri:this.state.thumbnail}}
+                    
+                />
             </View>
         );
     }

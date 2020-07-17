@@ -28,13 +28,13 @@ export default class VideoPlayerScreen extends Component {
         if (this.vlcplayer) {
             if (Platform.OS === 'ios') {
                 // console.log(this.vlcplayer);
-                this.vlcplayer.seek(0.7);
+                this.vlcplayer.seek(0.1);
             } else {
-                this.vlcplayer.seek(10000);
+                this.vlcplayer.seek(1);
             }
         }
 
-        this.pause();
+        // this.pause();
     };
 
     onPaused = event => {
@@ -57,7 +57,7 @@ export default class VideoPlayerScreen extends Component {
                     onPaused={this.onPaused}
                 />
                 <Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />
-                <Button title={'pause'} onPress={this.pause} />
+                <Button title={'pause'} onPress={this.pause} style={{ padding: 12 }} />
                 {/*<VlCPlayerView*/}
                 {/*    autoplay={true}*/}
                 {/*    url={video.cdnUrl}*/}

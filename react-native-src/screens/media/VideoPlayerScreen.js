@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { VlCPlayerView, VLCPlayer } from 'react-native-vlc-media-player';
 //import Video from 'react-native-video';
@@ -25,9 +25,13 @@ export default class VideoPlayerScreen extends Component {
     };
     seek = () => {
         console.log('aaa');
-        // console.log(this.vlcplayer);
         if (this.vlcplayer) {
-            this.vlcplayer.seek(0.7);
+            if (Platform.OS === 'ios') {
+                // console.log(this.vlcplayer);
+                this.vlcplayer.seek(0.7);
+            } else {
+                this.vlcplayer.seek(10000);
+            }
         }
 
         this.pause();

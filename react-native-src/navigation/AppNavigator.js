@@ -17,7 +17,7 @@ export default function AppNavigator() {
                 case 'RESTORE_TOKEN':
                     return {
                         ...prevState,
-                        userToken: action.token,
+                        userToken: action && action.token,
                         isLoading: false,
                         isSignout: false,
                         data: action.data,

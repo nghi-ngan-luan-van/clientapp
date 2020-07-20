@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
-import { Input } from 'react-native-elements';
+import { View, Text, StyleSheet } from 'react-native';
+import { Input, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import Loader from '../../components/LoadingModal';
-
+import { Colors } from '../../utils/AppConfig';
 class AddingCamera extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +16,7 @@ class AddingCamera extends Component {
             loading: false,
         };
         this.token = null;
+        this.addtoken = null;
     }
 
     async componentDidMount() {
@@ -74,7 +75,6 @@ class AddingCamera extends Component {
 
         //call api get all data of this user
         let { rtspUrl, name, thumbnail } = this.state;
-
         let token = await AsyncStorage.getItem('userToken');
 
         var myHeaders = new Headers();
@@ -120,31 +120,52 @@ class AddingCamera extends Component {
         //     rtspUrl: '',
         // }
         return (
-            <View>
+            <View style={{ flex: 1, backgroundColor: Colors.white }}>
                 <Loader loading={this.state.loading} />
                 <Input
-                    placeholder="Name"
-                    leftIcon={{ type: 'font-awesome', name: 'comment' }}
-                    style={{ height: '36' }}
+                    placeholder="Tên camera"
+                    leftIcon={{ type: 'font-awesome', name: 'home' }}
+                    inputContainerStyle={[styles.inputRow, { marginTop: 24 }]}
+                    // style={{ marginBottom: -24 }}
                     onChangeText={name => this.setState({ name })}
                 />
 
                 <Input
                     placeholder="Url"
                     leftIcon={{ type: 'font-awesome', name: 'comment' }}
-                    style={{ height: '36' }}
+                    // style={styles.inputRow}
+                    inputContainerStyle={styles.inputRow}
                     onChangeText={rtspUrl => this.setState({ rtspUrl })}
                 />
-
-                <Button
-                    disabled={!this.state.isTestConnection}
-                    title={'ADD'}
-                    onPress={this.onAddCamera}
-                />
-                <Button title={'Test Connection'} onPress={this.onTestCamera} />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <Button
+                        title={'Kiểm tra'}
+                        style={{ width: 100 }}
+                        type={'solid'}
+                        onPress={this.onTestCamera}
+                    />
+                    <Button
+                        disabled={!this.state.isTestConnection}
+                        title={'Thêm'}
+                        onPress={this.onAddCamera}
+                        // titleStyle={{ fontSize: 20 }}
+                        style={{ width: 100 }}
+                        type={'solid'}
+                    />
+                </View>
             </View>
         );
     }
 }
 
 export default AddingCamera;
+const styles = StyleSheet.create({
+    inputRow: {
+        height: 50,
+        borderRadius: 12,
+        backgroundColor: Colors.pigeon_post,
+        // marginTop: 12,
+        padding: 12,
+        borderBottomWidth: 0,
+    },
+});

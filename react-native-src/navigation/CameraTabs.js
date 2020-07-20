@@ -126,7 +126,7 @@ function DrawerContent(props) {
                         source={require('../assets/ic_edit.png')}
                     />
                 )}
-                label="Edit camera information"
+                label="Chỉnh sửa thông tin camera"
                 labelStyle={styles.label}
                 onPress={() => {
                     navigation && navigation.navigate && navigation.navigate('Edit');
@@ -134,7 +134,7 @@ function DrawerContent(props) {
             />
             <DrawerItem
                 icon={() => <Switch onValueChange={toggleSwitch} value={isEnabled} />}
-                label="Turn Back up Mode"
+                label="Chế độ backup"
                 labelStyle={styles.label}
             />
         </DrawerContentScrollView>

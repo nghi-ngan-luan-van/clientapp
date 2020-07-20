@@ -60,8 +60,10 @@ export default function HomeNavigator(props) {
                 return 'Thiết bị của bạn';
             case AppRoute.CAMERA_DETAIL:
                 return 'Chi tiết';
-            case 'Account':
-                return 'My account';
+            case AppRoute.ADD_CAMERA:
+                return 'Thêm camera';
+            case AppRoute.SIGN_UP:
+                return 'Đăng ký';
         }
     };
 

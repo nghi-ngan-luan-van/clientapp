@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -18,6 +18,7 @@ import { getBackupVideo, getMovingEvents } from '../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';
+import { AuthContext } from './AppNavigator';
 const Drawer = createDrawerNavigator();
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -78,6 +79,7 @@ function DrawerContent(props) {
                 navigation && navigation.navigate('Camera');
             });
     };
+
     const onSwitchRecordMode = async () => {
         const token = await AsyncStorage.getItem('userToken');
         let myHeaders = new Headers();
@@ -124,7 +126,7 @@ function DrawerContent(props) {
                         source={require('../assets/ic_edit.png')}
                     />
                 )}
-                label="Edit camera information"
+                label="Chỉnh sửa thông tin camera"
                 labelStyle={styles.label}
                 onPress={() => {
                     navigation && navigation.navigate && navigation.navigate('Edit');
@@ -132,7 +134,7 @@ function DrawerContent(props) {
             />
             <DrawerItem
                 icon={() => <Switch onValueChange={toggleSwitch} value={isEnabled} />}
-                label="Turn Back up Mode"
+                label="Chế độ backup"
                 labelStyle={styles.label}
             />
         </DrawerContentScrollView>
@@ -143,6 +145,7 @@ const CameraTabs = props => {
     const params = _.get(props, 'route.params.params');
     let { navigation } = props;
     const [events, setEvents] = useState([]);
+    const { signOut } = useContext(AuthContext);
 
     useEffect(() => {
         const { camera } = params;
@@ -169,6 +172,10 @@ const CameraTabs = props => {
         getVideo(res => {
             if (Array.isArray(res)) {
                 setEvents(res);
+            } else {
+                if (!res) {
+                    signOut();
+                }
             }
         });
     }, []);

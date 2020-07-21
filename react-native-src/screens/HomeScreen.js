@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
         shadowColor: Colors.grey,
         shadowOffset: { width: 2, height: 2, right: 2 },
         shadowOpacity: 0.2,
+        elevation: 5,
     },
     cardView: {
         borderRadius: 16,

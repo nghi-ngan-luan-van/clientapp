@@ -21,32 +21,32 @@ export default function CameraStream(props) {
     return (
         !!camera && (
             <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-                <View style={{ flex: 1 }}>
-                    <VlCPlayerView
-                        autoplay={false}
-                        url={camera.rtspUrl}
-                        Orientation={Orientation}
-                        showGG={false}
-                        showTitle={true}
-                        title={camera.name}
-                        showBack={false}
-                        onLeftPress={() => {}}
-                        startFullScreen={() => setFull(true)}
-                        closeFullScreen={() => setFull(false)}
-                    />
-                </View>
-                <View
-                    style={{
-                        alignSelf: 'flex-end',
-                        backgroundColor: 'white',
-                        flexDirection: 'row',
-                        width: width,
-                        height: 40,
-                        justifyContent: 'center',
-                    }}
-                >
-                    {/* <Text>Switch mode</Text> */}
-                </View>
+                {/*<View style={{ flex: 1, al }}>*/}
+                <VlCPlayerView
+                    autoplay={false}
+                    url={camera.rtspUrl}
+                    Orientation={Orientation}
+                    showGG={false}
+                    showTitle={true}
+                    title={camera.name}
+                    showBack={false}
+                    onLeftPress={() => {}}
+                    startFullScreen={() => setFull(true)}
+                    closeFullScreen={() => setFull(false)}
+                />
+                {/*</View>*/}
+                {/*<View*/}
+                {/*    style={{*/}
+                {/*        alignSelf: 'flex-end',*/}
+                {/*        backgroundColor: 'white',*/}
+                {/*        flexDirection: 'row',*/}
+                {/*        width: width,*/}
+                {/*        height: 40,*/}
+                {/*        justifyContent: 'center',*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/* <Text>Switch mode</Text> */}
+                {/*</View>*/}
             </View>
         )
     );
@@ -54,9 +54,10 @@ export default function CameraStream(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: Colors.black,
+        backgroundColor: Colors.black,
         justifyContent: 'center',
         paddingBottom: 12,
+        alignContent: 'center',
     },
     selectMenu: {
         height: 50,

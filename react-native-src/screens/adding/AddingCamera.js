@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Alert,Image } from 'react-native';
+import { View, Text, Button, Alert,Image,StyleSheet } from 'react-native';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import Loader from '../../components/LoadingModal';
 import { HOST_URL } from '../../utils/AppConst';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 class AddingCamera extends Component {
     constructor(props) {

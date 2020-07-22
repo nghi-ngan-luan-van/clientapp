@@ -14,6 +14,7 @@ export default class VideoPlayerScreen extends Component {
         this.state = {
             paused: false,
             video: _.get(props, 'route.params.video', {}),
+            seekTime: _.get(props, 'route.params.seekTime', 0),
         };
     }
     componentDidMount() {}
@@ -25,16 +26,16 @@ export default class VideoPlayerScreen extends Component {
     };
     seek = () => {
         console.log('aaa');
+        this.pause();
         if (this.vlcplayer) {
             if (Platform.OS === 'ios') {
-                // console.log(this.vlcplayer);
+                console.log(this.vlcplayer);
                 this.vlcplayer.seek(0.1);
             } else {
-                this.vlcplayer.seek(1);
+                this.vlcplayer.seek(this.state.seekTime/1000);
             }
         }
-
-        // this.pause();
+        this.pause();
     };
 
     onPaused = event => {
@@ -45,7 +46,7 @@ export default class VideoPlayerScreen extends Component {
     };
     render() {
         const { video } = this.state;
-        // console.log('video', video);
+        console.log('video', video);
         return (
             <View style={styles.container}>
                 <VLCPlayer
@@ -56,8 +57,8 @@ export default class VideoPlayerScreen extends Component {
                     onProgress={this.onProgress}
                     onPaused={this.onPaused}
                 />
-                {/*<Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />*/}h{' '}
-                {/*<Button title={'pause'} onPress={this.pause} style={{ padding: 12 }} />*/}
+                <Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />
+                <Button title={'pause'} onPress={this.pause} style={{ padding: 12 }} />
                 {/*<VlCPlayerView*/}
                 {/*    autoplay={true}*/}
                 {/*    url={video.cdnUrl}*/}

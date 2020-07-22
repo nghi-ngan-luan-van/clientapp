@@ -88,11 +88,29 @@ export default class CalendarPicker extends Component {
             this.setState({ items: newItems });
         }, 1000);
     };
-
+    findVideo = item =>{
+        const date = moment(Number(item.timeStart)).startOf('day');
+        const strDate = this.timeToString(date);
+        console.log(strDate)
+        const found = this.newBackupList[strDate].filter(value=>{
+            return item.timeStart>=value.timeStart && item.timeStart <=value.timeEnd
+        })
+        return found[0]
+    }
     renderVideoByItem = item => {
         let { navigation } = this.props;
-        console.log('renderVideoByItem', this.props);
-        navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: item });
+        if (item.cdnUrl===null) {
+            console.log('aa')
+            const found = this.findVideo(item)
+            console.log(found)
+            if (found) {
+                navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: found,seekTime:Number(item.timeStart-found.timeStart) });
+            }
+        }
+        else{
+            console.log('renderVideoByItem', this.props);
+            navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: item });
+        }
     };
     renderItem = item => {
         // console.log('item', item);
@@ -104,12 +122,12 @@ export default class CalendarPicker extends Component {
             <TouchableOpacity
                 testID={'ITEM'}
                 style={[styles.item, { height: 50 }]}
-                onPress={() => (item.cdnUrl !== null ? this.renderVideoByItem(item) : {})}
+                onPress={()=>this.renderVideoByItem(item)}
             >
                 <Text>
                     {item.cdnUrl !== null
-                        ? `Video: ⏰ ${n} - ${end} `
-                        : ` Phát hiện chuyển động ${n} - ${end}`}
+                        ? `📷 ${n} - ${end} `
+                        : ` 🚶 ${n} - ${end}`}
                 </Text>
             </TouchableOpacity>
         );

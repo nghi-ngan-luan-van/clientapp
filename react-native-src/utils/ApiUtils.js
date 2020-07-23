@@ -50,6 +50,14 @@ export const signIn = (params, callback) => {
         callback();
     }
 };
+export const signInGG = (params, callback) => {
+    try {
+        post(HOST_URL + 'auth/login', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils signIn', e);
+        callback();
+    }
+};
 export const signUp = (params, callback) => {
     let { name, email, password } = params;
     let data = {

@@ -83,6 +83,22 @@ export default function AppNavigator() {
                 }
             },
 
+            googleSignIn: async data => {
+                try {
+                    console.log('datadata', data);
+                    await signInGG(data, async result => {
+                        let { token } = result;
+                        if (!token) {
+                            alert('Wrong email or password, please try again');
+                        }
+                        await AsyncStorage.setItem('userToken', token);
+                        dispatch({ type: 'SIGN_IN', token: token });
+                    });
+                } catch (e) {
+                    console.warn('Signin Error');
+                }
+            },
+
             signOut: () => dispatch({ type: 'SIGN_OUT' }),
             signUp: async data => {
                 dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });

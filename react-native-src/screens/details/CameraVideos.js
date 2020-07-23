@@ -68,12 +68,12 @@ export default class CameraVideos extends Component {
             this.props.camera || (this.props.route.params && this.props.route.params.camera);
 
         let userToken = await AsyncStorage.getItem('userToken');
-        getMovingEvents({ userToken, camera }, respond => {
+        await getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
                 this.setState({ eventList: respond });
             }
         });
-        getBackupVideo({ userToken, camera }, respond => {
+        await getBackupVideo({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
                 this.setState({ backupList: respond });
             }
@@ -262,7 +262,7 @@ export default class CameraVideos extends Component {
                 {/* {this.renderFrontVideo()} */}
 
                 <View style={{ height: 50 }} />
-                {!!(eventList.length > 0) && (
+                {!!(eventList.length > 0 || backupList.length>0) && (
                     <CalendarPicker
                         {...this.props}
                         backupList={backupList}

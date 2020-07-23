@@ -164,20 +164,20 @@ const CameraTabs = props => {
                     </TouchableOpacity>
                 ),
             });
-        const getVideo = async callback => {
-            let userToken = await AsyncStorage.getItem('userToken');
-            getBackupVideo({ userToken, camera }, callback);
-        };
+        // const getVideo = async callback => {
+        //     let userToken = await AsyncStorage.getItem('userToken');
+        //     getBackupVideo({ userToken, camera }, callback);
+        // };
 
-        getVideo(res => {
-            if (Array.isArray(res)) {
-                setEvents(res);
-            } else {
-                if (!res) {
-                    signOut();
-                }
-            }
-        });
+        // getVideo(res => {
+        //     if (Array.isArray(res)) {
+        //         setEvents(res);
+        //     } else {
+        //         if (!res) {
+        //             signOut();
+        //         }
+        //     }
+        // });
     }, []);
 
     // const detailScreens = () => (
@@ -196,7 +196,7 @@ const CameraTabs = props => {
         >
             <Drawer.Screen
                 name={'Camera'}
-                component={events.length > 0 ? Detail : CameraStream}
+                component={Detail}
                 initialParams={params}
             />
             <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
@@ -217,7 +217,6 @@ const Detail = ({ events, params, ...props }) => (
         <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
         <CameraVideos
             tabLabel="Thư viện "
-            events={events}
             camera={params && params.camera}
             {...props}
         />

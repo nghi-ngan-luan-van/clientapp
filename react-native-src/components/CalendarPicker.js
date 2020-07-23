@@ -46,8 +46,8 @@ export default class CalendarPicker extends Component {
     groupBackupListTime = () => {
         // console.log(this.props);
         let { recordVideos} = this.state;
-        console.log('recordVideos',recordVideos)
-        recordVideos.forEach((value, index, arr) => {
+        console.log('recordVideos',this.props.backupList)
+        this.props.backupList.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);
             if (!this.newBackupList[strDate]) {
@@ -57,7 +57,7 @@ export default class CalendarPicker extends Component {
         });
     };
     loadItems = day => {
-        setTimeout(() => {
+        setTimeout(async () => {
             const time = day.timestamp;
             const strTime = this.timeToString(time);
             console.log('time', time, 'strTime', strTime);
@@ -83,10 +83,13 @@ export default class CalendarPicker extends Component {
             console.log('this.allData ', this.allData);
 
             // this.props.setBackupList(this.newBackupList[strTime]);
-            let newItems = this.state.items;
-            newItems[strTime] = this.allData[strTime];
-            this.setState({ items: newItems });
-        }, 1000);
+            setTimeout(() => {
+                let newItems = this.state.items;
+                newItems[strTime] = this.allData[strTime];
+                this.setState({ items: newItems });
+            }, 1000);
+            }, 1000);
+           
     };
     findVideo = item =>{
         const date = moment(Number(item.timeStart)).startOf('day');
@@ -127,7 +130,7 @@ export default class CalendarPicker extends Component {
                 <Text>
                     {item.cdnUrl !== null
                         ? `📷 ${n} - ${end} `
-                        : ` 🚶 ${n} - ${end}`}
+                        : ` 🚶  ${n} - ${end}`}
                 </Text>
             </TouchableOpacity>
         );

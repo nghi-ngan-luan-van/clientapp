@@ -17,7 +17,17 @@ export default class VideoPlayerScreen extends Component {
             seekTime: _.get(props, 'route.params.seekTime', 0),
         };
     }
-    componentDidMount() {}
+    componentDidMount() {
+        if (this.vlcplayer) {
+            if (Platform.OS === 'ios') {
+                this.vlcplayer.seek(this.state.seekTime/10000);
+            } else {
+                console.log(this.vlcplayer);
+                console.log('sstate vlcmount', this.state);
+                this.vlcplayer.seek(this.state.seekTime/1000);
+            }
+        }
+    }
     pause = () => {
         let { paused } = this.state;
         this.setState({
@@ -26,7 +36,7 @@ export default class VideoPlayerScreen extends Component {
     };
     seek = () => {
         console.log('aaa');
-        this.pause();
+        // this.pause();
         if (this.vlcplayer) {
             if (Platform.OS === 'ios') {
                 console.log(this.vlcplayer);
@@ -35,7 +45,7 @@ export default class VideoPlayerScreen extends Component {
                 this.vlcplayer.seek(this.state.seekTime/1000);
             }
         }
-        this.pause();
+        // this.pause();
     };
 
     onPaused = event => {
@@ -46,7 +56,8 @@ export default class VideoPlayerScreen extends Component {
     };
     render() {
         const { video } = this.state;
-        console.log('video', video);
+        console.log('sstate vlc', this.state);
+        this.seek()
         return (
             <View style={styles.container}>
                 <VLCPlayer

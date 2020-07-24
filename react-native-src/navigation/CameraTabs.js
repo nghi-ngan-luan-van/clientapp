@@ -18,7 +18,6 @@ import { getBackupVideo, getMovingEvents } from '../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';
-import { AuthContext } from './AppNavigator';
 const Drawer = createDrawerNavigator();
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -145,7 +144,6 @@ const CameraTabs = props => {
     const params = _.get(props, 'route.params.params');
     let { navigation } = props;
     const [events, setEvents] = useState([]);
-    const { signOut } = useContext(AuthContext);
 
     useEffect(() => {
         const { camera } = params;
@@ -194,11 +192,7 @@ const CameraTabs = props => {
             drawerType={'front'}
             drawerContent={props => <DrawerContent {...props} />}
         >
-            <Drawer.Screen
-                name={'Camera'}
-                component={Detail}
-                initialParams={params}
-            />
+            <Drawer.Screen name={'Camera'} component={Detail} initialParams={params} />
             <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
         </Drawer.Navigator>
     );
@@ -206,6 +200,7 @@ const CameraTabs = props => {
 
 const Detail = ({ events, params, ...props }) => (
     <ScrollableTabView
+        renderTabBar={() => <CustomTab />}
         tabBarBackgroundColor={Colors.white}
         tabBarActiveTextColor={Colors.violet}
         initialPage={0}
@@ -215,11 +210,7 @@ const Detail = ({ events, params, ...props }) => (
         }}
     >
         <CameraStream tabLabel="Camera trực tiếp" {...params} {...props} />
-        <CameraVideos
-            tabLabel="Thư viện "
-            camera={params && params.camera}
-            {...props}
-        />
+        <CameraVideos tabLabel="Thư viện " camera={params && params.camera} {...props} />
     </ScrollableTabView>
 );
 module.exports = CameraTabs;

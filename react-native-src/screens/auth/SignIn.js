@@ -29,19 +29,10 @@ export default function SignIn(props) {
                 <View style={[styles.contentContainer, { paddingBottom: insets.bottom }]}>
                     <View style={[styles.topView, { paddingTop: insets.top }]}>
                         <Image
-                            style={{ height: 180, width: 180, borderRadius: 90 }}
+                            style={styles.backgroundImg}
                             source={require('../../assets/camera.gif')}
                         />
-                        <Text
-                            style={{
-                                fontSize: 40,
-                                marginTop: 20,
-                                fontWeight: 'bold',
-                                color: Colors.brandy_rose,
-                            }}
-                        >
-                            C L O M E R A
-                        </Text>
+                        <Text style={styles.appname}>C L O M E R A</Text>
                     </View>
 
                     <SignInForm
@@ -50,17 +41,32 @@ export default function SignIn(props) {
                             marginTop: -height / 6,
                         }}
                     />
-
-                    <Button
-                        title={'Bạn chưa có tài khoản? Đăng kí'}
-                        type="outline"
-                        titleStyle={{ color: Colors.brandy_rose, fontStyle: 'italic' }}
-                        buttonStyle={{ borderRadius: 24, borderColor: Colors.screen }}
-                        onPress={() => {
-                            const { navigation } = props || {};
-                            navigation && navigation.push(AppRoute.SIGN_UP);
+                    <View
+                        style={{
+                            // flex: 0.5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
-                    />
+                    >
+                        <Text style={{ fontSize: 14, color: Colors.violet, fontWeight: 'bold' }}>
+                            Chưa có tài khoản?
+                        </Text>
+                        <Button
+                            title={' Đăng ký!'}
+                            type="outline"
+                            titleStyle={{
+                                fontSize: 14,
+                                color: Colors.pomegranate,
+                                fontWeight: 'bold',
+                            }}
+                            buttonStyle={{ borderColor: Colors.screen }}
+                            onPress={() => {
+                                const { navigation } = props || {};
+                                navigation && navigation.navigate(AppRoute.SIGN_UP);
+                            }}
+                        />
+                    </View>
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -83,6 +89,11 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 40,
         borderBottomRightRadius: 40,
     },
+    backgroundImg: {
+        height: 180,
+        width: 180,
+        borderRadius: 90,
+    },
     title: {
         fontWeight: 'bold',
     },
@@ -91,5 +102,11 @@ const styles = StyleSheet.create({
         shadowColor: Colors.arapawa,
         shadowOpacity: 0.4,
         elevation: 5,
+    },
+    appname: {
+        fontSize: 40,
+        marginTop: 20,
+        fontWeight: 'bold',
+        color: Colors.brandy_rose,
     },
 });

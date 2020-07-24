@@ -11,8 +11,9 @@ import {
     KeyboardAvoidingView,
     Keyboard,
 } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
+import FirebaseConfig from './config/Firebase/FirebaseConfig';
 const { width } = Dimensions.get('window');
 import { AppRoute } from '../../navigation/app-routes';
 import {
@@ -71,32 +72,20 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function SignInForm(props) {
-    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
-    const [password, setPassword] = React.useState('123456');
-    const [isSigninInProgress, setSigninInProgress] = React.useState(false);
-    const [userInfo, setUserInfo] = React.useState();
-    const { signIn, googleSignIn } = React.useContext(AuthContext);
-    const ggSignIn = async () => {
+export default function ResetPasswordForm(props) {
+    const [email, setEmail] = React.useState('ngankieu.itus@gmail.com');
+    console.log('[ResetPasswordForm]');
+    const submitEmail = async () => {
+        console.log('ResetPasswordForm');
         try {
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
-            setUserInfo({ userInfo });
-            googleSignIn({ userInfo });
+            await FirebaseConfig.passwordReset(email);
+
+            console.log('Password reset email sent successfully');
         } catch (error) {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                // user cancelled the login flow
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                setSigninInProgress(true);
-                // operation (e.g. sign in) is in progress already
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                // play services not available or outdated
-            } else {
-                // some other error happened
-            }
+            console.log(error);
+            // actions.setFieldError('general', error.message)
         }
     };
-
     return (
         <View
             style={[
@@ -111,14 +100,15 @@ export default function SignInForm(props) {
         >
             <View>
                 <View style={[styles.container]}>
+                    <Button
+                        title={'Quên mật khẩu'}
+                        type="outline"
+                        titleStyle={{ color: Colors.brandy_rose, fontSize: 24 }}
+                        buttonStyle={{ width: '100%', borderWidth: 0, alignSelf: 'center' }}
+                        disabled={true}
+                    />
                     <Input
                         placeholder="Nhập email của bạn"
-                        leftIcon={{
-                            type: 'font-awesome',
-                            name: 'envelope',
-                            color: Colors.brandy_rose,
-                            size: 30,
-                        }}
                         label={'Email'}
                         labelStyle={styles.text}
                         // style={styles}
@@ -127,59 +117,17 @@ export default function SignInForm(props) {
                         inputStyle={styles.text}
                         onChangeText={value => setEmail(value)}
                         keyboardType="email-address"
+                        ri
                         // errorMessage={'Vui lòng nhập email'}
                     />
-
-                    <Input
-                        placeholder="Nhập mật khẩu của bạn"
-                        leftIcon={{
-                            type: 'font-awesome',
-                            name: 'lock',
-                            color: Colors.brandy_rose,
-                            size: 30,
-                        }}
-                        leftIconContainerStyle={styles.leftIconContainer}
-                        label={'Mật khẩu'}
-                        labelStyle={{ color: Colors.grey }}
-                        secureTextEntry={true}
-                        // errorMessage={'Vui lòng nhập mật khẩu'}
-                        // style={styles}
-                        value={password}
-                        inputStyle={styles.text}
-                        // inputContainerStyle={styles.input}
-                        onChangeText={value => setPassword(value)}
+                    <Icon
+                        type="font-awesome"
+                        name="arrow-right"
+                        // raised
+                        onPress={() => submitEmail()}
+                        style={{ alignSelf: 'flex-end', marginRight: 12 }}
                     />
                 </View>
-                <Button
-                    title={'Quên mật khẩu'}
-                    type="outline"
-                    titleStyle={{ color: Colors.violet, fontSize: 14 }}
-                    buttonStyle={{ width: '50%', borderWidth: 0, alignSelf: 'flex-end' }}
-                    onPress={() => {
-                        const { navigation } = props || {};
-                        navigation && navigation.navigate(AppRoute.RESET_PASSWORD);
-                    }}
-                />
-            </View>
-
-            <Button
-                title={'Đăng nhập'}
-                buttonStyle={styles.button}
-                onPress={() => {
-                    signIn({ email, password });
-                }}
-            />
-            <View style={styles.row}>
-                <Text style={{ color: Colors.brandy_rose, alignSelf: 'center', fontSize: 18 }}>
-                    Hoặc đăng nhập với
-                </Text>
-                <GoogleSigninButton
-                    style={{ width: 48, height: 48 }}
-                    size={GoogleSigninButton.Size.Icon}
-                    color={GoogleSigninButton.Color.Light}
-                    onPress={ggSignIn}
-                    disabled={isSigninInProgress}
-                />
             </View>
         </View>
     );

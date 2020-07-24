@@ -85,7 +85,6 @@ export default function AppNavigator() {
 
             googleSignIn: async data => {
                 try {
-                    console.log('datadata', data);
                     await signInGG(data, async result => {
                         let { token } = result;
                         if (!token) {
@@ -100,9 +99,6 @@ export default function AppNavigator() {
             },
 
             signOut: () => dispatch({ type: 'SIGN_OUT' }),
-            signUp: async data => {
-                dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
-            },
         }),
         []
     );

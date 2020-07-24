@@ -13,18 +13,21 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../navigation/app-routes';
 import { Colors } from '../utils/AppConfig';
 import { getUserCameras } from '../utils/ApiUtils';
-import { Icon } from 'react-native-elements';
+import { SearchBar, Icon } from 'react-native-elements';
 import Orientation from 'react-native-orientation';
 import { useFocusEffect } from '@react-navigation/native';
+import { AuthContext } from '../navigation/AppNavigator';
 
+const testThumbnail = require('../assets/default_thumb.jpg');
 const WIDTH = Dimensions.get('window').width;
-
 export default function HomeScreen(props) {
-    const [cameras, setCameras] = useState(
-        props.route && props.route.params && props.route.params.result
-    );
+    const { signOut } = React.useContext(AuthContext);
+    const initialCameraList = props.route && props.route.params && props.route.params.result;
+    const [cameras, setCameras] = useState(initialCameraList);
     const [refresh, setRefresh] = useState(false);
     const [userToken, setuserToken] = useState('');
+    const [search, setSearch] = useState('');
+    const [isEmpty, setEmpty] = useState(false);
 
     useFocusEffect(() =>
         Orientation.getOrientation((err, orientation) => {
@@ -38,9 +41,11 @@ export default function HomeScreen(props) {
         getCameras(response => {
             if (response && response.result) {
                 setCameras(response.result);
+            } else {
+                signOut();
             }
         });
-    }, [cameras]);
+    }, []);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
@@ -64,8 +69,28 @@ export default function HomeScreen(props) {
         const { navigation } = props || {};
         navigation && navigation.push(AppRoute.ADD_CAMERA);
     };
+    const searchCamera = value => {
+        if (!value) {
+            setCameras(initialCameraList);
+        } else {
+            const result =
+                Array.isArray(initialCameraList) &&
+                initialCameraList.filter(
+                    item => item.name && item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                );
+            console.log(search);
+            console.log(result);
+            if (result.length == 0) {
+                setEmpty(true);
+            }
+            setCameras(result);
+        }
+    };
+    const updateSearch = value => {
+        setSearch(value);
+        searchCamera(value);
+    };
 
-    const testThumbnail = require('../assets/test.jpg');
     const renderCamera = ({ item, index }) => {
         const thumnail = { uri: item.thumbnail };
 
@@ -98,10 +123,23 @@ export default function HomeScreen(props) {
     };
     return (
         <View style={styles.container}>
+            <SearchBar
+                focusable={true}
+                onBlur={() => {}}
+                placeholder="Tìm camera..."
+                onChangeText={updateSearch}
+                value={search}
+                lightTheme
+                containerStyle={{ backgroundColor: 'transparent' }}
+                inputContainerStyle={{ backgroundColor: Colors.white }}
+            />
+
             <FlatList
                 contentContainerStyle={styles.list}
                 keyExtractor={(item, index) => 'item' + index}
                 data={cameras}
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+                numColumns={2}
                 renderItem={renderCamera}
                 refreshing={refresh}
                 onRefresh={async () => {
@@ -113,6 +151,18 @@ export default function HomeScreen(props) {
                         setRefresh(false);
                     });
                 }}
+                ListEmptyComponent={() => (
+                    <Image
+                        source={require('../assets/empty.gif')}
+                        style={{
+                            flex: 1,
+                            alignSelf: 'center',
+                            width: WIDTH,
+                            resizeMode: 'contain',
+                            overflow: 'hidden',
+                        }}
+                    />
+                )}
             />
             <Icon
                 type={'font-awesome'}
@@ -127,7 +177,7 @@ export default function HomeScreen(props) {
     );
 }
 
-const CARD_WIDTH = WIDTH - 24;
+const CARD_WIDTH = (WIDTH - 36) / 2;
 const CARD_HEIGHT = (CARD_WIDTH / 16) * 9;
 const ICON_SIZE = 42;
 const styles = StyleSheet.create({
@@ -178,11 +228,12 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
         alignSelf: 'center',
         overflow: 'hidden',
+        resizeMode: 'cover',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
     },
     container: {
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.whisper,
         flex: 1,
     },
     header: {
@@ -232,5 +283,9 @@ const styles = StyleSheet.create({
         color: Colors.text,
         fontSize: 38,
         fontWeight: 'bold',
+    },
+    empty: {
+        alignSelf: 'center',
+        width: WIDTH / 2,
     },
 });

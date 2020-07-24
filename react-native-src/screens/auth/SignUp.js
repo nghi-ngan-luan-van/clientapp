@@ -37,22 +37,24 @@ export default function SignUp(props) {
                             style={{ height: 180, width: 180, borderRadius: 90 }}
                             source={require('../../assets/camera.gif')}
                         />
-                        <Text
-                            style={{
-                                fontSize: 40,
-                                marginTop: 20,
-                                fontWeight: 'bold',
-                                color: Colors.brandy_rose,
-                            }}
-                        >
-                            ĐĂNG KÍ
-                        </Text>
+                        <Text style={styles.appname}>C L O M E R A</Text>
+                        {/*<Text style={styles.screenName}>ĐĂNG KÝ TÀI KHOẢN</Text>*/}
                     </View>
 
                     <SignUpForm
                         {...props}
                         style={{
-                            marginTop: -height / 8,
+                            marginTop: -height / 6,
+                        }}
+                    />
+                    <Button
+                        title={'Đã có tài khoản? Quay về đăng nhập.'}
+                        type="outline"
+                        titleStyle={{ color: Colors.arapawa }}
+                        buttonStyle={{ borderRadius: 24, borderColor: Colors.screen }}
+                        onPress={() => {
+                            const { navigation } = props || {};
+                            navigation && navigation.navigate(AppRoute.SIGN_IN);
                         }}
                     />
                 </View>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: Colors.purple_blue,
+        backgroundColor: Colors.brandy_rose,
         borderBottomLeftRadius: 40,
         borderBottomRightRadius: 40,
     },
@@ -85,5 +87,17 @@ const styles = StyleSheet.create({
         shadowColor: Colors.arapawa,
         shadowOpacity: 0.4,
         elevation: 5,
+    },
+    appname: {
+        fontSize: 40,
+        marginTop: 20,
+        fontWeight: 'bold',
+        color: Colors.purple_blue,
+    },
+    screenName: {
+        fontSize: 20,
+        marginTop: 20,
+        fontWeight: 'bold',
+        color: Colors.violet,
     },
 });

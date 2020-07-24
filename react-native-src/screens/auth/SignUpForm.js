@@ -13,13 +13,15 @@ import {
 } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
-const { width } = Dimensions.get('window');
-import { signUp } from '../../utils/ApiUtils';
 import { AppRoute } from '../../navigation/app-routes';
-import {HOST_URL} from "../../utils/AppConst";
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        // justifyContent: 'space-around',
+    },
+    boxContainer: {
         width: width - 48,
         padding: 7,
         backgroundColor: Colors.whisper,
@@ -44,9 +46,11 @@ const styles = StyleSheet.create({
     // },
     text: { color: Colors.grey },
     button: {
-        backgroundColor: Colors.brandy_rose,
-        paddingVertical: 8,
-        paddingHorizontal: 30,
+        // flex: 1,
+        marginVertical: 24,
+        backgroundColor: Colors.purple_blue,
+        width: '100%',
+        paddingVertical: 14,
         borderRadius: 40,
     },
 });
@@ -55,11 +59,35 @@ export default function SignUpForm(props) {
     const [email, setEmail] = React.useState('nn170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
     const [name, setName] = React.useState('nghi nguyen2');
-    console.log('props signup',props)
+    console.log('props signup', props);
     //const { signIn } = React.useContext(AuthContext);
+    const _signUp = async () => {
+        let myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+
+        let raw = JSON.stringify({ name: name, email: email, password: password });
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow',
+        };
+
+        await fetch('http://128.199.211.44/auth/register', requestOptions).then(response => {
+            console.log(response);
+            if (response.status !== 204) {
+                alert('Người dùng đã tồn tại');
+            } else {
+                alert('Đăng kí thành công');
+            }
+        });
+        const { navigation } = props || {};
+        navigation && navigation.push(AppRoute.SIGN_IN);
+    };
+
     return (
-        <View style={[{ flex: 1, justifyContent: 'space-between' }, props.style]}>
-            <View style={[styles.container]}>
+        <View style={[styles.container, props.style]}>
+            <View style={[styles.boxContainer]}>
                 <Input
                     placeholder="Nhập email của bạn"
                     leftIcon={{
@@ -76,7 +104,7 @@ export default function SignUpForm(props) {
                     inputStyle={styles.text}
                     onChangeText={value => setEmail(value)}
                     keyboardType="email-address"
-                // errorMessage={'Vui lòng nhập email'}
+                    // errorMessage={'Vui lòng nhập email'}
                 />
                 <Input
                     placeholder="Nhập tên của bạn"
@@ -93,7 +121,7 @@ export default function SignUpForm(props) {
                     value={name}
                     inputStyle={styles.text}
                     onChangeText={value => setName(value)}
-                // errorMessage={'Vui lòng nhập email'}
+                    // errorMessage={'Vui lòng nhập email'}
                 />
                 <Input
                     placeholder="Nhập mật khẩu của bạn"
@@ -115,35 +143,7 @@ export default function SignUpForm(props) {
                     onChangeText={value => setPassword(value)}
                 />
             </View>
-            <Button
-                title={'Đăng kí'}
-                buttonStyle={styles.button}
-                onPress={async() => {
-                    let myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    
-                    let raw = JSON.stringify({"name":name,"email":email,"password":password});
-                    
-                    let requestOptions = {
-                      method: 'POST',
-                      headers: myHeaders,
-                      body: raw,
-                      redirect: 'follow'
-                    };
-                    
-                    await fetch("http://128.199.211.44/auth/register", requestOptions)                     
-                    .then(response => {
-                        console.log(response)
-                        if (response.status !== 204) {
-                            alert('Người dùng đã tồn tại');
-                        } else {
-                            alert('Đăng kí thành công');
-                        }
-                    })
-                    const { navigation } = props || {};
-                    navigation && navigation.push(AppRoute.SIGN_IN)
-                }}
-            />
+            <Button title={'Đăng ký'} buttonStyle={styles.button} onPress={_signUp} />
         </View>
     );
 }

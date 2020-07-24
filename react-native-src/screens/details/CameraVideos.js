@@ -5,12 +5,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CustomVideoView from './CustomVideoView';
 import Orientation from 'react-native-orientation';
 import moment from 'moment';
-import { ActivityIndicator, Text, View, StyleSheet, Dimensions } from 'react-native';
+import { ActivityIndicator, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import { Colors } from '../../utils/AppConfig';
 import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 import { Icon } from 'react-native-elements';
 import Slider from '../../components/slider/Slider';
+import { AuthContext } from '../../navigation/AppNavigator';
+
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     video: {
@@ -25,7 +27,10 @@ const styles = StyleSheet.create({
         // justifyContent: 'space-around',
     },
 });
-export default class CameraVideos extends Component {
+
+class CameraVideosComp extends Component {
+    // const { signOut } = React.useContext(AuthContext);
+
     constructor(props) {
         super(props);
         this.state = {
@@ -64,6 +69,7 @@ export default class CameraVideos extends Component {
     }
 
     componentDidMount = async () => {
+        const { signOut } = this.props;
         let camera =
             this.props.camera || (this.props.route.params && this.props.route.params.camera);
 
@@ -71,11 +77,15 @@ export default class CameraVideos extends Component {
         await getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
                 this.setState({ eventList: respond });
+            } else {
+                typeof signOut === 'function' && signOut();
             }
         });
         await getBackupVideo({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
                 this.setState({ backupList: respond });
+            } else {
+                typeof signOut === 'function' && signOut();
             }
         });
         // this.loadItems();
@@ -257,12 +267,13 @@ export default class CameraVideos extends Component {
     render() {
         let { eventList, backupList } = this.state;
         console.log('this.state', this.state.backupList);
-        return (
-            <View style={{ flex: 1 }}>
-                {/* {this.renderFrontVideo()} */}
+        if (eventList.length > 0 || backupList.length > 0) {
+            return (
+                <View style={{ flex: 1 }}>
+                    {/* {this.renderFrontVideo()} */}
 
-                <View style={{ height: 50 }} />
-                {!!(eventList.length > 0 || backupList.length>0) && (
+                    <View style={{ height: 50 }} />
+
                     <CalendarPicker
                         {...this.props}
                         backupList={backupList}
@@ -270,8 +281,23 @@ export default class CameraVideos extends Component {
                         data={eventList}
                         callback={this.getDate}
                     />
-                )}
-            </View>
-        );
+                </View>
+            );
+        } else {
+            return (
+                <View style={{ flex: 1, backgroundColor: Colors.white }}>
+                    <Image
+                        source={require('../../assets/empty.gif')}
+                        style={{ width: width }}
+                        resizeMode={'contain'}
+                    />
+                </View>
+            );
+        }
     }
+}
+
+export default function CameraVideos(props) {
+    const { signOut } = React.useContext(AuthContext);
+    return <CameraVideosComp {...props} signOut={signOut} />;
 }

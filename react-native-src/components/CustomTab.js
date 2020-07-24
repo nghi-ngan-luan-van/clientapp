@@ -6,20 +6,21 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     tabs: {
         // flex: 1,
-        height: 60,
-        backgroundColor: Colors.screen,
+        height: 70,
+        backgroundColor: Colors.whisper,
         flexDirection: 'row',
         justifyContent: 'space-around',
         overflow: 'hidden',
+        // padding: 12,
     },
     activeTab: {
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
+        margin: 10,
+        borderRadius: 14,
         backgroundColor: Colors.white,
     },
 
     inactiveTab: {
-        backgroundColor: Colors.screen,
+        backgroundColor: Colors.whisper,
     },
     tab: {
         alignItems: 'center',

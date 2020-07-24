@@ -5,9 +5,9 @@ import SignInForm from '../screens/auth/SignInForm';
 import SignIn from '../screens/auth/SignIn';
 import Header from '../components/Header';
 import { View } from 'react-native';
-import SignUp from '../screens/auth/SignUp'
+import SignUp from '../screens/auth/SignUp';
 import SignUpForm from '../screens/auth/SignUpForm';
-
+import ResetPassword from '../screens/auth/ResetPassword';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +41,6 @@ export const AuthNavigator = () => (
         <Stack.Screen name={AppRoute.SIGN_UP_FORM} component={SignUpForm} />
 
         {/* <Stack.Screen name={AppRoute.SIGN_UP} component={SignUpScreen}/> */}
-        {/* <Stack.Screen name={AppRoute.RESET_PASSWORD} component={ResetPasswordScreen}/> */}
+        <Stack.Screen name={AppRoute.RESET_PASSWORD} component={ResetPassword} />
     </Stack.Navigator>
 );

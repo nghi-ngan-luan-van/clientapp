@@ -1,8 +1,10 @@
+import React from 'react';
 import axios from 'axios';
 import { HOST_URL } from './AppConst';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../navigation/app-routes';
+import { AuthContext } from '../navigation/AppNavigator';
 
 export const get = (url, message, callback) => {
     // console.log('get message', message)

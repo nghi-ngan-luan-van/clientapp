@@ -68,9 +68,6 @@ export default function HomeNavigator(props) {
     };
 
     return (
-        //     <Drawer.Navigator drawerContent={() => <DrawerContent />}>
-        //         <Drawer.Screen name="Home" component={HomeScreen} />
-        //     </Drawer.Navigator>
         <Stack.Navigator
             {...props}
             initialRouteName={AppRoute.HOME}

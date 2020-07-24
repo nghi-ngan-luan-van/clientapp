@@ -13,24 +13,8 @@ import {
 } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
-import FirebaseConfig from './config/Firebase/FirebaseConfig';
 const { width } = Dimensions.get('window');
-import { AppRoute } from '../../navigation/app-routes';
-import {
-    GoogleSignin,
-    GoogleSigninButton,
-    statusCodes,
-} from '@react-native-community/google-signin';
-GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-    webClientId: '136433114251-7q32fbspm54bn75bmug0et0v8abth5nj.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    hostedDomain: '', // specifies a hosted domain restriction
-    loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
-    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-    accountName: '', // [Android] specifies an account name on the device that should be used
-    iosClientId: '136433114251-j2rjq3fkgq0r8v014pdtr660n4vbe4ov.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-});
+
 const styles = StyleSheet.create({
     container: {
         width: width - 48,
@@ -78,7 +62,7 @@ export default function ResetPasswordForm(props) {
     const submitEmail = async () => {
         console.log('ResetPasswordForm');
         try {
-            await FirebaseConfig.passwordReset(email);
+            // await FirebaseConfig.passwordReset(email);
 
             console.log('Password reset email sent successfully');
         } catch (error) {

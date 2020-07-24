@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "136433114251",
+    "firebase_url": "https://luanvan-1591764764944.firebaseio.com",
+    "project_id": "luanvan-1591764764944",
+    "storage_bucket": "luanvan-1591764764944.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136433114251:android:a1df14fe73568cfc7d088e",
+        "android_client_info": {
+          "package_name": "com.clientapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "136433114251-9ihfv85m477hlsf9vajtom4b960ec6kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clientapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOvD31sxe7p30YtCFHFwmoyqmVDjDIbks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "136433114251-j3plam2goeoqaifnhj2umab2tuib4mts.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.luanvan.clomera"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

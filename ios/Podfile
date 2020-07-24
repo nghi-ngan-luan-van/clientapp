@@ -1,4 +1,6 @@
 platform :ios, '9.0'
+$FirebaseSDKVersion = '6.13.0'
+$RNFirebaseAsStaticFramework = true
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def add_flipper_pods!

@@ -51,7 +51,7 @@ export default function SignUp(props) {
                         title={'Đã có tài khoản? Quay về đăng nhập.'}
                         type="outline"
                         titleStyle={{ color: Colors.arapawa }}
-                        buttonStyle={{ borderRadius: 24, borderColor: Colors.screen }}
+                        buttonStyle={{ borderRadius: 24, borderWidth: 0 }}
                         onPress={() => {
                             const { navigation } = props || {};
                             navigation && navigation.navigate(AppRoute.SIGN_IN);

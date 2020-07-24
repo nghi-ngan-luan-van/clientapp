@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
+// import { Button } from 'react-native-elements';
 import { AuthContext } from '../../navigation/AppNavigator';
 import { AppRoute } from '../../navigation/app-routes';
 
@@ -20,6 +21,7 @@ import { Colors } from '../../utils/AppConfig';
 import { useSafeArea } from 'react-native-safe-area-context';
 import ResetPasswordForm from './ResetPasswordForm';
 // import SignInForm from './SignInForm';
+import auth from '@react-native-firebase/auth';
 
 export default function ResetPassword(props) {
     const insets = useSafeArea();
@@ -36,12 +38,12 @@ export default function ResetPassword(props) {
                         <Text style={styles.appname}>C L O M E R A</Text>
                     </View>
 
-                    {/*<ResetPasswordForm*/}
-                    {/*    {...props}*/}
-                    {/*    style={{*/}
-                    {/*        marginTop: -height / 6,*/}
-                    {/*    }}*/}
-                    {/*/>*/}
+                    <ResetPasswordForm
+                        {...props}
+                        style={{
+                            marginTop: -height / 6,
+                        }}
+                    />
                     <View
                         style={{
                             // flex: 0.5,

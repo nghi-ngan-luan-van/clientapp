@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     text: { color: Colors.grey },
     button: {
         // flex: 1,
-        marginVertical: 24,
+        marginVertical: 12,
         backgroundColor: Colors.purple_blue,
         width: '100%',
         paddingVertical: 14,
@@ -90,16 +90,16 @@ export default function SignUpForm(props) {
             <View style={[styles.boxContainer]}>
                 <Input
                     placeholder="Nhập email của bạn"
-                    leftIcon={{
-                        type: 'font-awesome',
-                        name: 'envelope',
-                        color: Colors.brandy_rose,
-                        size: 30,
-                    }}
+                    // leftIcon={{
+                    //     type: 'font-awesome',
+                    //     name: 'envelope',
+                    //     color: Colors.brandy_rose,
+                    //     size: 30,
+                    // }}
                     label={'Email'}
                     labelStyle={styles.text}
                     // style={styles}
-                    leftIconContainerStyle={styles.leftIconContainer}
+                    // leftIconContainerStyle={styles.leftIconContainer}
                     value={email}
                     inputStyle={styles.text}
                     onChangeText={value => setEmail(value)}
@@ -108,16 +108,16 @@ export default function SignUpForm(props) {
                 />
                 <Input
                     placeholder="Nhập tên của bạn"
-                    leftIcon={{
-                        type: 'font-awesome',
-                        name: 'envelope',
-                        color: Colors.brandy_rose,
-                        size: 30,
-                    }}
-                    label={'Name'}
+                    // leftIcon={{
+                    //     type: 'font-awesome',
+                    //     name: 'envelope',
+                    //     color: Colors.brandy_rose,
+                    //     size: 30,
+                    // }}
+                    label={'Tên'}
                     labelStyle={styles.text}
                     // style={styles}
-                    leftIconContainerStyle={styles.leftIconContainer}
+                    // leftIconContainerStyle={styles.leftIconContainer}
                     value={name}
                     inputStyle={styles.text}
                     onChangeText={value => setName(value)}
@@ -125,13 +125,13 @@ export default function SignUpForm(props) {
                 />
                 <Input
                     placeholder="Nhập mật khẩu của bạn"
-                    leftIcon={{
-                        type: 'font-awesome',
-                        name: 'lock',
-                        color: Colors.brandy_rose,
-                        size: 30,
-                    }}
-                    leftIconContainerStyle={styles.leftIconContainer}
+                    // leftIcon={{
+                    //     type: 'font-awesome',
+                    //     name: 'lock',
+                    //     color: Colors.brandy_rose,
+                    //     size: 30,
+                    // }}
+                    // leftIconContainerStyle={styles.leftIconContainer}
                     label={'Mật khẩu'}
                     labelStyle={{ color: Colors.grey }}
                     secureTextEntry={true}

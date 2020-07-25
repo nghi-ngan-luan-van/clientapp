@@ -269,10 +269,10 @@ class CameraVideosComp extends Component {
         console.log('this.state', this.state.backupList);
         if (eventList.length > 0 || backupList.length > 0) {
             return (
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, backgroundColor: Colors.white }}>
                     {/* {this.renderFrontVideo()} */}
 
-                    <View style={{ height: 50 }} />
+                    {/*<View style={{ height: 50 }} />*/}
 
                     <CalendarPicker
                         {...this.props}

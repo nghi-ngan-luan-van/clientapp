@@ -3,8 +3,6 @@ import { Alert, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-na
 import AgendaView from 'react-native-calendars/src/agenda';
 import moment from 'moment';
 import { AppRoute } from '../navigation/app-routes';
-import VideoPlayer from './VLCPlayer/VideoPlayer';
-import { VLCPlayer } from 'react-native-vlc-media-player';
 
 export default class CalendarPicker extends Component {
     constructor(props) {
@@ -19,21 +17,21 @@ export default class CalendarPicker extends Component {
         this.newBackupList = {};
         this.allData = {};
         this.markedDates = {
-            // '2017-05-08': { textColor: '#43515c' },
-            // '2017-05-09': { textColor: '#43515c' },
-            // '2017-05-14': { startingDay: true, endingDay: true, color: 'pink' },
-            // '2017-05-21': { startingDay: true, color: 'blue' },
-            // '2017-05-22': { endingDay: true, color: 'gray' },
-            // '2017-05-24': { startingDay: true, color: 'gray' },
-            // '2017-05-25': { color: 'gray' },
-            // '2020-07-02': { startingDay: true, endingDay: true, color: 'pink' },
+            '2020-05-08': { textColor: '#43515c' },
+            '2020-05-09': { textColor: '#43515c' },
+            '2020-05-14': { startingDay: true, endingDay: true, color: 'pink' },
+            '2020-05-21': { startingDay: true, color: 'blue' },
+            '2020-07-22': { endingDay: true, color: 'gray' },
+            '2020-07-24': { startingDay: true, color: 'gray' },
+            '2020-07-25': { color: 'gray' },
+            '2020-07-02': { startingDay: true, endingDay: true, color: 'pink' },
         };
         // this.loadItems = this.props.data;
     }
     componentDidMount = () => {};
 
     groupTime = () => {
-        console.log('this.state.data',this.state.data)
+        console.log('this.state.data', this.state.data);
         this.state.data.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);
@@ -45,8 +43,8 @@ export default class CalendarPicker extends Component {
     };
     groupBackupListTime = () => {
         // console.log(this.props);
-        let { recordVideos} = this.state;
-        console.log('recordVideos',this.props.backupList)
+        let { recordVideos } = this.state;
+        console.log('recordVideos', this.props.backupList);
         this.props.backupList.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);
@@ -88,29 +86,31 @@ export default class CalendarPicker extends Component {
                 newItems[strTime] = this.allData[strTime];
                 this.setState({ items: newItems });
             }, 1000);
-            }, 1000);
-           
+        }, 1000);
     };
-    findVideo = item =>{
+    findVideo = item => {
         const date = moment(Number(item.timeStart)).startOf('day');
         const strDate = this.timeToString(date);
-        console.log(strDate)
-        const found = this.newBackupList[strDate].filter(value=>{
-            return item.timeStart>=value.timeStart && item.timeStart <=value.timeEnd
-        })
-        return found[0]
-    }
+        console.log(strDate);
+        const found = this.newBackupList[strDate].filter(value => {
+            return item.timeStart >= value.timeStart && item.timeStart <= value.timeEnd;
+        });
+        return found[0];
+    };
     renderVideoByItem = item => {
         let { navigation } = this.props;
-        if (item.cdnUrl===null) {
-            console.log('aa')
-            const found = this.findVideo(item)
-            console.log(found)
+        if (item.cdnUrl === null) {
+            console.log('aa');
+            const found = this.findVideo(item);
+            console.log(found);
             if (found) {
-                navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: found,seekTime:Number(item.timeStart-found.timeStart) });
+                navigation &&
+                    navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, {
+                        video: found,
+                        seekTime: Number(item.timeStart - found.timeStart),
+                    });
             }
-        }
-        else{
+        } else {
             console.log('renderVideoByItem', this.props);
             navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: item });
         }
@@ -125,13 +125,9 @@ export default class CalendarPicker extends Component {
             <TouchableOpacity
                 testID={'ITEM'}
                 style={[styles.item, { height: 50 }]}
-                onPress={()=>this.renderVideoByItem(item)}
+                onPress={() => this.renderVideoByItem(item)}
             >
-                <Text>
-                    {item.cdnUrl !== null
-                        ? `📷 ${n} - ${end} `
-                        : ` 🚶  ${n} - ${end}`}
-                </Text>
+                <Text>{item.cdnUrl !== null ? `📷 ${n} - ${end} ` : ` 🚶  ${n} - ${end}`}</Text>
             </TouchableOpacity>
         );
     };
@@ -157,6 +153,7 @@ export default class CalendarPicker extends Component {
             <AgendaView
                 testID={'CONTAINER'}
                 items={this.state.items}
+                markedDates={this.markedDates}
                 loadItemsForMonth={this.loadItems}
                 onDayPress={day => {
                     console.log('day pressed');
@@ -190,12 +187,12 @@ export default class CalendarPicker extends Component {
                     textMonthFontSize: 16,
                     textDayHeaderFontSize: 16,
                 }}
-                theme={{
-                    agendaDayTextColor: 'orange',
-                    agendaDayNumColor: 'green',
-                    agendaTodayColor: 'red',
-                    agendaKnobColor: 'blue',
-                }}
+                // theme={{
+                //     agendaDayTextColor: 'orange',
+                //     agendaDayNumColor: 'green',
+                //     agendaTodayColor: 'red',
+                //     agendaKnobColor: 'blue',
+                // }}
                 // renderDay={(day, item) => <Text>{day ? day.day : '_item'}</Text>}
                 hideExtraDays={false}
             />

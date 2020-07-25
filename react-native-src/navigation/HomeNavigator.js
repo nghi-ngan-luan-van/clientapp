@@ -7,9 +7,7 @@ import { AuthContext } from './AppNavigator';
 import { AppRoute } from './app-routes';
 import AddingCamera from '../screens/adding/AddingCamera';
 import HomeScreen from '../screens/HomeScreen';
-import Media from '../screens/Media';
 import CameraVideos from '../screens/details/CameraVideos';
-import MediaDetail from '../screens/media/MediaDetail';
 import { Image, StyleSheet, View, Dimensions, TouchableOpacity, Text } from 'react-native';
 import EditCamera from '../screens/editcamera/index';
 import { Colors } from '../utils/AppConfig';
@@ -202,7 +200,6 @@ export function HomeScreenStack(props) {
             <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
             <Stack.Screen name={AppRoute.VIDEO_PLAYER_SCREEN} component={VideoPlayerScreen} />
 
-            <Stack.Screen name={AppRoute.MEDIA_DETAIL} component={MediaDetail} />
             <Stack.Screen name={AppRoute.CAMERA_EDIT} component={EditCamera} />
             <Stack.Screen name={AppRoute.CAMERA_EDIT_MODE} component={EditMode} />
 

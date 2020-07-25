@@ -1,16 +1,6 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
-import {
-    StyleSheet,
-    Dimensions,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Keyboard,
-} from 'react-native';
+import { StyleSheet, Dimensions, Text, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 const { width } = Dimensions.get('window');
@@ -31,6 +21,12 @@ GoogleSignin.configure({
     iosClientId: '136433114251-j2rjq3fkgq0r8v014pdtr660n4vbe4ov.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 const styles = StyleSheet.create({
+    viewContainer: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         width: width - 48,
         padding: 12,
@@ -98,17 +94,7 @@ export default function SignInForm(props) {
     };
 
     return (
-        <View
-            style={[
-                {
-                    flex: 1,
-                    justifyContent: 'space-around',
-                    alignContent: 'center',
-                    alignItems: 'center',
-                },
-                props.style,
-            ]}
-        >
+        <View style={[styles.viewContainer, props.style]}>
             <View>
                 <View style={[styles.container]}>
                     <Input

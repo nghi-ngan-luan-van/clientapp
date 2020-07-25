@@ -65,10 +65,7 @@ export default function HomeScreen(props) {
                 },
             });
     };
-    const onPressAdd = () => {
-        const { navigation } = props || {};
-        navigation && navigation.push(AppRoute.ADD_CAMERA);
-    };
+
     const searchCamera = value => {
         if (!value) {
             setCameras(initialCameraList);
@@ -78,8 +75,8 @@ export default function HomeScreen(props) {
                 initialCameraList.filter(
                     item => item.name && item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
                 );
-            console.log(search);
-            console.log(result);
+            // console.log(search);
+            // console.log(result);
             if (result.length == 0) {
                 setEmpty(true);
             }
@@ -164,13 +161,13 @@ export default function HomeScreen(props) {
                     />
                 )}
             />
-            <Icon
-                type={'font-awesome'}
-                name={'plus-circle'}
-                color={Colors.grey}
-                onPress={onPressAdd}
-                size={50}
-            />
+            {/*<Icon*/}
+            {/*    type={'font-awesome'}*/}
+            {/*    name={'plus-circle'}*/}
+            {/*    color={Colors.grey}*/}
+            {/*    onPress={onPressAdd}*/}
+            {/*    size={50}*/}
+            {/*/>*/}
             {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
             {/*</Icon>*/}
         </View>

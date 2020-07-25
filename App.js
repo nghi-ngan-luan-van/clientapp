@@ -5,7 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 function App() {
     return (
         <SafeAreaProvider>
-            <NavigationContainer independent={true}>
+            <NavigationContainer>
                 <AppNavigator />
             </NavigationContainer>
         </SafeAreaProvider>

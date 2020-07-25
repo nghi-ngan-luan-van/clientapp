@@ -82,7 +82,7 @@ export default function SignUpForm(props) {
             }
         });
         const { navigation } = props || {};
-        navigation && navigation.push(AppRoute.SIGN_IN);
+        navigation && navigation.navigate(AppRoute.SIGN_IN);
     };
 
     return (

@@ -6,6 +6,7 @@ import Orientation from 'react-native-orientation';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -21,7 +22,13 @@ export default function CameraStream(props) {
     };
     return (
         !!camera && (
-            <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+            <LinearGradient
+                style={[styles.container, { paddingBottom: insets.bottom }]}
+                colors={[Colors.brandy_rose, Colors.pigeon_post]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+            >
+                {/*<View style={[styles.container, { paddingBottom: insets.bottom }]}>*/}
                 <VlCPlayerView
                     ref={videoRef}
                     autoplay={false}
@@ -51,14 +58,15 @@ export default function CameraStream(props) {
                 {/*    <Icon name={'camera'} size={50} type={'font-awesome'} onPress={takeSnapShot} />*/}
                 {/*    <Text>Switch mode</Text>*/}
                 {/*</View>*/}
-            </View>
+                {/*</View>*/}
+            </LinearGradient>
         )
     );
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.brandy_rose,
         // justifyContent: 'center',
         paddingBottom: 12,
         // alignContent: 'center',

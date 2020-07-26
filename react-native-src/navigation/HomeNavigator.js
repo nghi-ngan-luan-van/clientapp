@@ -123,7 +123,7 @@ const ProfileScreenStack = () => {
                     />
                 ),
             })}
-            headerMode="float"
+            headerMode="screen"
         >
             <ProfileStack.Screen name={AppRoute.PROFILE} component={MyProfile} />
             <ProfileStack.Screen name={AppRoute.CHANGE_PASS} component={ChangePassword} />
@@ -149,7 +149,7 @@ export function HomeScreenStack(props) {
             screenOptions={({ route = {} }) => ({
                 animationEnabled: true,
                 headerBackTitleVisible: false,
-                headerStyle: { backgroundColor: Colors.screen },
+                headerStyle: { backgroundColor: 'transparent' },
                 headerTitle: getHeaderTitle(route),
                 headerBackImage: () => (
                     <Image

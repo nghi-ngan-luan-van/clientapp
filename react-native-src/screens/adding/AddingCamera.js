@@ -7,6 +7,7 @@ import Loader from '../../components/LoadingModal';
 import { HOST_URL } from '../../utils/AppConst';
 import { Colors } from '../../utils/AppConfig';
 import LinearGradient from 'react-native-linear-gradient';
+import { testConnection } from '../../utils/ApiUtils';
 
 class AddingCamera extends Component {
     constructor(props) {
@@ -27,49 +28,28 @@ class AddingCamera extends Component {
     }
 
     onTestCamera = async () => {
-        const { rtspUrl, name } = this.state;
+        // const { rtspUrl, name } = this.state;
+        const rtspUrl = 'rtsp://85.214.56.86/live/Autobahn/Quickborn-Schnellsen_Nord?vcodecs=h264';
 
         this.setState({
             loading: true,
         });
 
-        var myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${this.token}`);
-        myHeaders.append('Content-Type', 'application/json');
-        const raw = JSON.stringify({
-            rtspUrl,
+        const headers = 'Authorization' + `Bearer ${this.token}`;
+        testConnection({ rtspUrl, headers }, result => {
+            if (!result) {
+                console.log('fail');
+            } else {
+                console.log(result);
+                this.setState(
+                    { thumbnail: result.toString(), isTestConnection: true, loading: false },
+                    () => {
+                        // console.log(this.state.thumbnail)
+                    }
+                );
+            }
+            this.setState({ loading: false });
         });
-
-        const requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-        };
-
-        await fetch(HOST_URL + 'camera/testconnection', requestOptions)
-            .then(response => {
-                // console.log(response.status)
-                if (response.status !== 200) {
-                    // alert('Test connection: Failed');
-                    this.setState({ loading: false });
-                } else {
-                    return response.text();
-                }
-            })
-            .then(result => {
-                // console.log(result)
-                if (result) {
-                    alert('Test connection: Successful');
-                    this.setState(
-                        { thumbnail: result.toString(), isTestConnection: true, loading: false },
-                        () => {
-                            // console.log(this.state.thumbnail)
-                        }
-                    );
-                }
-            })
-            .catch(error => console.log('error', error));
     };
     onAddCamera = async () => {
         this.setState({

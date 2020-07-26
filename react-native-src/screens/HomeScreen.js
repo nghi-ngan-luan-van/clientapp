@@ -54,7 +54,6 @@ export default function HomeScreen(props) {
                 setCameras(result);
                 setInitCameras(result);
                 setLoading(false);
-                // console.log(response.result);
             } else {
                 signOut();
             }
@@ -258,10 +257,8 @@ const styles = StyleSheet.create({
         flex: 1,
         fontWeight: 'bold',
     },
-    ƒ: {
-        backgroundColor: Colors.white,
+    card: {
         marginBottom: 12,
-        borderRadius: RADIUS,
     },
     dot: {
         height: 10,

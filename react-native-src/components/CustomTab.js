@@ -1,6 +1,7 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { Colors } from '../utils/AppConfig';
+import LinearGradient from 'react-native-linear-gradient';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     },
 
     inactiveTab: {
-        backgroundColor: Colors.whisper,
+        backgroundColor: 'transparent',
     },
     tab: {
         alignItems: 'center',
@@ -33,7 +34,14 @@ export default function CustomTab(props) {
     // console.log(props);
     let { tabs, goToPage, activeTab } = props;
     return (
-        <View style={styles.tabs}>
+        <LinearGradient
+            colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.purple_blue]}
+            style={styles.tabs}
+            // style={[styles.container, { paddingTop: insets.top }]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+        >
+            {/*<View style={styles.tabs}>*/}
             {tabs.map((tab, index) => (
                 <TouchableOpacity
                     activeOpacity={false}
@@ -55,6 +63,7 @@ export default function CustomTab(props) {
                     </Text>
                 </TouchableOpacity>
             ))}
-        </View>
+            {/*</View>*/}
+        </LinearGradient>
     );
 }

@@ -15,13 +15,11 @@ import { AppRoute } from '../../navigation/app-routes';
 
 const BACKGROUND = require('../../assets/background_image.png');
 const { width, height } = Dimensions.get('window');
-import { Button, Input } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 
 import { useSafeArea } from 'react-native-safe-area-context';
 import ResetPasswordForm from './ResetPasswordForm';
-// import SignInForm from './SignInForm';
-import auth from '@react-native-firebase/auth';
 
 export default function ResetPassword(props) {
     const insets = useSafeArea();

@@ -62,12 +62,9 @@ export default function ResetPasswordForm(props) {
     const submitEmail = async () => {
         console.log('ResetPasswordForm');
         try {
-            // await FirebaseConfig.passwordReset(email);
-
             console.log('Password reset email sent successfully');
         } catch (error) {
             console.log(error);
-            // actions.setFieldError('general', error.message)
         }
     };
     return (
@@ -85,7 +82,7 @@ export default function ResetPasswordForm(props) {
             <View>
                 <View style={[styles.container]}>
                     <Button
-                        title={'Quên mật khẩu'}
+                        title={'Đặt lại mật khẩu'}
                         type="outline"
                         titleStyle={{ color: Colors.brandy_rose, fontSize: 24 }}
                         buttonStyle={{ width: '100%', borderWidth: 0, alignSelf: 'center' }}

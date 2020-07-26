@@ -65,11 +65,23 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
     return (
-        <Tab.Navigator initialRouteName={AppRoute.HOME}>
+        <Tab.Navigator
+            showLabel={false}
+            swipeEnabled
+            initialRouteName={AppRoute.HOME}
+            labelPosition={'beside-icon'}
+        >
             <Tab.Screen
                 options={{
+                    // tabBarAccessibilityLabel: '0',
+                    tabBarLabel: 'Trang chủ',
                     tabBarIcon: props => (
-                        <Icon name="home" type={'ant-design'} size={30} color={Colors.arapawa} />
+                        <Icon
+                            name="home"
+                            type={'ant-design'}
+                            size={30}
+                            color={props.focused ? Colors.brandy_rose : Colors.grey}
+                        />
                     ),
                 }}
                 name={AppRoute.HOME}
@@ -77,8 +89,15 @@ function MyTabs() {
             />
             <Tab.Screen
                 options={{
+                    // tabBarButton:
+                    tabBarLabel: 'Cá nhân',
                     tabBarIcon: props => (
-                        <Icon name="people" type={'ant-design'} size={30} color={Colors.arapawa} />
+                        <Icon
+                            name="people"
+                            type={'ant-design'}
+                            size={30}
+                            color={props.focused ? Colors.brandy_rose : Colors.grey}
+                        />
                     ),
                 }}
                 name={AppRoute.PROFILE}
@@ -165,14 +184,14 @@ export function HomeScreenStack(props) {
                             />
                         </TouchableOpacity>
                     ),
-                    headerRight: () => (
-                        <TouchableOpacity onPress={() => onPressAdd(navigation)}>
-                            <Image
-                                style={{ margin: 12, width: 30, height: 30 }}
-                                source={require('../assets/icon_add.png')}
-                            />
-                        </TouchableOpacity>
-                    ),
+                    // headerRight: () => (
+                    //     <TouchableOpacity onPress={() => onPressAdd(navigation)}>
+                    //         <Image
+                    //             style={{ margin: 12, width: 30, height: 30 }}
+                    //             source={require('../assets/icon_add.png')}
+                    //         />
+                    //     </TouchableOpacity>
+                    // ),
                 })}
                 initialParams={props.route && props.route.params}
             />

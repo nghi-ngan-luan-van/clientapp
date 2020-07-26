@@ -17,32 +17,44 @@ import { SearchBar, Icon } from 'react-native-elements';
 import Orientation from 'react-native-orientation';
 import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from '../navigation/AppNavigator';
+import { useSafeArea } from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
 
 const testThumbnail = require('../assets/default_thumb.jpg');
 const WIDTH = Dimensions.get('window').width;
+
 export default function HomeScreen(props) {
+    const insets = useSafeArea();
     const { signOut } = React.useContext(AuthContext);
-    const initialCameraList = props.route && props.route.params && props.route.params.result;
-    const [cameras, setCameras] = useState(initialCameraList);
+    const [cameras, setCameras] = useState([]);
+    const [initialCameraList, setInitCameras] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [userToken, setuserToken] = useState('');
     const [search, setSearch] = useState('');
     const [isEmpty, setEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [searchLoad, setSearchLoading] = useState(false);
+    const { navigation = {} } = props;
 
     useFocusEffect(() => {
+        navigation.setOptions({
+            header: () => <View />,
+        });
+
         Orientation.getOrientation((err, orientation) => {
             if (orientation === 'LANDSCAPE') {
                 Orientation.lockToPortrait();
             }
         });
     });
-
     useEffect(() => {
         getCameras(response => {
             if (response && response.result) {
-                setCameras(response.result);
+                const { result } = response;
+                setCameras(result);
+                setInitCameras(result);
                 setLoading(false);
+                // console.log(response.result);
             } else {
                 signOut();
             }
@@ -56,7 +68,7 @@ export default function HomeScreen(props) {
     };
 
     const onPress = camera => () => {
-        const { navigation } = props || {};
+        // const { navigation } = props || {};
         navigation &&
             navigation.navigate(AppRoute.CAMERA_DETAIL, {
                 screen: AppRoute.CAMERA_STREAM,
@@ -69,7 +81,8 @@ export default function HomeScreen(props) {
     };
 
     const searchCamera = value => {
-        if (!value) {
+        console.log('aaaa', value);
+        if (!value || value.length == 0) {
             setCameras(initialCameraList);
         } else {
             const result =
@@ -77,8 +90,6 @@ export default function HomeScreen(props) {
                 initialCameraList.filter(
                     item => item.name && item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
                 );
-            // console.log(search);
-            // console.log(result);
             if (result.length == 0) {
                 setEmpty(true);
             }
@@ -88,6 +99,9 @@ export default function HomeScreen(props) {
     const updateSearch = value => {
         setSearch(value);
         searchCamera(value);
+    };
+    const onPressAdd = () => {
+        navigation && navigation.push(AppRoute.ADD_CAMERA);
     };
 
     const renderCamera = ({ item, index }) => {
@@ -102,10 +116,6 @@ export default function HomeScreen(props) {
                         style={styles.thumbnail}
                     />
                     <View style={styles.nameRow}>
-                        {/*<Image*/}
-                        {/*    source={require('../assets/cctv.png')}*/}
-                        {/*    style={{ width: 18, height: 18 }}*/}
-                        {/*/>*/}
                         <View style={{ flex: 1, marginLeft: 10 }}>
                             <Text style={styles.cameraName}>{String(item.name)}</Text>
                             <Text style={{ fontSize: 10 }}>Live</Text>
@@ -115,7 +125,6 @@ export default function HomeScreen(props) {
                             style={{ width: 30, height: 30 }}
                         />
                     </View>
-                    {/*<Image source={require('../assets/ic_video_play.png')} style={styles.iconPlay} />*/}
                 </TouchableOpacity>
             </View>
         );
@@ -133,58 +142,88 @@ export default function HomeScreen(props) {
         );
     } else {
         return (
-            <View style={styles.container}>
-                <SearchBar
-                    focusable={true}
-                    onBlur={() => {}}
-                    placeholder="Tìm camera..."
-                    onChangeText={updateSearch}
-                    value={search}
-                    lightTheme
-                    containerStyle={{ backgroundColor: 'transparent' }}
-                    inputContainerStyle={{ backgroundColor: Colors.white }}
-                />
-
-                <FlatList
-                    contentContainerStyle={styles.list}
-                    keyExtractor={(item, index) => 'item' + index}
-                    data={cameras}
-                    columnWrapperStyle={{ justifyContent: 'space-between' }}
-                    numColumns={2}
-                    renderItem={renderCamera}
-                    refreshing={refresh}
-                    onRefresh={async () => {
-                        setRefresh(true);
-                        await getUserCameras({ userToken }, response => {
-                            if (response && response.result) {
-                                setCameras(response.result);
-                            }
-                            setRefresh(false);
-                        });
-                    }}
-                    ListEmptyComponent={() => (
-                        <Image
-                            source={require('../assets/empty.gif')}
-                            style={{
-                                flex: 1,
-                                alignSelf: 'center',
-                                width: WIDTH - 50,
-                                resizeMode: 'contain',
-                                overflow: 'hidden',
+            <LinearGradient
+                colors={[Colors.brandy_rose, Colors.white, Colors.purple_blue]}
+                style={[styles.container, { paddingTop: insets.top }]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            >
+                <View>
+                    <View style={styles.headerBar}>
+                        <Text style={styles.headerTitle}>C L O M E R A</Text>
+                        {/*<Icon name={'search'} size={30} onPress={() => {}} />*/}
+                        <TouchableOpacity
+                            onPress={() => {
+                                onPressAdd();
                             }}
-                        />
-                    )}
-                />
-                {/*<Icon*/}
-                {/*    type={'font-awesome'}*/}
-                {/*    name={'plus-circle'}*/}
-                {/*    color={Colors.grey}*/}
-                {/*    onPress={onPressAdd}*/}
-                {/*    size={50}*/}
-                {/*/>*/}
-                {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
-                {/*</Icon>*/}
-            </View>
+                        >
+                            <Image
+                                style={{ margin: 12, width: 30, height: 30 }}
+                                source={require('../assets/icon_add.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <SearchBar
+                        onBlur={() => {
+                            // console.log('34252', value);
+                            setSearchLoading(false);
+                        }}
+                        round={true}
+                        // rightIconContainerStyle={{ padding: 5 }}
+                        clearTextOnFocus
+                        // showCancel={true}
+                        // showLoading={!searchLoad}
+                        clearButtonMode={'while-editing'}
+                        // clearIcon=<Icon name={'clean'} type={'font-awesome'} size={20} />
+                        placeholder="Tìm camera..."
+                        onChangeText={updateSearch}
+                        value={search}
+                        lightTheme
+                        containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                        inputContainerStyle={{ backgroundColor: Colors.white, opacity: 0.6 }}
+                    />
+
+                    <FlatList
+                        contentContainerStyle={styles.list}
+                        keyExtractor={(item, index) => 'item' + index}
+                        data={cameras}
+                        columnWrapperStyle={{ justifyContent: 'space-between' }}
+                        numColumns={2}
+                        renderItem={renderCamera}
+                        refreshing={refresh}
+                        onRefresh={async () => {
+                            setRefresh(true);
+                            await getUserCameras({ userToken }, response => {
+                                if (response && response.result) {
+                                    setCameras(response.result);
+                                }
+                                setRefresh(false);
+                            });
+                        }}
+                        ListEmptyComponent={() => (
+                            <Image
+                                source={require('../assets/empty.gif')}
+                                style={{
+                                    flex: 1,
+                                    alignSelf: 'center',
+                                    width: WIDTH - 50,
+                                    resizeMode: 'contain',
+                                    overflow: 'hidden',
+                                }}
+                            />
+                        )}
+                    />
+                    {/*<Icon*/}
+                    {/*    type={'font-awesome'}*/}
+                    {/*    name={'plus-circle'}*/}
+                    {/*    color={Colors.grey}*/}
+                    {/*    onPress={onPressAdd}*/}
+                    {/*    size={50}*/}
+                    {/*/>*/}
+                    {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
+                    {/*</Icon>*/}
+                </View>
+            </LinearGradient>
         );
     }
 }
@@ -193,12 +232,16 @@ const CARD_WIDTH = (WIDTH - 36) / 2;
 const CARD_HEIGHT = (CARD_WIDTH / 16) * 9;
 const ICON_SIZE = 42;
 const styles = StyleSheet.create({
-    backgroundImg: {
-        position: 'absolute',
-        right: 0,
-        top: -50,
-        width: WIDTH,
-        // overflow: 'hidden',
+    headerBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+    },
+    headerTitle: {
+        fontSize: 25,
+        color: Colors.white,
+        flex: 1,
+        fontWeight: 'bold',
     },
     camera: {
         flex: 1,
@@ -224,10 +267,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         marginBottom: 12,
         borderRadius: 12,
-        shadowColor: Colors.grey,
-        shadowOffset: { width: 2, height: 2, right: 2 },
-        shadowOpacity: 0.2,
-        elevation: 5,
+        // shadowColor: Colors.grey,
+        // shadowOffset: { width: 2, height: 2, right: 2 },
+        // shadowOpacity: 0.2,
+        // elevation: 5,
     },
     cardView: {
         borderRadius: 16,
@@ -266,26 +309,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         top: 0,
     },
-    iconPlay: {
-        alignContent: 'center',
-        height: ICON_SIZE,
-        left: (CARD_WIDTH - ICON_SIZE) / 2,
-        opacity: 1,
-        position: 'absolute',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 5,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        tintColor: Colors.white,
-        top: (CARD_HEIGHT - ICON_SIZE) / 2 - 20,
-        width: ICON_SIZE,
-        // elevation: 5,
-    },
+
     list: {
-        padding: 12,
+        paddingHorizontal: 12,
+        paddingBottom: 120,
     },
     row: {
         flex: 1,

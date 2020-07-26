@@ -58,6 +58,7 @@ export const signInGG = (params, callback) => {
     } catch (e) {
         console.warn('[err] ApiUtils signIn', e);
         callback();
+        api;
     }
 };
 
@@ -81,6 +82,14 @@ export const signUp = (params, callback) => {
         post(HOST_URL + 'auth/register', { data: data }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils signUp', e);
+        callback();
+    }
+};
+export const resetPassword = (params, callback) => {
+    try {
+        post(HOST_URL + '/user/mailReset', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils mailReset', e);
         callback();
     }
 };

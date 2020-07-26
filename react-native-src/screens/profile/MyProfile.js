@@ -4,6 +4,8 @@ import { Colors } from '../../utils/AppConfig';
 import { Icon } from 'react-native-elements';
 import { AppRoute } from '../../navigation/app-routes';
 import { AuthContext } from '../../navigation/AppNavigator';
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeArea } from 'react-native-safe-area-context';
 const styles = StyleSheet.create({
     safeContainer: {
         backgroundColor: Colors.screen,
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     },
 });
 export default function MyProfile(props) {
+    const insets = useSafeArea();
     const { signOut } = useContext(AuthContext);
     useEffect(() => {
         const verifytoken = () => {};
@@ -76,33 +79,40 @@ export default function MyProfile(props) {
 
     return (
         <SafeAreaView style={styles.safeContainer}>
-            <View style={styles.container}>
-                <View style={styles.avatarrow}>
-                    <Image source={require('../../assets/ic_user.png')} style={styles.avatar} />
-                    <View style={styles.nameRow}>
-                        <Text style={styles.title}>My Name</Text>
-                        <Text numberOfLines={2} style={styles.text}>
-                            email:abc@da.com
-                        </Text>
+            <LinearGradient
+                style={styles.container}
+                colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.screen]}
+                start={{ x: 1, y: 1 }}
+                end={{ x: 0, y: 0 }}
+            >
+                <View>
+                    <View style={styles.avatarrow}>
+                        <Image source={require('../../assets/ic_user.png')} style={styles.avatar} />
+                        <View style={styles.nameRow}>
+                            <Text style={styles.title}>My Name</Text>
+                            <Text numberOfLines={2} style={styles.text}>
+                                email:abc@da.com
+                            </Text>
+                        </View>
+                        <Icon
+                            type="antdesign"
+                            name="edit"
+                            color={Colors.arapawa}
+                            onPress={() => {}}
+                            hitSlop={{}}
+                        />
                     </View>
-                    <Icon
-                        type="antdesign"
-                        name="edit"
-                        color={Colors.arapawa}
-                        onPress={() => {}}
-                        hitSlop={{}}
-                    />
+                    <TouchableOpacity style={styles.row} onPress={goChangePass}>
+                        <Image source={require('../../assets/ic_lock.png')} style={styles.icon} />
+                        <Text style={styles.text}>Đổi mật khẩu</Text>
+                        <Icon type="antdesign" name="right" color={Colors.arapawa} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.row} onPress={signOut}>
+                        <Image source={require('../../assets/ic_logout.png')} style={styles.icon} />
+                        <Text style={styles.text}>Đăng xuất</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.row} onPress={goChangePass}>
-                    <Image source={require('../../assets/ic_lock.png')} style={styles.icon} />
-                    <Text style={styles.text}>Đổi mật khẩu</Text>
-                    <Icon type="antdesign" name="right" color={Colors.arapawa} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.row} onPress={signOut}>
-                    <Image source={require('../../assets/ic_logout.png')} style={styles.icon} />
-                    <Text style={styles.text}>Đăng xuất</Text>
-                </TouchableOpacity>
-            </View>
+            </LinearGradient>
         </SafeAreaView>
     );
 }

@@ -20,7 +20,7 @@ import { AuthContext } from '../navigation/AppNavigator';
 import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-const testThumbnail = require('../assets/default_thumb.jpg');
+const testThumbnail = require('../assets/camera.gif');
 const WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen(props) {
@@ -108,37 +108,37 @@ export default function HomeScreen(props) {
         const thumnail = { uri: item.thumbnail };
 
         return (
-            <View style={styles.card}>
-                <TouchableOpacity key={index} onPress={onPress(item)}>
-                    <Image
-                        source={thumnail.uri ? thumnail : testThumbnail}
-                        resizeMode={'cover'}
-                        style={styles.thumbnail}
-                    />
-                    <View style={styles.nameRow}>
-                        <View style={{ flex: 1, marginLeft: 10 }}>
-                            <Text style={styles.cameraName}>{String(item.name)}</Text>
-                            <Text style={{ fontSize: 10 }}>Live</Text>
-                        </View>
-                        <Image
-                            source={require('../assets/video.png')}
-                            style={{ width: 30, height: 30 }}
-                        />
-                    </View>
-                </TouchableOpacity>
-            </View>
+            // <View style={styles.card}>
+            <TouchableOpacity style={styles.card} key={index} onPress={onPress(item)}>
+                <Image
+                    source={thumnail.uri ? thumnail : testThumbnail}
+                    resizeMode={'cover'}
+                    style={styles.thumbnail}
+                />
+                <View style={styles.nameRow}>
+                    {!!(item && item.backupMode) && <View style={styles.dot} />}
+                    {/*<View style={{ flex: 1 }}>*/}
+                    <Text style={styles.cameraName}>{String(item.name)}</Text>
+                    {/*<Text style={{ fontSize: 10 }}>Live</Text>*/}
+                    {/*</View>*/}
+                    {/*<Image*/}
+                    {/*    source={require('../assets/video.png')}*/}
+                    {/*    style={{ width: 30, height: 30 }}*/}
+                    {/*/>*/}
+                </View>
+            </TouchableOpacity>
+            // </View>
         );
     };
 
     if (loading) {
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.white }}>
-                <Image
-                    source={require('../assets/preview.gif')}
-                    resizeMode={'contain'}
-                    style={{ width: WIDTH }}
-                />
-            </View>
+            <LinearGradient
+                colors={[Colors.brandy_rose, Colors.white, Colors.purple_blue]}
+                style={[styles.container, { paddingTop: insets.top }]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            />
         );
     } else {
         return (
@@ -148,86 +148,82 @@ export default function HomeScreen(props) {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
-                <View>
-                    <View style={styles.headerBar}>
-                        <Text style={styles.headerTitle}>C L O M E R A</Text>
-                        {/*<Icon name={'search'} size={30} onPress={() => {}} />*/}
-                        <TouchableOpacity
-                            onPress={() => {
-                                onPressAdd();
-                            }}
-                        >
-                            <Image
-                                style={{ margin: 12, width: 30, height: 30 }}
-                                source={require('../assets/icon_add.png')}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <SearchBar
-                        onBlur={() => {
-                            // console.log('34252', value);
-                            setSearchLoading(false);
+                <View style={styles.headerBar}>
+                    <Text style={styles.headerTitle}>C L O M E R A</Text>
+                    {/*<Icon name={'search'} size={30} onPress={() => {}} />*/}
+                    <TouchableOpacity
+                        onPress={() => {
+                            onPressAdd();
                         }}
-                        round={true}
-                        // rightIconContainerStyle={{ padding: 5 }}
-                        clearTextOnFocus
-                        // showCancel={true}
-                        // showLoading={!searchLoad}
-                        clearButtonMode={'while-editing'}
-                        // clearIcon=<Icon name={'clean'} type={'font-awesome'} size={20} />
-                        placeholder="Tìm camera..."
-                        onChangeText={updateSearch}
-                        value={search}
-                        lightTheme
-                        containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
-                        inputContainerStyle={{ backgroundColor: Colors.white, opacity: 0.6 }}
-                    />
-
-                    <FlatList
-                        contentContainerStyle={styles.list}
-                        keyExtractor={(item, index) => 'item' + index}
-                        data={cameras}
-                        columnWrapperStyle={{ justifyContent: 'space-between' }}
-                        numColumns={2}
-                        renderItem={renderCamera}
-                        refreshing={refresh}
-                        onRefresh={async () => {
-                            setRefresh(true);
-                            await getUserCameras({ userToken }, response => {
-                                if (response && response.result) {
-                                    setCameras(response.result);
-                                }
-                                setRefresh(false);
-                            });
-                        }}
-                        ListEmptyComponent={() => (
-                            <Image
-                                source={require('../assets/empty.gif')}
-                                style={{
-                                    flex: 1,
-                                    alignSelf: 'center',
-                                    width: WIDTH - 50,
-                                    resizeMode: 'contain',
-                                    overflow: 'hidden',
-                                }}
-                            />
-                        )}
-                    />
-                    {/*<Icon*/}
-                    {/*    type={'font-awesome'}*/}
-                    {/*    name={'plus-circle'}*/}
-                    {/*    color={Colors.grey}*/}
-                    {/*    onPress={onPressAdd}*/}
-                    {/*    size={50}*/}
-                    {/*/>*/}
-                    {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
-                    {/*</Icon>*/}
+                    >
+                        <Image style={styles.icon} source={require('../assets/icon_add.png')} />
+                    </TouchableOpacity>
                 </View>
+                <SearchBar
+                    onBlur={() => {
+                        // console.log('34252', value);
+                        setSearchLoading(false);
+                    }}
+                    round={true}
+                    // rightIconContainerStyle={{ padding: 5 }}
+                    clearTextOnFocus
+                    // showCancel={true}
+                    // showLoading={!searchLoad}
+                    clearButtonMode={'while-editing'}
+                    // clearIcon=<Icon name={'clean'} type={'font-awesome'} size={20} />
+                    placeholder="Tìm camera..."
+                    onChangeText={updateSearch}
+                    value={search}
+                    lightTheme
+                    containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                    inputContainerStyle={{ backgroundColor: Colors.white, opacity: 0.6 }}
+                />
+
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.list}
+                    keyExtractor={(item, index) => 'item' + index}
+                    data={cameras}
+                    columnWrapperStyle={{ justifyContent: 'space-between' }}
+                    numColumns={2}
+                    renderItem={renderCamera}
+                    refreshing={refresh}
+                    onRefresh={async () => {
+                        setRefresh(true);
+                        await getUserCameras({ userToken }, response => {
+                            if (response && response.result) {
+                                setCameras(response.result);
+                            }
+                            setRefresh(false);
+                        });
+                    }}
+                    ListEmptyComponent={() => (
+                        <Image
+                            source={require('../assets/empty.gif')}
+                            style={{
+                                flex: 1,
+                                alignSelf: 'center',
+                                width: WIDTH - 50,
+                                resizeMode: 'contain',
+                                overflow: 'hidden',
+                            }}
+                        />
+                    )}
+                />
+                {/*<Icon*/}
+                {/*    type={'font-awesome'}*/}
+                {/*    name={'plus-circle'}*/}
+                {/*    color={Colors.grey}*/}
+                {/*    onPress={onPressAdd}*/}
+                {/*    size={50}*/}
+                {/*/>*/}
+                {/*</Icon>*/}
             </LinearGradient>
         );
     }
 }
 
+const RADIUS = 10;
 const CARD_WIDTH = (WIDTH - 36) / 2;
 const CARD_HEIGHT = (CARD_WIDTH / 16) * 9;
 const ICON_SIZE = 42;
@@ -239,9 +235,10 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: 25,
-        color: Colors.white,
+        color: Colors.purple_blue,
         flex: 1,
         fontWeight: 'bold',
+        opacity: 0.8,
     },
     camera: {
         flex: 1,
@@ -254,23 +251,31 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         flexDirection: 'row',
-        padding: 12,
+        padding: 10,
+        backgroundColor: Colors.white,
+        borderBottomLeftRadius: RADIUS,
+        borderBottomRightRadius: RADIUS,
     },
     cameraName: {
         fontSize: 16,
-        color: Colors.violet,
+        color: Colors.purple_blue,
         flex: 1,
-        // margin: 12,
         fontWeight: 'bold',
     },
     card: {
         backgroundColor: Colors.white,
         marginBottom: 12,
-        borderRadius: 12,
+        borderRadius: RADIUS,
         // shadowColor: Colors.grey,
         // shadowOffset: { width: 2, height: 2, right: 2 },
         // shadowOpacity: 0.2,
         // elevation: 5,
+    },
+    dot: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        marginRight: 6,
     },
     cardView: {
         borderRadius: 16,
@@ -296,19 +301,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
     },
-    iconAdd: {
-        elevation: 10,
-        position: 'absolute',
-        right: 24,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 10,
-            height: 10,
-        },
-        shadowOpacity: 0.4,
-        shadowRadius: 3.84,
-        top: 0,
-    },
+    icon: { margin: 12, width: 30, height: 30 },
 
     list: {
         paddingHorizontal: 12,

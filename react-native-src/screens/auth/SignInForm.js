@@ -34,28 +34,15 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     leftIconContainer: {
-        // width: 60,
-        // height: 60,
-        // backgroundColor: Colors.whisper,
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // justifyContent: 'center',
-        marginEnd: 12,
+        marginRight: 6,
     },
-    // input: {
-    //     borderWidth: 0.5,
-    //     paddingHorizontal: 12,
-    //     // borderStyle: 'dotted',
-    //     borderRadius: 10,
-    //     borderColor: Colors.grey,
-    //     // dash
-    // },
     text: { color: Colors.grey },
     button: {
         backgroundColor: Colors.brandy_rose,
         paddingVertical: 16,
-        paddingHorizontal: 50,
-        borderRadius: 12,
+        width: '100%',
+        // paddingHorizontal: 50,
+        borderRadius: 30,
         marginBottom: 12,
     },
     row: {
@@ -63,7 +50,6 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
         width,
-        // paddingHorizontal: 48,
     },
 });
 
@@ -103,7 +89,7 @@ export default function SignInForm(props) {
                             type: 'font-awesome',
                             name: 'envelope',
                             color: Colors.brandy_rose,
-                            size: 30,
+                            size: 20,
                         }}
                         label={'Email'}
                         labelStyle={styles.text}
@@ -122,7 +108,7 @@ export default function SignInForm(props) {
                             type: 'font-awesome',
                             name: 'lock',
                             color: Colors.brandy_rose,
-                            size: 30,
+                            size: 20,
                         }}
                         leftIconContainerStyle={styles.leftIconContainer}
                         label={'Mật khẩu'}
@@ -154,6 +140,7 @@ export default function SignInForm(props) {
                 onPress={() => {
                     signIn({ email, password });
                 }}
+                titleStyle={{ color: Colors.purple_blue }}
             />
             <View style={styles.row}>
                 <Text style={{ color: Colors.brandy_rose, alignSelf: 'center', fontSize: 18 }}>

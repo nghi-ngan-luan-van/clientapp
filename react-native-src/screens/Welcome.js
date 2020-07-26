@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { Image, StyleSheet, Dimensions, View } from 'react-native';
+import { Colors } from '../utils/AppConfig';
+const WIDTH = Dimensions.get('window').width;
 export default class Welcome extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Welcome to NN Application</Text>
+                <Image
+                    source={require('../assets/preview.gif')}
+                    resizeMode={'contain'}
+                    style={{ width: WIDTH }}
+                />
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        textAlign: 'center',
-    },
+    container: { flex: 1, backgroundColor: Colors.white },
 });

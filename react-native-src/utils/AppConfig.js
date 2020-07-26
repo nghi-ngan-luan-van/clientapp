@@ -17,5 +17,6 @@ module.exports = {
         pomegranate: '#f44324',
         grey: '#524e51',
         brandy_rose: '#ba8393',
+        light_grey: '#E9E9E9',
     },
 };

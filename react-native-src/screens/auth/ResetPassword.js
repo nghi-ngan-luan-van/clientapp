@@ -9,11 +9,8 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-// import { Button } from 'react-native-elements';
-import { AuthContext } from '../../navigation/AppNavigator';
 import { AppRoute } from '../../navigation/app-routes';
 
-const BACKGROUND = require('../../assets/background_image.png');
 const { width, height } = Dimensions.get('window');
 import { Button } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';

@@ -1,18 +1,9 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
-import {
-    StyleSheet,
-    Dimensions,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Keyboard,
-} from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
+import { resetPassword } from '../../utils/ApiUtils';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -23,22 +14,9 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     leftIconContainer: {
-        // width: 60,
-        // height: 60,
-        // backgroundColor: Colors.whisper,
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // justifyContent: 'center',
         marginEnd: 12,
     },
-    // input: {
-    //     borderWidth: 0.5,
-    //     paddingHorizontal: 12,
-    //     // borderStyle: 'dotted',
-    //     borderRadius: 10,
-    //     borderColor: Colors.grey,
-    //     // dash
-    // },
+
     text: { color: Colors.grey },
     button: {
         backgroundColor: Colors.brandy_rose,
@@ -59,9 +37,13 @@ const styles = StyleSheet.create({
 export default function ResetPasswordForm(props) {
     const [email, setEmail] = React.useState('ngankieu.itus@gmail.com');
     console.log('[ResetPasswordForm]');
+    const onSubmit = result => {
+        if (!result) {
+        }
+    };
     const submitEmail = async () => {
-        console.log('ResetPasswordForm');
         try {
+            await resetPassword({ email }, onSubmit);
             console.log('Password reset email sent successfully');
         } catch (error) {
             console.log(error);

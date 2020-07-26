@@ -12,7 +12,6 @@ import {
 import { AuthContext } from '../../navigation/AppNavigator';
 import { AppRoute } from '../../navigation/app-routes';
 
-const BACKGROUND = require('../../assets/background_image.png');
 const { width, height } = Dimensions.get('window');
 import {
     GoogleSignin,

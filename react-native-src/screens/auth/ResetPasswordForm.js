@@ -123,8 +123,9 @@ export function EmailForm(props) {
         }
     };
     const _onSubmit = async email => {
+        const mail = typeof email === 'string' && email.trim();
         try {
-            await resetPassword({ email }, submitEmail);
+            await resetPassword({ email: mail }, submitEmail);
             console.log('Password reset email sent successfully');
         } catch (error) {
             console.log(error);
@@ -145,12 +146,12 @@ export function ConfirmTokenForm(props) {
     const submitEmail = result => {
         console.log(result);
         if (result) {
-            // navigation && navigation.push(AppRoute.TOKEN_CONFIRM);
         }
     };
     const onSubmit = async token => {
+        const _token = typeof token === 'string' && token.trim();
         try {
-            await resetPassword({ token }, submitEmail);
+            await resetPassword({ token: _token }, submitEmail);
             console.log('Password confrim token sent successfully');
         } catch (error) {
             console.log(error);

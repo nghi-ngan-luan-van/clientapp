@@ -266,7 +266,13 @@ class CameraVideosComp extends Component {
         );
     };
 
+    renderLoading() {
+        return <View />;
+    }
     render() {
+        if (this.state.loading) {
+            return this.renderLoading();
+        }
         let { eventList, backupList, loading } = this.state;
         console.log('this.state', this.state.backupList);
         if (eventList.length > 0 || backupList.length > 0) {

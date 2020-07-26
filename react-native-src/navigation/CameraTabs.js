@@ -14,7 +14,6 @@ import {
 } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import EditCamera from '../screens/editcamera';
-import { getBackupVideo, getMovingEvents } from '../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';

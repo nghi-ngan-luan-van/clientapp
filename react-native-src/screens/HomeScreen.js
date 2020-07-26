@@ -81,7 +81,6 @@ export default function HomeScreen(props) {
     };
 
     const searchCamera = value => {
-        console.log('aaaa', value);
         if (!value || value.length == 0) {
             setCameras(initialCameraList);
         } else {
@@ -101,14 +100,13 @@ export default function HomeScreen(props) {
         searchCamera(value);
     };
     const onPressAdd = () => {
-        navigation && navigation.push(AppRoute.ADD_CAMERA);
+        navigation && navigation.navigate(AppRoute.ADD_CAMERA);
     };
 
     const renderCamera = ({ item, index }) => {
         const thumnail = { uri: item.thumbnail };
 
         return (
-            // <View style={styles.card}>
             <TouchableOpacity style={styles.card} key={index} onPress={onPress(item)}>
                 <Image
                     source={thumnail.uri ? thumnail : testThumbnail}
@@ -127,7 +125,6 @@ export default function HomeScreen(props) {
                     {/*/>*/}
                 </View>
             </TouchableOpacity>
-            // </View>
         );
     };
 
@@ -226,7 +223,6 @@ export default function HomeScreen(props) {
 const RADIUS = 10;
 const CARD_WIDTH = (WIDTH - 36) / 2;
 const CARD_HEIGHT = (CARD_WIDTH / 16) * 9;
-const ICON_SIZE = 42;
 const styles = StyleSheet.create({
     headerBar: {
         flexDirection: 'row',
@@ -262,26 +258,16 @@ const styles = StyleSheet.create({
         flex: 1,
         fontWeight: 'bold',
     },
-    card: {
+    ƒ: {
         backgroundColor: Colors.white,
         marginBottom: 12,
         borderRadius: RADIUS,
-        // shadowColor: Colors.grey,
-        // shadowOffset: { width: 2, height: 2, right: 2 },
-        // shadowOpacity: 0.2,
-        // elevation: 5,
     },
     dot: {
         height: 10,
         width: 10,
         borderRadius: 5,
         marginRight: 6,
-    },
-    cardView: {
-        borderRadius: 16,
-        height: CARD_HEIGHT,
-        marginBottom: 12,
-        width: CARD_WIDTH,
     },
     thumbnail: {
         height: CARD_HEIGHT,

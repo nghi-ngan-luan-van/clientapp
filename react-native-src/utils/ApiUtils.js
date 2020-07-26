@@ -85,6 +85,7 @@ export const resetPassword = (params, callback) => {
         callback();
     }
 };
+
 export const getUserCameras = async (params, callback) => {
     // const userToken = await AsyncStorage.getItem('userToken');
     let { userToken } = params;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>136433114251-j3plam2goeoqaifnhj2umab2tuib4mts.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.136433114251-j3plam2goeoqaifnhj2umab2tuib4mts</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>136433114251-9ihfv85m477hlsf9vajtom4b960ec6kn.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBdHMVlHLZHIsSsrt4KY_jbHfDQ8s3BDFc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>136433114251</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.luanvan.clomera</string>
+	<key>PROJECT_ID</key>
+	<string>luanvan-1591764764944</string>
+	<key>STORAGE_BUCKET</key>
+	<string>luanvan-1591764764944.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:136433114251:ios:b79de4f2e6f044457d088e</string>
+	<key>DATABASE_URL</key>
+	<string>https://luanvan-1591764764944.firebaseio.com</string>
+</dict>
+</plist>

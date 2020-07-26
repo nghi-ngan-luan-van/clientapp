@@ -16,11 +16,14 @@ import { Button } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 
 import { useSafeArea } from 'react-native-safe-area-context';
-import ResetPasswordForm from './ResetPasswordForm';
+import { EmailForm, ConfirmTokenForm } from './ResetPasswordForm';
 
-export default function ResetPassword(props) {
+export function ResetPassword(props) {
     const insets = useSafeArea();
-    console.log('[ResetPassword]');
+    const [isEmailVailid, setValidEmail] = useState(false);
+    const submitEmail = () => {
+        setValidEmail(true);
+    };
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -33,38 +36,28 @@ export default function ResetPassword(props) {
                         <Text style={styles.appname}>C L O M E R A</Text>
                     </View>
 
-                    <ResetPasswordForm
+                    <EmailForm
                         {...props}
                         style={{
                             marginTop: -height / 6,
                         }}
+                        onSubmit={submitEmail}
                     />
-                    <View
-                        style={{
-                            // flex: 0.5,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: 12,
-                        }}
-                    >
-                        <Text style={{ fontSize: 14, color: Colors.whisper, fontWeight: 'bold' }}>
-                            Chưa có tài khoản?
-                        </Text>
+                    {!!isEmailVailid && (
+                        <ConfirmTokenForm
+                            {...props}
+                            style={{
+                                marginTop: -height / 6,
+                            }}
+                        />
+                    )}
+                    <View style={styles.registerContainer}>
+                        <Text style={styles.textRegister}>Chưa có tài khoản?</Text>
                         <Button
                             title={'Đăng ký ngay!'}
                             type="solid"
-                            titleStyle={{
-                                fontSize: 14,
-                                color: Colors.pomegranate,
-                                fontWeight: 'bold',
-                            }}
-                            buttonStyle={{
-                                backgroundColor: Colors.screen,
-                                padding: 12,
-                                marginLeft: 6,
-                                borderRadius: 12,
-                            }}
+                            titleStyle={styles.regTitle}
+                            buttonStyle={styles.button}
                             onPress={() => {
                                 const { navigation } = props || {};
                                 navigation && navigation.navigate(AppRoute.SIGN_UP);
@@ -74,8 +67,8 @@ export default function ResetPassword(props) {
                     <Button
                         title={'Quay về đăng nhập.'}
                         type="outline"
-                        titleStyle={{ color: Colors.white }}
-                        buttonStyle={{ borderRadius: 24, borderColor: Colors.screen }}
+                        titleStyle={styles.signInTitle}
+                        buttonStyle={styles.signInButton}
                         onPress={() => {
                             const { navigation } = props || {};
                             navigation && navigation.navigate(AppRoute.SIGN_IN);
@@ -123,4 +116,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: Colors.brandy_rose,
     },
+    button: {
+        backgroundColor: Colors.screen,
+        padding: 12,
+        marginLeft: 6,
+        borderRadius: 12,
+    },
+    registerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    regTitle: {
+        fontSize: 14,
+        color: Colors.pomegranate,
+        fontWeight: 'bold',
+    },
+    textRegister: { fontSize: 14, color: Colors.whisper, fontWeight: 'bold' },
+    signInButton: { borderRadius: 24, borderColor: Colors.screen },
+    signInTitle: { color: Colors.white },
 });

@@ -28,19 +28,21 @@ export default function HomeScreen(props) {
     const [userToken, setuserToken] = useState('');
     const [search, setSearch] = useState('');
     const [isEmpty, setEmpty] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    useFocusEffect(() =>
+    useFocusEffect(() => {
         Orientation.getOrientation((err, orientation) => {
             if (orientation === 'LANDSCAPE') {
                 Orientation.lockToPortrait();
             }
-        })
-    );
+        });
+    });
 
     useEffect(() => {
         getCameras(response => {
             if (response && response.result) {
                 setCameras(response.result);
+                setLoading(false);
             } else {
                 signOut();
             }
@@ -118,60 +120,73 @@ export default function HomeScreen(props) {
             </View>
         );
     };
-    return (
-        <View style={styles.container}>
-            <SearchBar
-                focusable={true}
-                onBlur={() => {}}
-                placeholder="Tìm camera..."
-                onChangeText={updateSearch}
-                value={search}
-                lightTheme
-                containerStyle={{ backgroundColor: 'transparent' }}
-                inputContainerStyle={{ backgroundColor: Colors.white }}
-            />
 
-            <FlatList
-                contentContainerStyle={styles.list}
-                keyExtractor={(item, index) => 'item' + index}
-                data={cameras}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                numColumns={2}
-                renderItem={renderCamera}
-                refreshing={refresh}
-                onRefresh={async () => {
-                    setRefresh(true);
-                    await getUserCameras({ userToken }, response => {
-                        if (response && response.result) {
-                            setCameras(response.result);
-                        }
-                        setRefresh(false);
-                    });
-                }}
-                ListEmptyComponent={() => (
-                    <Image
-                        source={require('../assets/empty.gif')}
-                        style={{
-                            flex: 1,
-                            alignSelf: 'center',
-                            width: WIDTH,
-                            resizeMode: 'contain',
-                            overflow: 'hidden',
-                        }}
-                    />
-                )}
-            />
-            {/*<Icon*/}
-            {/*    type={'font-awesome'}*/}
-            {/*    name={'plus-circle'}*/}
-            {/*    color={Colors.grey}*/}
-            {/*    onPress={onPressAdd}*/}
-            {/*    size={50}*/}
-            {/*/>*/}
-            {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
-            {/*</Icon>*/}
-        </View>
-    );
+    if (loading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: Colors.white }}>
+                <Image
+                    source={require('../assets/preview.gif')}
+                    resizeMode={'contain'}
+                    style={{ width: WIDTH }}
+                />
+            </View>
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <SearchBar
+                    focusable={true}
+                    onBlur={() => {}}
+                    placeholder="Tìm camera..."
+                    onChangeText={updateSearch}
+                    value={search}
+                    lightTheme
+                    containerStyle={{ backgroundColor: 'transparent' }}
+                    inputContainerStyle={{ backgroundColor: Colors.white }}
+                />
+
+                <FlatList
+                    contentContainerStyle={styles.list}
+                    keyExtractor={(item, index) => 'item' + index}
+                    data={cameras}
+                    columnWrapperStyle={{ justifyContent: 'space-between' }}
+                    numColumns={2}
+                    renderItem={renderCamera}
+                    refreshing={refresh}
+                    onRefresh={async () => {
+                        setRefresh(true);
+                        await getUserCameras({ userToken }, response => {
+                            if (response && response.result) {
+                                setCameras(response.result);
+                            }
+                            setRefresh(false);
+                        });
+                    }}
+                    ListEmptyComponent={() => (
+                        <Image
+                            source={require('../assets/empty.gif')}
+                            style={{
+                                flex: 1,
+                                alignSelf: 'center',
+                                width: WIDTH - 50,
+                                resizeMode: 'contain',
+                                overflow: 'hidden',
+                            }}
+                        />
+                    )}
+                />
+                {/*<Icon*/}
+                {/*    type={'font-awesome'}*/}
+                {/*    name={'plus-circle'}*/}
+                {/*    color={Colors.grey}*/}
+                {/*    onPress={onPressAdd}*/}
+                {/*    size={50}*/}
+                {/*/>*/}
+                {/*<Image style={{ width: 60, height: 60 }} source={require('../assets/plus.png')} />*/}
+                {/*</Icon>*/}
+            </View>
+        );
+    }
 }
 
 const CARD_WIDTH = (WIDTH - 36) / 2;

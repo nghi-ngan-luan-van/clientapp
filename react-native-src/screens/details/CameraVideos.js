@@ -34,6 +34,7 @@ class CameraVideosComp extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             eventList: [],
             video: {},
             backupList: [],
@@ -88,6 +89,7 @@ class CameraVideosComp extends Component {
                 typeof signOut === 'function' && signOut();
             }
         });
+        this.setState({ loading: false });
         // this.loadItems();
     };
 
@@ -265,7 +267,7 @@ class CameraVideosComp extends Component {
     };
 
     render() {
-        let { eventList, backupList } = this.state;
+        let { eventList, backupList, loading } = this.state;
         console.log('this.state', this.state.backupList);
         if (eventList.length > 0 || backupList.length > 0) {
             return (
@@ -284,13 +286,12 @@ class CameraVideosComp extends Component {
                 </View>
             );
         } else {
+            const source = loading
+                ? require('../../assets/preview.gif')
+                : require('../../assets/empty.gif');
             return (
                 <View style={{ flex: 1, backgroundColor: Colors.white }}>
-                    <Image
-                        source={require('../../assets/empty.gif')}
-                        style={{ width: width }}
-                        resizeMode={'contain'}
-                    />
+                    <Image source={source} style={{ width: width - 50 }} resizeMode={'contain'} />
                 </View>
             );
         }

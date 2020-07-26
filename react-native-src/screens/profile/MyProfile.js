@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         // alignItems: 'center',
         // alignSelf: 'center',
-        marginLeft: 6,
+        // marginLeft: 6,
         // paddingTop: 3,
         flex: 1,
     },
@@ -51,21 +51,24 @@ const styles = StyleSheet.create({
     },
     text: {
         flex: 1,
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.black,
-        marginLeft: 6,
+        marginLeft: 12,
     },
     title: {
         flex: 1.5,
-        fontSize: 18,
+        fontSize: 20,
         color: Colors.arapawa,
         fontWeight: 'bold',
-        marginLeft: 6,
+        marginLeft: 12,
         justifyContent: 'center',
     },
 });
 export default function MyProfile(props) {
     const { signOut } = useContext(AuthContext);
+    useEffect(() => {
+        const verifytoken = () => {};
+    });
     const goChangePass = () => {
         const { navigation } = props;
         navigation && navigation.push(AppRoute.CHANGE_PASS);

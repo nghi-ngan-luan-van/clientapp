@@ -153,7 +153,7 @@ export default class CalendarPicker extends Component {
             <AgendaView
                 testID={'CONTAINER'}
                 items={this.state.items}
-                markedDates={this.markedDates}
+                // markedDates={this.markedDates}
                 loadItemsForMonth={this.loadItems}
                 onDayPress={day => {
                     console.log('day pressed');
@@ -167,14 +167,13 @@ export default class CalendarPicker extends Component {
                 renderEmptyDate={this.renderEmptyDate}
                 // rowHasChanged={this.rowHasChanged}
                 markingType={'period'}
-                // markedDates={this.markedDates}
                 monthFormat={'yyyy/MM'}
                 theme={{
                     backgroundColor: '#ffffff',
                     calendarBackground: '#ffffff',
                     textSectionTitleColor: '#b6c1cd',
-                    selectedDayBackgroundColor: '#00adf5',
-                    selectedDayTextColor: '#ffffff',
+                    selectedDayBackgroundColor: 'blue',
+                    selectedDayTextColor: 'blue',
                     todayTextColor: '#00adf5',
                     dayTextColor: '#2d4150',
                     textDisabledColor: '#d9e1e8',

@@ -60,6 +60,16 @@ export const signInGG = (params, callback) => {
         callback();
     }
 };
+
+// /auth/verifytoken
+export const verifytoken = (params, callback) => {
+    try {
+        post(HOST_URL + 'auth/verifytoken', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils verifytoken', e);
+        callback();
+    }
+};
 export const signUp = (params, callback) => {
     let { name, email, password } = params;
     let data = {

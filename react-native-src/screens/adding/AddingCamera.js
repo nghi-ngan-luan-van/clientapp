@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Alert,Image,StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, Image, StyleSheet } from 'react-native';
 import { Input } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import Loader from '../../components/LoadingModal';
 import { HOST_URL } from '../../utils/AppConst';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 class AddingCamera extends Component {
     constructor(props) {
@@ -46,11 +46,11 @@ class AddingCamera extends Component {
             redirect: 'follow',
         };
 
-        await fetch(HOST_URL+ 'camera/testconnection', requestOptions)
+        await fetch(HOST_URL + 'camera/testconnection', requestOptions)
             .then(response => {
                 // console.log(response.status)
                 if (response.status !== 200) {
-                    alert('Test connection: Failed');
+                    // alert('Test connection: Failed');
                     this.setState({ loading: false });
                 } else {
                     return response.text();
@@ -147,9 +147,12 @@ class AddingCamera extends Component {
                 />
                 <Button title={'Test Connection'} onPress={this.onTestCamera} />
                 <Image
-                    style={{height:200,width:200,opacity:this.state.thumbnail!==''? 1 :0}}
-                    source={{uri:this.state.thumbnail}}
-                    
+                    style={{
+                        height: 200,
+                        width: 200,
+                        opacity: this.state.thumbnail !== '' ? 1 : 0,
+                    }}
+                    source={{ uri: this.state.thumbnail }}
                 />
             </View>
         );

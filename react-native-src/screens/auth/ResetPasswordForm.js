@@ -123,7 +123,7 @@ export function EmailForm(props) {
         }
     };
     const _onSubmit = async email => {
-        const mail = typeof email === 'string' && email.trim();
+        const mail = typeof email === 'string' && email.trim().toLowerCase();
         try {
             await resetPassword({ email: mail }, submitEmail);
             console.log('Password reset email sent successfully');

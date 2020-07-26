@@ -1,19 +1,9 @@
 import React from 'react';
-import { AuthContext } from '../../navigation/AppNavigator';
-import {
-    StyleSheet,
-    Dimensions,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Keyboard,
-} from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 import { AppRoute } from '../../navigation/app-routes';
+import { signUp } from '../../utils/ApiUtils';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -60,29 +50,36 @@ export default function SignUpForm(props) {
     const [password, setPassword] = React.useState('123456');
     const [name, setName] = React.useState('nghi nguyen2');
     console.log('props signup', props);
-    //const { signIn } = React.useContext(AuthContext);
     const _signUp = async () => {
-        let myHeaders = new Headers();
-        myHeaders.append('Content-Type', 'application/json');
-
-        let raw = JSON.stringify({ name: name, email: email, password: password });
-        let requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-        };
-
-        await fetch('http://128.199.211.44/auth/register', requestOptions).then(response => {
+        signUp({ name: name, email: email, password: password }, response => {
             console.log(response);
-            if (response.status !== 204) {
+            if (!response) {
                 alert('Người dùng đã tồn tại');
             } else {
                 alert('Đăng kí thành công');
+                const { navigation } = props || {};
+                navigation && navigation.navigate(AppRoute.SIGN_IN);
             }
         });
-        const { navigation } = props || {};
-        navigation && navigation.navigate(AppRoute.SIGN_IN);
+        // let myHeaders = new Headers();
+        // myHeaders.append('Content-Type', 'application/json');
+        //
+        // let raw = JSON.stringify({ name: name, email: email, password: password });
+        // let requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow',
+        // };
+        //
+        // await fetch('http://128.199.211.44/auth/register', requestOptions).then(response => {
+        //     console.log(response);
+        //     if (response.status !== 204) {
+        //         alert('Người dùng đã tồn tại');
+        //     } else {
+        //         alert('Đăng kí thành công');
+        //     }
+        // });
     };
 
     return (

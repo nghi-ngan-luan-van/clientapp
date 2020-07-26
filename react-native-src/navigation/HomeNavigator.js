@@ -23,6 +23,7 @@ import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
 import { DrawerActions } from 'react-navigation-drawer';
 import ChangePassword from '../screens/profile/ChangePassword';
 import { Icon } from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -149,7 +150,7 @@ export function HomeScreenStack(props) {
             screenOptions={({ route = {} }) => ({
                 animationEnabled: true,
                 headerBackTitleVisible: false,
-                headerStyle: { backgroundColor: 'transparent' },
+                headerStyle: { backgroundColor: Colors.screen },
                 headerTitle: getHeaderTitle(route),
                 headerBackImage: () => (
                     <Image
@@ -164,11 +165,6 @@ export function HomeScreenStack(props) {
                 name={AppRoute.HOME}
                 component={HomeScreen}
                 options={({ navigation }) => ({
-                    // header: () => {
-                    //     return ( <View/>);
-                    // },
-                    // headerShown:false,
-                    // headerTitle: 'Hello',
                     headerLeft: () => (
                         <TouchableOpacity
                             onPress={() => {
@@ -200,6 +196,14 @@ export function HomeScreenStack(props) {
                 name={AppRoute.CAMERA_DETAIL}
                 component={CameraTabs}
                 options={({ route }) => ({
+                    headerBackground: () => (
+                        <LinearGradient
+                            style={{ flex: 1, padding: 12 }}
+                            colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.purple_blue]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        />
+                    ),
                     headerRight: () => (
                         <TouchableOpacity
                             onPress={() => {

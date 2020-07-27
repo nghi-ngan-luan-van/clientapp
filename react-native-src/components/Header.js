@@ -87,11 +87,6 @@ export default Header = props => {
 
     return (
         <View style={styles.container}>
-            {/*<Image*/}
-            {/*    style={styles.backgroundImg}*/}
-            {/*    source={require('../assets/background_image.png')}*/}
-
-            {/*/>*/}
             {renderHeaderLeft()}
             {renderTitle()}
             {renderHeaderRight()}

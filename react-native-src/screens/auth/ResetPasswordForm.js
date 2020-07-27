@@ -1,21 +1,19 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
-import {
-    StyleSheet,
-    Dimensions,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Keyboard,
-} from 'react-native';
+import { StyleSheet, Dimensions, View } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
+import { resetPassword } from '../../utils/ApiUtils';
+import { AppRoute } from '../../navigation/app-routes';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         width: width - 48,
         padding: 12,
@@ -23,22 +21,9 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     leftIconContainer: {
-        // width: 60,
-        // height: 60,
-        // backgroundColor: Colors.whisper,
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // justifyContent: 'center',
         marginEnd: 12,
     },
-    // input: {
-    //     borderWidth: 0.5,
-    //     paddingHorizontal: 12,
-    //     // borderStyle: 'dotted',
-    //     borderRadius: 10,
-    //     borderColor: Colors.grey,
-    //     // dash
-    // },
+
     text: { color: Colors.grey },
     button: {
         backgroundColor: Colors.brandy_rose,
@@ -54,65 +39,131 @@ const styles = StyleSheet.create({
         width,
         // paddingHorizontal: 48,
     },
+    navigationRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    title: { color: Colors.brandy_rose, fontSize: 20 },
+    buttonTitle: { width: '100%', borderWidth: 0, alignSelf: 'center' },
+    icon: { alignSelf: 'flex-end', marginRight: 12 },
 });
 
-export default function ResetPasswordForm(props) {
-    const [email, setEmail] = React.useState('ngankieu.itus@gmail.com');
-    console.log('[ResetPasswordForm]');
-    const submitEmail = async () => {
-        console.log('ResetPasswordForm');
-        try {
-            // await FirebaseConfig.passwordReset(email);
+export function ResetForm(props) {
+    const {
+        title,
+        label = 'Email',
+        submit,
+        style,
+        placeholder,
+        showBack = false,
+        navigation,
+    } = props;
+    const [inputValue, setInputValue] = React.useState('');
 
-            console.log('Password reset email sent successfully');
-        } catch (error) {
-            console.log(error);
-            // actions.setFieldError('general', error.message)
-        }
+    console.log('[ResetPasswordForm]');
+
+    const goToPrev = () => {
+        navigation && navigation.canGoBack() && navigation.pop();
     };
+    const onSubmit = () => {
+        typeof submit === 'function' && submit(inputValue);
+    };
+
     return (
-        <View
-            style={[
-                {
-                    flex: 1,
-                    justifyContent: 'space-around',
-                    alignContent: 'center',
-                    alignItems: 'center',
-                },
-                props.style,
-            ]}
-        >
+        <View style={[styles.wrapper, style]}>
             <View>
                 <View style={[styles.container]}>
                     <Button
-                        title={'Quên mật khẩu'}
+                        title={title ? title : ''}
                         type="outline"
-                        titleStyle={{ color: Colors.brandy_rose, fontSize: 24 }}
-                        buttonStyle={{ width: '100%', borderWidth: 0, alignSelf: 'center' }}
+                        titleStyle={styles.title}
+                        buttonStyle={styles.buttonTitle}
                         disabled={true}
                     />
                     <Input
-                        placeholder="Nhập email của bạn"
-                        label={'Email'}
+                        placeholder={placeholder}
+                        label={label}
                         labelStyle={styles.text}
-                        // style={styles}
                         leftIconContainerStyle={styles.leftIconContainer}
-                        value={email}
+                        value={inputValue}
                         inputStyle={styles.text}
-                        onChangeText={value => setEmail(value)}
+                        onChangeText={value => setInputValue(value)}
                         keyboardType="email-address"
-                        ri
-                        // errorMessage={'Vui lòng nhập email'}
                     />
-                    <Icon
-                        type="font-awesome"
-                        name="arrow-right"
-                        // raised
-                        onPress={() => submitEmail()}
-                        style={{ alignSelf: 'flex-end', marginRight: 12 }}
-                    />
+                    <View style={styles.navigationRow}>
+                        {!showBack ? (
+                            <View />
+                        ) : (
+                            <Icon
+                                type="font-awesome"
+                                name="arrow-left"
+                                onPress={goToPrev}
+                                style={styles.icon}
+                            />
+                        )}
+                        <Icon
+                            type="font-awesome"
+                            name="arrow-down"
+                            onPress={onSubmit}
+                            style={styles.icon}
+                        />
+                    </View>
                 </View>
             </View>
         </View>
+    );
+}
+
+export function EmailForm(props) {
+    const { navigation, onSubmit } = props;
+    const submitEmail = result => {
+        console.log(result);
+        if (result) {
+            onSubmit(true);
+        }
+    };
+    const _onSubmit = async email => {
+        const mail = typeof email === 'string' && email.trim();
+        try {
+            await resetPassword({ email: mail }, submitEmail);
+            console.log('Password reset email sent successfully');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    return (
+        <ResetForm
+            {...props}
+            title={'Đặt lại mật khẩu bằng email'}
+            label={'Email'}
+            placeholder={'Nhập email cùa bạn'}
+            submit={_onSubmit}
+        />
+    );
+}
+
+export function ConfirmTokenForm(props) {
+    const submitEmail = result => {
+        console.log(result);
+        if (result) {
+        }
+    };
+    const onSubmit = async token => {
+        const _token = typeof token === 'string' && token.trim();
+        try {
+            await resetPassword({ token: _token }, submitEmail);
+            console.log('Password confrim token sent successfully');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    return (
+        <ResetForm
+            {...props}
+            title={'Nhập lại token để xác nhận lại email'}
+            label={'Token kiểm tra'}
+            placeholder={'Nhập token đã gửi vào mail cùa bạn'}
+            submit={onSubmit}
+        />
     );
 }

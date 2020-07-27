@@ -1,6 +1,5 @@
 platform :ios, '9.0'
-$FirebaseSDKVersion = '6.13.0'
-$RNFirebaseAsStaticFramework = true
+
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def add_flipper_pods!
@@ -25,6 +24,7 @@ end
 
 target 'clientapp' do
   # Pods for clientapp
+  pod 'GoogleAnalytics'
   pod 'GoogleSignIn', '~> 5.0.2'
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"

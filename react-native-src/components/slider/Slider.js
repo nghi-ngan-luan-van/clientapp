@@ -1,47 +1,40 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {I18nManager, PanResponder, StyleSheet, View} from 'react-native';
-import FlaggedPoints from './FlaggedPoints'
+import { I18nManager, PanResponder, StyleSheet, View } from 'react-native';
+import FlaggedPoints from './FlaggedPoints';
 import DefaultMarker from './DefaultMarker';
 import DefaultLabel from './DefaultLabel';
-import {createArray, positionToValue, valueToPosition} from './converters';
-import {Colors} from '../../utils/AppConfig';
+import { createArray, positionToValue, valueToPosition } from './converters';
+import { Colors } from '../../utils/AppConfig';
 
 const data = [
     {
-        start:10,
-        end:12
+        start: 10,
+        end: 12,
     },
     {
-        start:24,
-        end:54
+        start: 24,
+        end: 54,
     },
     {
-        start:56,
-        end:60
+        start: 56,
+        end: 60,
     },
     {
-        start:62,
-        end:72
+        start: 62,
+        end: 72,
     },
-
-]
+];
 export default class Slider extends Component {
     constructor(props) {
         super(props);
-        const {
-            optionsArray,
-            min,
-            max,
-            step,
-            length,
-            values
-        } = this.props;
-        this.optionsArray = optionsArray
-            || createArray(min, max, step);
+        const { optionsArray, min, max, step, length, values } = this.props;
+        this.optionsArray = optionsArray || createArray(min, max, step);
         const defaultSliderLength = length || 280;
         this.stepLength = defaultSliderLength / this.optionsArray.length;
-        const initialValues = values.map((value) => valueToPosition(value, this.optionsArray, defaultSliderLength));
+        const initialValues = values.map(value =>
+            valueToPosition(value, this.optionsArray, defaultSliderLength)
+        );
         this.state = {
             valueOne: values[0],
             valueTwo: values[1],
@@ -49,51 +42,47 @@ export default class Slider extends Component {
             pastTwo: initialValues[1],
             positionOne: initialValues[0],
             positionTwo: initialValues[1],
-            sliderLength: defaultSliderLength
+            sliderLength: defaultSliderLength,
         };
         this.subscribePanResponder();
     }
 
     subscribePanResponder = () => {
-        const customPanResponder = (start, move, end) => PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onStartShouldSetPanResponderCapture: () => true,
-            onMoveShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponderCapture: () => true,
-            onPanResponderGrant: () => start(),
-            onPanResponderMove: (evt, gestureState) => move(gestureState),
-            onPanResponderTerminationRequest: () => false,
-            onPanResponderRelease: (evt, gestureState) => end(gestureState),
-            onPanResponderTerminate: (evt, gestureState) => end(gestureState),
-            onShouldBlockNativeResponder: () => true,
-        });
+        const customPanResponder = (start, move, end) =>
+            PanResponder.create({
+                onStartShouldSetPanResponder: () => true,
+                onStartShouldSetPanResponderCapture: () => true,
+                onMoveShouldSetPanResponder: () => true,
+                onMoveShouldSetPanResponderCapture: () => true,
+                onPanResponderGrant: () => start(),
+                onPanResponderMove: (evt, gestureState) => move(gestureState),
+                onPanResponderTerminationRequest: () => false,
+                onPanResponderRelease: (evt, gestureState) => end(gestureState),
+                onPanResponderTerminate: (evt, gestureState) => end(gestureState),
+                onShouldBlockNativeResponder: () => true,
+            });
 
         this._panResponderBetween = customPanResponder(
-            (gestureState) => {
+            gestureState => {
                 this.startOne(gestureState);
                 this.startTwo(gestureState);
             },
-            (gestureState) => {
+            gestureState => {
                 this.moveOne(gestureState);
                 this.moveTwo(gestureState);
             },
-            (gestureState) => {
+            gestureState => {
                 this.endOne(gestureState);
                 this.endTwo(gestureState);
-            },
+            }
         );
 
-        this._panResponderOne = customPanResponder(
-            this.startOne,
-            this.moveOne,
-            this.endOne,
-        );
-
+        this._panResponderOne = customPanResponder(this.startOne, this.moveOne, this.endOne);
     };
 
     startOne = () => {
-        const {enabledOne, onChangeStart} = this.props;
-        const {onePressed} = this.state;
+        const { enabledOne, onChangeStart } = this.props;
+        const { onePressed } = this.state;
         if (enabledOne) {
             onChangeStart();
             this.setState({
@@ -103,8 +92,8 @@ export default class Slider extends Component {
     };
 
     startTwo = () => {
-        const {enabledTwo, onChangeStart} = this.props;
-        const {twoPressed} = this.state;
+        const { enabledTwo, onChangeStart } = this.props;
+        const { twoPressed } = this.state;
         if (enabledTwo) {
             onChangeStart();
             this.setState({
@@ -113,7 +102,7 @@ export default class Slider extends Component {
         }
     };
 
-    moveOne = (gestureState) => {
+    moveOne = gestureState => {
         const {
             enabledOne,
             vertical,
@@ -123,54 +112,32 @@ export default class Slider extends Component {
             touchDimensions,
             snapped,
             onChange,
-            onMarkersPosition
+            onMarkersPosition,
         } = this.props;
-        const {
-            pastOne,
-            positionTwo,
-            valueOne,
-            valueTwo,
-            sliderLength
-        } = this.state;
+        const { pastOne, positionTwo, valueOne, valueTwo, sliderLength } = this.state;
         if (!enabledOne) {
             return;
         }
 
-        const accumDistance = vertical
-            ? -gestureState.dy
-            : gestureState.dx;
-        const accumDistanceDisplacement = vertical
-            ? gestureState.dx
-            : gestureState.dy;
+        const accumDistance = vertical ? -gestureState.dy : gestureState.dx;
+        const accumDistanceDisplacement = vertical ? gestureState.dx : gestureState.dy;
 
-        const unconfined = I18nManager.isRTL
-            ? pastOne - accumDistance
-            : accumDistance + pastOne;
+        const unconfined = I18nManager.isRTL ? pastOne - accumDistance : accumDistance + pastOne;
         const bottom = 0;
-        const trueTop = positionTwo
-            - (allowOverlap
+        const trueTop =
+            positionTwo -
+            (allowOverlap
                 ? 0
                 : minMarkerOverlapDistance > 0
-                    ? minMarkerOverlapDistance
-                    : this.stepLength);
+                ? minMarkerOverlapDistance
+                : this.stepLength);
         const top = trueTop === 0 ? 0 : trueTop || sliderLength;
         const confined = unconfined < bottom ? bottom : unconfined > top ? top : unconfined;
-        const {slipDisplacement} = touchDimensions;
+        const { slipDisplacement } = touchDimensions;
 
-        if (
-            Math.abs(accumDistanceDisplacement) < slipDisplacement
-            || !slipDisplacement
-        ) {
-            const value = positionToValue(
-                confined,
-                this.optionsArray,
-                sliderLength,
-            );
-            const snappedValue = valueToPosition(
-                value,
-                this.optionsArray,
-                sliderLength,
-            );
+        if (Math.abs(accumDistanceDisplacement) < slipDisplacement || !slipDisplacement) {
+            const value = positionToValue(confined, this.optionsArray, sliderLength);
+            const snappedValue = valueToPosition(value, this.optionsArray, sliderLength);
             this.setState({
                 positionOne: snapped ? snappedValue : confined,
             });
@@ -181,27 +148,21 @@ export default class Slider extends Component {
                         valueOne: value,
                     },
                     () => {
-                        const {
-                            valueOne: newValueOne,
-                            positionOne: newPositionOne
-                        } = this.state;
+                        const { valueOne: newValueOne, positionOne: newPositionOne } = this.state;
                         const change = [newValueOne];
                         if (valueTwo) {
                             change.push(valueTwo);
                         }
                         onChange(change);
 
-                        onMarkersPosition([
-                            newPositionOne,
-                            positionTwo,
-                        ]);
-                    },
+                        onMarkersPosition([newPositionOne, positionTwo]);
+                    }
                 );
             }
         }
     };
 
-    moveTwo = (gestureState) => {
+    moveTwo = gestureState => {
         const {
             enabledTwo,
             vertical,
@@ -213,51 +174,29 @@ export default class Slider extends Component {
             onChange,
             onMarkersPosition,
         } = this.props;
-        const {
-            pastTwo,
-            positionOne,
-            sliderLength,
-            valueTwo,
-            valueOne,
-        } = this.state;
+        const { pastTwo, positionOne, sliderLength, valueTwo, valueOne } = this.state;
         if (!enabledTwo) {
             return;
         }
 
-        const accumDistance = vertical
-            ? -gestureState.dy
-            : gestureState.dx;
-        const accumDistanceDisplacement = vertical
-            ? gestureState.dx
-            : gestureState.dy;
+        const accumDistance = vertical ? -gestureState.dy : gestureState.dx;
+        const accumDistanceDisplacement = vertical ? gestureState.dx : gestureState.dy;
 
-        const unconfined = I18nManager.isRTL
-            ? pastTwo - accumDistance
-            : accumDistance + pastTwo;
-        const bottom = positionOne
-            + (allowOverlap
+        const unconfined = I18nManager.isRTL ? pastTwo - accumDistance : accumDistance + pastTwo;
+        const bottom =
+            positionOne +
+            (allowOverlap
                 ? 0
                 : minMarkerOverlapDistance > 0
-                    ? minMarkerOverlapDistance
-                    : this.stepLength);
+                ? minMarkerOverlapDistance
+                : this.stepLength);
         const top = sliderLength;
         const confined = unconfined < bottom ? bottom : unconfined > top ? top : unconfined;
-        const {slipDisplacement} = touchDimensions;
+        const { slipDisplacement } = touchDimensions;
 
-        if (
-            Math.abs(accumDistanceDisplacement) < slipDisplacement
-            || !slipDisplacement
-        ) {
-            const value = positionToValue(
-                confined,
-                this.optionsArray,
-                sliderLength,
-            );
-            const snappedValue = valueToPosition(
-                value,
-                this.optionsArray,
-                sliderLength,
-            );
+        if (Math.abs(accumDistanceDisplacement) < slipDisplacement || !slipDisplacement) {
+            const value = positionToValue(confined, this.optionsArray, sliderLength);
+            const snappedValue = valueToPosition(value, this.optionsArray, sliderLength);
 
             this.setState({
                 positionTwo: snapped ? snappedValue : confined,
@@ -270,30 +209,19 @@ export default class Slider extends Component {
                     },
                     () => {
                         // console.log(valueOne);
-                        const {
-                            valueTwo: newValueTwo,
-                            positionTwo: newPositionTwo
-                        } = this.state;
-                        onChange([
-                            valueOne,
-                            newValueTwo,
-                        ]);
+                        const { valueTwo: newValueTwo, positionTwo: newPositionTwo } = this.state;
+                        onChange([valueOne, newValueTwo]);
 
-                        onMarkersPosition([
-                            positionOne,
-                            newPositionTwo,
-                        ]);
-                    },
+                        onMarkersPosition([positionOne, newPositionTwo]);
+                    }
                 );
             }
         }
     };
 
-    endOne = (gestureState) => {
-        const {onToggleOne, onChangeFinish} = this.props;
-        const {
-            positionOne, onePressed, valueOne, valueTwo
-        } = this.state;
+    endOne = gestureState => {
+        const { onToggleOne, onChangeFinish } = this.props;
+        const { positionOne, onePressed, valueOne, valueTwo } = this.state;
         if (gestureState.moveX === 0 && onToggleOne) {
             onToggleOne();
             return;
@@ -310,15 +238,13 @@ export default class Slider extends Component {
                     change.push(valueTwo);
                 }
                 onChangeFinish(change);
-            },
+            }
         );
     };
 
-    endTwo = (gestureState) => {
-        const {onToggleTwo, onChangeFinish} = this.props;
-        const {
-            twoPressed, positionTwo, valueOne, valueTwo
-        } = this.state;
+    endTwo = gestureState => {
+        const { onToggleTwo, onChangeFinish } = this.props;
+        const { twoPressed, positionTwo, valueOne, valueTwo } = this.state;
         if (gestureState.moveX === 0 && onToggleTwo) {
             onToggleTwo();
             return;
@@ -330,31 +256,18 @@ export default class Slider extends Component {
                 pastTwo: positionTwo,
             },
             () => {
-                onChangeFinish([
-                    valueOne,
-                    valueTwo,
-                ]);
-            },
+                onChangeFinish([valueOne, valueTwo]);
+            }
         );
     };
 
     componentDidUpdate(prevProps, prevState) {
-        const {
-            positionOne: prevPositionOne,
-            positionTwo: prevPositionTwo,
-        } = prevState;
+        const { positionOne: prevPositionOne, positionTwo: prevPositionTwo } = prevState;
 
-        const {
-            positionOne, positionTwo, onePressed, twoPressed, sliderLength
-        } = this.state;
-        const {
-            onMarkersPosition, min, max, step, values, optionsArray
-        } = this.props;
+        const { positionOne, positionTwo, onePressed, twoPressed, sliderLength } = this.state;
+        const { onMarkersPosition, min, max, step, values, optionsArray } = this.props;
 
-        if (
-            typeof positionOne === 'undefined'
-            && typeof positionTwo !== 'undefined'
-        ) {
+        if (typeof positionOne === 'undefined' && typeof positionTwo !== 'undefined') {
             return;
         }
 
@@ -368,35 +281,25 @@ export default class Slider extends Component {
 
         const nextState = {};
         if (
-            prevProps.min !== min
-            || prevProps.max !== max
-            || prevProps.step !== step
-            || prevProps.values[0] !== values[0]
-            || prevState.sliderLength !== sliderLength
-            || prevProps.values[1] !== values[1]
-            || (prevState.sliderLength !== sliderLength
-            && prevProps.values[1])
+            prevProps.min !== min ||
+            prevProps.max !== max ||
+            prevProps.step !== step ||
+            prevProps.values[0] !== values[0] ||
+            prevState.sliderLength !== sliderLength ||
+            prevProps.values[1] !== values[1] ||
+            (prevState.sliderLength !== sliderLength && prevProps.values[1])
         ) {
-            this.optionsArray = optionsArray
-                || createArray(min, max, step);
+            this.optionsArray = optionsArray || createArray(min, max, step);
 
             this.stepLength = sliderLength / this.optionsArray.length;
 
-            const positionOneValue = valueToPosition(
-                values[0],
-                this.optionsArray,
-                sliderLength,
-            );
+            const positionOneValue = valueToPosition(values[0], this.optionsArray, sliderLength);
             // eslint-disable-next-line prefer-destructuring
             nextState.valueOne = values[0];
             nextState.pastOne = positionOneValue;
             nextState.positionOne = positionOneValue;
 
-            const positionTwoValue = valueToPosition(
-                values[1],
-                this.optionsArray,
-                sliderLength,
-            );
+            const positionTwoValue = valueToPosition(values[1], this.optionsArray, sliderLength);
             // eslint-disable-next-line prefer-destructuring
             nextState.valueTwo = values[1];
             nextState.pastTwo = positionTwoValue;
@@ -408,20 +311,26 @@ export default class Slider extends Component {
     }
 
     onContentLayout(e) {
-        const {vertical, length} = this.props;
+        const { vertical, length } = this.props;
         if (!length) {
             const layoutLength = vertical
                 ? e.nativeEvent.layout.height
                 : e.nativeEvent.layout.width;
             this.setState({
-                sliderLength: layoutLength
+                sliderLength: layoutLength,
             });
         }
     }
 
     render() {
         const {
-            positionOne, positionTwo, onePressed, valueOne, twoPressed, valueTwo, sliderLength
+            positionOne,
+            positionTwo,
+            onePressed,
+            valueOne,
+            twoPressed,
+            valueTwo,
+            sliderLength,
         } = this.state;
         const {
             style,
@@ -449,7 +358,6 @@ export default class Slider extends Component {
             valuePrefix,
             valueSuffix,
             enableLabel,
-            // imageBackgroundSource= require('../../assets/backgroung_cloud.png')
         } = this.props;
         const trackOneLength = positionOne;
         const trackOneStyle = selectedStyle || styles.selectedTrack;
@@ -461,10 +369,7 @@ export default class Slider extends Component {
 
         const MarkerLeft = customMarkerLeft;
 
-
-        const {
-            borderRadius,
-        } = touchDimensions;
+        const { borderRadius } = touchDimensions;
         const touchStyle = {
             borderRadius: borderRadius || 0,
         };
@@ -474,39 +379,27 @@ export default class Slider extends Component {
             left: trackOneLength + markerOffsetX - 24,
         };
 
-
         const newContainerStyle = [styles.container, containerStyle];
 
         if (vertical) {
             newContainerStyle.push({
-                transform: [{rotate: '-90deg'}],
+                transform: [{ rotate: '-90deg' }],
             });
         }
         const Label = customLabel;
 
         const body = (
-            <View style={{alignItems: 'center'}}>
-
-                <View style={[styles.fullTrack, {width: sliderLength}]}>
+            <View style={{ alignItems: 'center' }}>
+                <View style={[styles.fullTrack, { width: sliderLength }]}>
                     <View
-                        style={[
-                            styles.track,
-                            trackStyle,
-                            trackOneStyle,
-                            {width: trackOneLength},
-                        ]}
+                        style={[styles.track, trackStyle, trackOneStyle, { width: trackOneLength }]}
                     />
 
                     <View
-                        style={[
-                            styles.track,
-                            trackStyle,
-                            trackTwoStyle,
-                            {width: trackTwoLength},
-                        ]}
+                        style={[styles.track, trackStyle, trackTwoStyle, { width: trackTwoLength }]}
                     />
 
-                    <FlaggedPoints  sliderLength={sliderLength}/>
+                    <FlaggedPoints sliderLength={sliderLength} />
 
                     <View
                         style={[
@@ -516,10 +409,9 @@ export default class Slider extends Component {
                             positionOne > sliderLength / 2 && styles.topMarkerContainer,
                         ]}
                     >
-
                         <View
                             style={[styles.touch, touchStyle]}
-                            ref={(component) => (this._markerOne = component)}
+                            ref={component => (this._markerOne = component)}
                             {...this._panResponderOne.panHandlers}
                         >
                             {isMarkersSeparated === false ? (
@@ -552,8 +444,7 @@ export default class Slider extends Component {
         );
 
         return (
-            <View style={style} onLayout={(e) => this.onContentLayout(e)}>
-
+            <View style={style} onLayout={e => this.onContentLayout(e)}>
                 <Label
                     oneMarkerValue={valueOne}
                     twoMarkerValue={valueTwo}
@@ -564,7 +455,6 @@ export default class Slider extends Component {
                 />
 
                 <View style={newContainerStyle}>{body}</View>
-
             </View>
         );
     }
@@ -579,7 +469,7 @@ const styles = StyleSheet.create({
     fullTrack: {
         flexDirection: 'row',
         backgroundColor: Colors.screen,
-        height: 20
+        height: 20,
     },
     track: {
         height: 2,
@@ -595,7 +485,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'center',
-
     },
     topMarkerContainer: {
         zIndex: 1,
@@ -610,14 +499,10 @@ const styles = StyleSheet.create({
 
 Slider.defaultProps = {
     values: [0],
-    onChangeStart: () => {
-    },
-    onChange: () => {
-    },
-    onChangeFinish: () => {
-    },
-    onMarkersPosition: () => {
-    },
+    onChangeStart: () => {},
+    onChange: () => {},
+    onChangeFinish: () => {},
+    onMarkersPosition: () => {},
     step: 1,
     min: 0,
     max: 10,
@@ -644,14 +529,14 @@ Slider.defaultProps = {
     textCon: {
         width: 320,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     colorGrey: {
-        color: '#d3d3d3'
+        color: '#d3d3d3',
     },
     colorYellow: {
-        color: 'rgb(252, 228, 149)'
-    }
+        color: 'rgb(252, 228, 149)',
+    },
 };
 
 Slider.propTypes = {
@@ -685,5 +570,5 @@ Slider.propTypes = {
     allowOverlap: PropTypes.bool,
     snapped: PropTypes.bool,
     minMarkerOverlapDistance: PropTypes.number,
-    length: PropTypes.number
+    length: PropTypes.number,
 };

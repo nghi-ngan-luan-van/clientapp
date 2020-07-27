@@ -1,10 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { HOST_URL } from './AppConst';
-import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import { AppRoute } from '../navigation/app-routes';
-import { AuthContext } from '../navigation/AppNavigator';
 
 export const get = (url, message, callback) => {
     // console.log('get message', message)
@@ -25,12 +21,14 @@ export const get = (url, message, callback) => {
 
 export const post = (url, message, callback) => {
     let { data, headers } = message;
-    console.log('post message', headers);
     axios
         .post(url, data, { headers: headers })
         .then(response => {
+            console.log(response);
             if (response.data && typeof callback === 'function') {
                 callback(response.data);
+            } else if (response.config && response.config.data && typeof callback === 'function') {
+                callback(response.config.data);
             }
         })
         .catch(error => {
@@ -58,22 +56,36 @@ export const signInGG = (params, callback) => {
     } catch (e) {
         console.warn('[err] ApiUtils signIn', e);
         callback();
+        api;
+    }
+};
+
+// /auth/verifytoken
+export const verifytoken = (params, callback) => {
+    try {
+        post(HOST_URL + 'auth/verifytoken', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils verifytoken', e);
+        callback();
     }
 };
 export const signUp = (params, callback) => {
-    let { name, email, password } = params;
-    let data = {
-        name: name,
-        email: email,
-        password: password,
-    };
     try {
-        post(HOST_URL + 'auth/register', { data: data }, callback);
+        post(HOST_URL + 'auth/register', { data: params }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils signUp', e);
         callback();
     }
 };
+export const resetPassword = (params, callback) => {
+    try {
+        post(HOST_URL + 'user/mailReset', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils mailReset', e);
+        callback();
+    }
+};
+
 export const getUserCameras = async (params, callback) => {
     // const userToken = await AsyncStorage.getItem('userToken');
     let { userToken } = params;

@@ -34,6 +34,7 @@ class CameraVideosComp extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             eventList: [],
             video: {},
             backupList: [],
@@ -88,6 +89,7 @@ class CameraVideosComp extends Component {
                 typeof signOut === 'function' && signOut();
             }
         });
+        this.setState({ loading: false });
         // this.loadItems();
     };
 
@@ -264,15 +266,21 @@ class CameraVideosComp extends Component {
         );
     };
 
+    renderLoading() {
+        return <View />;
+    }
     render() {
-        let { eventList, backupList } = this.state;
+        if (this.state.loading) {
+            return this.renderLoading();
+        }
+        let { eventList, backupList, loading } = this.state;
         console.log('this.state', this.state.backupList);
         if (eventList.length > 0 || backupList.length > 0) {
             return (
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, backgroundColor: Colors.white }}>
                     {/* {this.renderFrontVideo()} */}
 
-                    <View style={{ height: 50 }} />
+                    {/*<View style={{ height: 50 }} />*/}
 
                     <CalendarPicker
                         {...this.props}
@@ -284,13 +292,12 @@ class CameraVideosComp extends Component {
                 </View>
             );
         } else {
+            const source = loading
+                ? require('../../assets/preview.gif')
+                : require('../../assets/empty.gif');
             return (
                 <View style={{ flex: 1, backgroundColor: Colors.white }}>
-                    <Image
-                        source={require('../../assets/empty.gif')}
-                        style={{ width: width }}
-                        resizeMode={'contain'}
-                    />
+                    <Image source={source} style={{ width: width - 50 }} resizeMode={'contain'} />
                 </View>
             );
         }

@@ -1,16 +1,6 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
-import {
-    StyleSheet,
-    Dimensions,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    TouchableWithoutFeedback,
-    KeyboardAvoidingView,
-    Keyboard,
-} from 'react-native';
+import { StyleSheet, Dimensions, Text, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 const { width } = Dimensions.get('window');
@@ -22,15 +12,21 @@ import {
 } from '@react-native-community/google-signin';
 GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-    webClientId: '136433114251-7q32fbspm54bn75bmug0et0v8abth5nj.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    webClientId: '136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
     offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
     hostedDomain: '', // specifies a hosted domain restriction
     loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
     forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
     accountName: '', // [Android] specifies an account name on the device that should be used
-    iosClientId: '136433114251-j2rjq3fkgq0r8v014pdtr660n4vbe4ov.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+    iosClientId: '136433114251-j3plam2goeoqaifnhj2umab2tuib4mts.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 const styles = StyleSheet.create({
+    viewContainer: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         width: width - 48,
         padding: 12,
@@ -38,28 +34,15 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     leftIconContainer: {
-        // width: 60,
-        // height: 60,
-        // backgroundColor: Colors.whisper,
-        // alignItems: 'center',
-        // alignContent: 'center',
-        // justifyContent: 'center',
-        marginEnd: 12,
+        marginRight: 6,
     },
-    // input: {
-    //     borderWidth: 0.5,
-    //     paddingHorizontal: 12,
-    //     // borderStyle: 'dotted',
-    //     borderRadius: 10,
-    //     borderColor: Colors.grey,
-    //     // dash
-    // },
     text: { color: Colors.grey },
     button: {
         backgroundColor: Colors.brandy_rose,
         paddingVertical: 16,
-        paddingHorizontal: 50,
-        borderRadius: 12,
+        width: '100%',
+        // paddingHorizontal: 50,
+        borderRadius: 30,
         marginBottom: 12,
     },
     row: {
@@ -67,7 +50,6 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
         width,
-        // paddingHorizontal: 48,
     },
 });
 
@@ -98,17 +80,7 @@ export default function SignInForm(props) {
     };
 
     return (
-        <View
-            style={[
-                {
-                    flex: 1,
-                    justifyContent: 'space-around',
-                    alignContent: 'center',
-                    alignItems: 'center',
-                },
-                props.style,
-            ]}
-        >
+        <View style={[styles.viewContainer, props.style]}>
             <View>
                 <View style={[styles.container]}>
                     <Input
@@ -117,7 +89,7 @@ export default function SignInForm(props) {
                             type: 'font-awesome',
                             name: 'envelope',
                             color: Colors.brandy_rose,
-                            size: 30,
+                            size: 20,
                         }}
                         label={'Email'}
                         labelStyle={styles.text}
@@ -136,7 +108,7 @@ export default function SignInForm(props) {
                             type: 'font-awesome',
                             name: 'lock',
                             color: Colors.brandy_rose,
-                            size: 30,
+                            size: 20,
                         }}
                         leftIconContainerStyle={styles.leftIconContainer}
                         label={'Mật khẩu'}
@@ -168,6 +140,7 @@ export default function SignInForm(props) {
                 onPress={() => {
                     signIn({ email, password });
                 }}
+                titleStyle={{ color: Colors.purple_blue }}
             />
             <View style={styles.row}>
                 <Text style={{ color: Colors.brandy_rose, alignSelf: 'center', fontSize: 18 }}>

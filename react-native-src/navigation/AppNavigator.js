@@ -94,7 +94,7 @@ export default function AppNavigator() {
                         dispatch({ type: 'SIGN_IN', token: token });
                     });
                 } catch (e) {
-                    console.warn('Signin Error');
+                    console.warn('Signin GG Error');
                 }
             },
 

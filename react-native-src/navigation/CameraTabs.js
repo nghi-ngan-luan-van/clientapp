@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, Text, View, StyleSheet, TouchableOpacity, Switch } from 'react-native';
-
 import { Icon } from 'react-native-elements';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { Colors } from '../utils/AppConfig';
@@ -17,6 +16,9 @@ import EditCamera from '../screens/editcamera';
 import AsyncStorage from '@react-native-community/async-storage';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';
+import LinearGradient from 'react-native-linear-gradient';
+import { turnDetect } from '../utils/ApiUtils';
+import { AppRoute } from './app-routes';
 const Drawer = createDrawerNavigator();
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -24,15 +26,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    rightButton: {
-        width: 37,
-        height: 37,
+    rightIcon: {
+        alignSelf: 'center',
+        width: 26,
+        height: 26,
     },
     label: {
+        flex: 1,
+        marginLeft: 12,
+        // backgroundColor: 'red',
+        alignSelf: 'flex-start',
         fontSize: 16,
         color: Colors.text,
     },
-
+    icon: {
+        backgroundColor: Colors.whisper,
+        padding: 5,
+        borderRadius: 18,
+        marginRight: 12,
+    },
     containerTab: {
         flex: 1,
         // marginTop: 18,
@@ -54,28 +66,21 @@ function DrawerContent(props) {
             onSwitchRecordMode();
         }
     };
+    const onSwitch = result => {
+        console.log(result);
+        if (result) {
+            navigation && navigation.navigate(AppRoute.CAMERA);
+        }
+    };
     const onSwitchDetectMode = async () => {
         const token = await AsyncStorage.getItem('userToken');
-        let myHeaders = new Headers();
-        myHeaders.append('Authorization', `Bearer ${token}`);
-        myHeaders.append('Content-Type', 'application/json');
-
-        let raw = JSON.stringify({ _id: camera._id });
-
-        let requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-        };
-
-        fetch(HOST_URL + 'camera/turndetect', requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                console.log(result);
-                let { navigation } = props;
-                navigation && navigation.navigate('Camera');
-            });
+        const headers = 'Authorization' + `Bearer ${token}`;
+        const data = { _id: camera._id };
+        try {
+            await turnDetect({ data, headers }, onSwitch);
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const onSwitchRecordMode = async () => {
@@ -102,40 +107,58 @@ function DrawerContent(props) {
             });
     };
     return (
-        <DrawerContentScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
-            <DrawerItem
-                // focused
-                icon={() => (
-                    <Icon
-                        // style={{width:36,height:36}}
-                        name="camera"
-                        color="#7b79db"
-                        type="font-awesome"
-                    />
-                )}
-                label={camera.name}
-                labelStyle={styles.label}
-                onPress={() => navigation && navigation.navigate && navigation.navigate('Camera')}
-            />
-            <DrawerItem
-                icon={() => (
-                    <Image
-                        style={{ width: 30, height: 30 }}
-                        source={require('../assets/ic_edit.png')}
-                    />
-                )}
-                label="Chỉnh sửa thông tin camera"
-                labelStyle={styles.label}
-                onPress={() => {
-                    navigation && navigation.navigate && navigation.navigate('Edit');
-                }}
-            />
-            <DrawerItem
-                icon={() => <Switch onValueChange={toggleSwitch} value={isEnabled} />}
-                label="Chế độ backup"
-                labelStyle={styles.label}
-            />
-        </DrawerContentScrollView>
+        <LinearGradient
+            style={{ flex: 1 }}
+            colors={[Colors.pigeon_post, Colors.whisper]}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+        >
+            <DrawerContentScrollView contentContainerStyle={{ paddingHorizontal: 12 }}>
+                <DrawerItem
+                    // focused
+                    icon={() => (
+                        <Icon
+                            // style={{width:36,height:36}}
+                            name="camera"
+                            color="#7b79db"
+                            type="font-awesome"
+                            style={styles.rightIcon}
+                        />
+                    )}
+                    // style={{ backgroundColor: 'red', alignItems: 'flex-start' }}
+                    label={camera.name}
+                    labelStyle={styles.label}
+                    onPress={() =>
+                        navigation && navigation.navigate && navigation.navigate('Camera')
+                    }
+                />
+                <DrawerItem
+                    icon={() => (
+                        <Image
+                            // style={{ width: 30, height: 30 }}
+                            source={require('../assets/ic_edit.png')}
+                            style={styles.rightIcon}
+                        />
+                    )}
+                    label="Chỉnh sửa thông tin camera"
+                    labelStyle={styles.label}
+                    onPress={() => {
+                        navigation && navigation.navigate && navigation.navigate('Edit');
+                    }}
+                />
+                <DrawerItem
+                    icon={() => (
+                        <Switch
+                            // style={{ width:  }}
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                        />
+                    )}
+                    label="Chế độ backup"
+                    labelStyle={[styles.label, { marginLeft: -12 }]}
+                />
+            </DrawerContentScrollView>
+        </LinearGradient>
     );
 }
 
@@ -153,42 +176,21 @@ const CameraTabs = props => {
         navigation &&
             navigation.setOptions({
                 headerRight: () => (
-                    <TouchableOpacity onPress={onPressSetting}>
+                    <TouchableOpacity onPress={onPressSetting} style={styles.icon}>
                         <Image
                             source={require('../assets/ic_settings.png')}
-                            style={styles.rightButton}
+                            style={styles.rightIcon}
                         />
                     </TouchableOpacity>
                 ),
             });
-        // const getVideo = async callback => {
-        //     let userToken = await AsyncStorage.getItem('userToken');
-        //     getBackupVideo({ userToken, camera }, callback);
-        // };
-
-        // getVideo(res => {
-        //     if (Array.isArray(res)) {
-        //         setEvents(res);
-        //     } else {
-        //         if (!res) {
-        //             signOut();
-        //         }
-        //     }
-        // });
     }, []);
-
-    // const detailScreens = () => (
-    //     <ScrollableTabView locked>
-    //         <CameraStream tabLabel="Stream" {...params} />
-    //         <CameraVideos tabLabel="Media" events={events} />
-    //     </ScrollableTabView>
-    // );
 
     return (
         <Drawer.Navigator
             initialRouteName={'Camera'}
             drawerPosition={'right'}
-            drawerType={'front'}
+            drawerType={'float'}
             drawerContent={props => <DrawerContent {...props} />}
         >
             <Drawer.Screen name={'Camera'} component={Detail} initialParams={params} />

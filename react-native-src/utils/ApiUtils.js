@@ -32,7 +32,7 @@ export const post = (url, message, callback) => {
             }
         })
         .catch(error => {
-            console.warn('[err] ApiUtils post' + url, error);
+            console.warn('[err] ApiUtils post ' + url, error);
             callback && callback();
         });
 };
@@ -82,6 +82,14 @@ export const resetPassword = (params, callback) => {
         post(HOST_URL + 'user/mailReset', { data: params }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils mailReset', e);
+        callback();
+    }
+};
+export const changePassword = (params, callback) => {
+    try {
+        post(HOST_URL + 'user/changePassword', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils change password', e);
         callback();
     }
 };

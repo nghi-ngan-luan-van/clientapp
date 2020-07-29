@@ -26,6 +26,7 @@ export default class CameraVideos extends Component {
             eventList: [],
             video: {},
             backupList: props.events,
+            loading: true,
             cdnUrl: '',
             frontVideo: {
                 seek: 0,
@@ -399,8 +400,12 @@ export default class CameraVideos extends Component {
 
         return <Timeline data={this.groupsRecord} />;
     };
+    renderLoading(){
+        return <View/>
+    }
 
     render() {
+        if(this.state.loading) retun this.renderLoading()
         let { video, eventList } = this.state;
         let tempEventList = eventList;
         let { cdnUrl } = video || {};

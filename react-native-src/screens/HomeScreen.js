@@ -194,26 +194,9 @@ export default function HomeScreen(props) {
                         });
                     }}
                     ListEmptyComponent={() => (
-                        <Image
-                            source={require('../assets/empty.gif')}
-                            style={{
-                                flex: 1,
-                                alignSelf: 'center',
-                                width: WIDTH - 50,
-                                resizeMode: 'contain',
-                                overflow: 'hidden',
-                            }}
-                        />
+                        <Image source={require('../assets/empty.gif')} style={styles.emptyGif} />
                     )}
                 />
-                {/*<Icon*/}
-                {/*    type={'font-awesome'}*/}
-                {/*    name={'plus-circle'}*/}
-                {/*    color={Colors.grey}*/}
-                {/*    onPress={onPressAdd}*/}
-                {/*    size={50}*/}
-                {/*/>*/}
-                {/*</Icon>*/}
             </LinearGradient>
         );
     }
@@ -274,6 +257,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
+        backgroundColor: Colors.whisper,
     },
     container: {
         backgroundColor: Colors.whisper,
@@ -302,5 +286,12 @@ const styles = StyleSheet.create({
     empty: {
         alignSelf: 'center',
         width: WIDTH / 2,
+    },
+    emptyGif: {
+        flex: 1,
+        alignSelf: 'center',
+        width: WIDTH - 50,
+        resizeMode: 'contain',
+        overflow: 'hidden',
     },
 });

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Platform } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { VlCPlayerView, VLCPlayer } from 'react-native-vlc-media-player';
 //import Video from 'react-native-video';
 import _ from 'lodash';
 import Orientation from 'react-native-orientation';
 import { Button } from 'react-native-elements';
+
 // import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 
 export default class VideoPlayerScreen extends Component {
@@ -18,15 +20,15 @@ export default class VideoPlayerScreen extends Component {
         };
     }
     componentDidMount() {
-        if (this.vlcplayer) {
-            if (Platform.OS === 'ios') {
-                this.vlcplayer.seek(this.state.seekTime/10000);
-            } else {
-                console.log(this.vlcplayer);
-                console.log('sstate vlcmount', this.state);
-                this.vlcplayer.seek(this.state.seekTime/1000);
-            }
-        }
+        // if (this.vlcplayer) {
+        //     if (Platform.OS === 'ios') {
+        //         this.vlcplayer.seek(this.state.seekTime/10000);
+        //     } else {
+        //         console.log(this.vlcplayer);
+        //         console.log('sstate vlcmount', this.state);
+        //         this.vlcplayer.seek(this.state.seekTime/1000);
+        //     }
+        // }
     }
     pause = () => {
         let { paused } = this.state;
@@ -42,7 +44,7 @@ export default class VideoPlayerScreen extends Component {
                 console.log(this.vlcplayer);
                 this.vlcplayer.seek(0.1);
             } else {
-                this.vlcplayer.seek(this.state.seekTime/1000);
+                this.vlcplayer.seek(this.state.seekTime / 1000);
             }
         }
         // this.pause();
@@ -54,10 +56,16 @@ export default class VideoPlayerScreen extends Component {
     onProgress = event => {
         console.log(event);
     };
+    capture = async () => {
+        // console.log(this.vlcplayer);
+        this.vlcplayer.snapshot(
+            '/Users/macintoshhd/Documents/clientapp/react-native-src/screens/media/video.png'
+        );
+    };
     render() {
         const { video } = this.state;
         console.log('sstate vlc', this.state);
-        this.seek()
+        this.seek();
         return (
             <View style={styles.container}>
                 <VLCPlayer
@@ -68,6 +76,7 @@ export default class VideoPlayerScreen extends Component {
                     onProgress={this.onProgress}
                     onPaused={this.onPaused}
                 />
+                <Icon type={'ant-design'} name={'camera'} onPress={this.capture} />
                 <Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />
                 <Button title={'pause'} onPress={this.pause} style={{ padding: 12 }} />
                 {/*<VlCPlayerView*/}
@@ -98,7 +107,7 @@ export default class VideoPlayerScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
     },
     body: {
         backgroundColor: Colors.white,

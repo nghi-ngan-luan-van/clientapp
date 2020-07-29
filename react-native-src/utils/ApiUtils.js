@@ -85,11 +85,21 @@ export const resetPassword = (params, callback) => {
         callback();
     }
 };
+
 export const testConnection = (params, callback) => {
     try {
         post(HOST_URL + 'camera/testconnection', { data: params }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils mailReset', e);
+        callback();
+    }
+};
+
+export const turnDetect = (params, callback) => {
+    try {
+        post(HOST_URL + 'camera/turndetect', { data: params }, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils turndetect', e);
         callback();
     }
 };

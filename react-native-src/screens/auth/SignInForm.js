@@ -38,13 +38,16 @@ const styles = StyleSheet.create({
     },
     text: { color: Colors.grey },
     button: {
+        alignContent: 'center',
+        alignItems: 'center',
         backgroundColor: Colors.brandy_rose,
         paddingVertical: 16,
-        width: '100%',
+        width: width - 48,
         // paddingHorizontal: 50,
         borderRadius: 30,
         marginBottom: 12,
     },
+    title: { flex: 1, color: Colors.purple_blue, alignSelf: 'center' },
     row: {
         flexDirection: 'row',
         alignContent: 'center',
@@ -63,17 +66,26 @@ export default function SignInForm(props) {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+            console.log('userInfo', userInfo);
             setUserInfo({ userInfo });
+
             googleSignIn({ userInfo });
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                console.log('SIGN_IN_CANCELLED');
                 // user cancelled the login flow
             } else if (error.code === statusCodes.IN_PROGRESS) {
                 setSigninInProgress(true);
+                console.log('IN_PROGRESS');
+
                 // operation (e.g. sign in) is in progress already
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                console.log('PLAY_SERVICES_NOT_AVAILABLE');
+
                 // play services not available or outdated
             } else {
+                console.log('Error');
+
                 // some other error happened
             }
         }
@@ -140,7 +152,7 @@ export default function SignInForm(props) {
                 onPress={() => {
                     signIn({ email, password });
                 }}
-                titleStyle={{ color: Colors.purple_blue }}
+                titleStyle={styles.title}
             />
             <View style={styles.row}>
                 <Text style={{ color: Colors.brandy_rose, alignSelf: 'center', fontSize: 18 }}>

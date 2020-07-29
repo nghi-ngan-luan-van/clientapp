@@ -6,11 +6,11 @@ export default class Welcome extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image
-                    source={require('../assets/preview.gif')}
-                    resizeMode={'contain'}
-                    style={{ width: WIDTH }}
-                />
+                {/*<Image*/}
+                {/*    source={require('../assets/preview.gif')}*/}
+                {/*    resizeMode={'contain'}*/}
+                {/*    style={{ width: WIDTH }}*/}
+                {/*/>*/}
             </View>
         );
     }

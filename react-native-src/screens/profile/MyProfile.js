@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect,useState } from 'react';
 import { Text, View, SafeAreaView, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../../utils/AppConfig';
 import { Icon } from 'react-native-elements';
@@ -6,6 +6,9 @@ import { AppRoute } from '../../navigation/app-routes';
 import { AuthContext } from '../../navigation/AppNavigator';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeArea } from 'react-native-safe-area-context';
+import { verifytoken } from '../../utils/ApiUtils';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const styles = StyleSheet.create({
     safeContainer: {
         backgroundColor: Colors.screen,
@@ -69,12 +72,28 @@ const styles = StyleSheet.create({
 export default function MyProfile(props) {
     const insets = useSafeArea();
     const { signOut } = useContext(AuthContext);
+    const [user, setUser] = useState({})
     useEffect(() => {
-        const verifytoken = () => {};
-    });
+        const submitChangePass = result => {
+            console.log(result);
+            setUser(result)
+        };
+        const getUser = async callback =>{
+            let userToken = await AsyncStorage.getItem('userToken');
+            console.log('token...',userToken)
+            try {
+                await verifytoken({ token: userToken }, callback);
+                console.log('Sent successfully');
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getUser(submitChangePass);
+           
+    },[]);
     const goChangePass = () => {
         const { navigation } = props;
-        navigation && navigation.push(AppRoute.CHANGE_PASS);
+        navigation && navigation.push(AppRoute.CHANGE_PASS,{user:user});
     };
 
     return (
@@ -89,9 +108,9 @@ export default function MyProfile(props) {
                     <View style={styles.avatarrow}>
                         <Image source={require('../../assets/ic_user.png')} style={styles.avatar} />
                         <View style={styles.nameRow}>
-                            <Text style={styles.title}>My Name</Text>
+                            <Text style={styles.title}>{user.name}</Text>
                             <Text numberOfLines={2} style={styles.text}>
-                                email:abc@da.com
+                                email: {user.email}
                             </Text>
                         </View>
                         <Icon

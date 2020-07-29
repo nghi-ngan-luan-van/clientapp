@@ -20,7 +20,8 @@ import { AuthContext } from '../navigation/AppNavigator';
 import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-const testThumbnail = require('../assets/camera.gif');
+// const testThumbnail = require('../assets/camera.gif');
+const testThumbnail= {uri: 'https://pp.netclipart.com/pp/s/351-3513655_i1000md-camera-video-conferencing-camera-icon.png'}
 const WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen(props) {

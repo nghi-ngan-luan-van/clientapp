@@ -40,6 +40,9 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+    aaptOptions {
+        cruncherEnabled = false
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {

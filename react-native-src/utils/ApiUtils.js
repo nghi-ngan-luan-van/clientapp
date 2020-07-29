@@ -79,7 +79,7 @@ export const signUp = (params, callback) => {
 };
 export const resetPassword = (params, callback) => {
     try {
-        post(HOST_URL + 'user/mailReset', { data: params }, callback);
+        post(HOST_URL + 'user/mhailReset', { data: params }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils mailReset', e);
         callback();

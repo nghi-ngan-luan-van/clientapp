@@ -21,7 +21,10 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
 // const testThumbnail = require('../assets/camera.gif');
-const testThumbnail= {uri: 'https://pp.netclipart.com/pp/s/351-3513655_i1000md-camera-video-conferencing-camera-icon.png'}
+const testThumbnail = {
+    uri:
+        'https://pp.netclipart.com/pp/s/351-3513655_i1000md-camera-video-conferencing-camera-icon.png',
+};
 const WIDTH = Dimensions.get('window').width;
 
 export default function HomeScreen(props) {
@@ -111,7 +114,7 @@ export default function HomeScreen(props) {
                 <Image
                     source={thumnail.uri ? thumnail : testThumbnail}
                     resizeMode={'cover'}
-                    style={styles.thumbnail}
+                    style={[styles.thumbnail, !thumnail.uri ? {} : {}]}
                 />
                 <View style={styles.nameRow}>
                     {!!(item && item.backupMode) && <View style={styles.dot} />}

@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { AuthContext } from './AppNavigator';
 import { AppRoute } from './app-routes';
 import AddingCamera from '../screens/adding/AddingCamera';
 import HomeScreen from '../screens/HomeScreen';
@@ -20,12 +19,9 @@ import EditMode from '../screens/editcamera/EditMode';
 import CameraTabs from './CameraTabs';
 import MyProfile from './../screens/profile/MyProfile';
 import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
-import { DrawerActions } from 'react-navigation-drawer';
 import ChangePassword from '../screens/profile/ChangePassword';
 import { Icon } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-
-const { width } = Dimensions.get('window');
 
 export const getHeaderTitle = route => {
     const routeName =

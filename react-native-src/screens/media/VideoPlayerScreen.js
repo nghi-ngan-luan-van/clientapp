@@ -76,9 +76,14 @@ export default class VideoPlayerScreen extends Component {
                     onProgress={this.onProgress}
                     onPaused={this.onPaused}
                 />
-                <Icon type={'ant-design'} name={'camera'} onPress={this.capture} />
-                <Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />
-                <Button title={'pause'} onPress={this.pause} style={{ padding: 12 }} />
+                {/*<Icon type={'ant-design'} name={'camera'} onPress={this.capture} />*/}
+                {/*<Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />*/}
+                <Button
+                    icon={() => <Icon type={'font-awesome'} name={'play'} />}
+                    title={'pause'}
+                    onPress={this.pause}
+                    style={{ padding: 12 }}
+                />
                 {/*<VlCPlayerView*/}
                 {/*    autoplay={true}*/}
                 {/*    url={video.cdnUrl}*/}

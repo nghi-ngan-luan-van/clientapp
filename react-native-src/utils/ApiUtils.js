@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import { HOST_URL } from './AppConst';
 
@@ -21,10 +20,11 @@ export const get = (url, message, callback) => {
 
 export const post = (url, message, callback) => {
     let { data, headers } = message;
+    console.log(data);
     axios
         .post(url, data, { headers: headers })
         .then(response => {
-            console.log(response);
+            console.log('response post', response);
             if (response.data && typeof callback === 'function') {
                 callback(response.data);
             } else if (response.config && response.config.data && typeof callback === 'function') {
@@ -52,11 +52,10 @@ export const signIn = (params, callback) => {
 };
 export const signInGG = (params, callback) => {
     try {
-        post(HOST_URL + 'auth/login', { data: params }, callback);
+        post(HOST_URL + 'auth/google', { data: params }, callback);
     } catch (e) {
-        console.warn('[err] ApiUtils signIn', e);
+        console.warn('[err] ApiUtils signInGG', e);
         callback();
-        api;
     }
 };
 
@@ -79,7 +78,7 @@ export const signUp = (params, callback) => {
 };
 export const resetPassword = (params, callback) => {
     try {
-        post(HOST_URL + 'user/mhailReset', { data: params }, callback);
+        post(HOST_URL + 'user/mailReset', { data: params }, callback);
     } catch (e) {
         console.warn('[err] ApiUtils mailReset', e);
         callback();
@@ -95,10 +94,19 @@ export const changePassword = (params, callback) => {
 };
 
 export const testConnection = (params, callback) => {
+    const { rtspUrl, userToken } = params;
+    const message = {
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+        },
+        data: {
+            rtspUrl: rtspUrl,
+        },
+    };
     try {
-        post(HOST_URL + 'camera/testconnection', { data: params }, callback);
+        post(HOST_URL + 'camera/testconnection', message, callback);
     } catch (e) {
-        console.warn('[err] ApiUtils mailReset', e);
+        console.warn('[err] ApiUtils test Connection', e);
         callback();
     }
 };
@@ -112,8 +120,42 @@ export const turnDetect = (params, callback) => {
     }
 };
 
+export const deleteCam = (params, callback) => {
+    const { _id, userToken } = params;
+    const message = {
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+        },
+        data: {
+            _id: _id,
+        },
+    };
+    try {
+        post(HOST_URL + 'camera/delete', message, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils test delete', e);
+        callback();
+    }
+};
+export const switchRecordMode = (params, callback) => {
+    const { _id, userToken } = params;
+    const message = {
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+        },
+        data: {
+            _id: _id,
+        },
+    };
+    try {
+        post(HOST_URL + 'camera/recorddetect', message, callback);
+    } catch (e) {
+        console.warn('[err] ApiUtils test delete', e);
+        callback();
+    }
+};
+export const addCamera = (params, callback) => {};
 export const getUserCameras = async (params, callback) => {
-    // const userToken = await AsyncStorage.getItem('userToken');
     let { userToken } = params;
     let message = {
         headers: {
@@ -150,6 +192,7 @@ export const getBackupVideo = (params, callback) => {
 
     get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
 };
+
 // const renderAlertDelete = () => {
 //     return Alert.alert(
 //         'Warning',

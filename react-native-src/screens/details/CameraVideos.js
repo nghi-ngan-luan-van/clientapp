@@ -5,16 +5,27 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CustomVideoView from './CustomVideoView';
 import Orientation from 'react-native-orientation';
 import moment from 'moment';
-import { ActivityIndicator, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
+import {
+    ActivityIndicator,
+    Text,
+    View,
+    StyleSheet,
+    Dimensions,
+    Image,
+    TouchableOpacity,
+} from 'react-native';
 import { Colors } from '../../utils/AppConfig';
 import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 import { Icon } from 'react-native-elements';
 import Slider from '../../components/slider/Slider';
 import { AuthContext } from '../../navigation/AppNavigator';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
+    title: { fontSize: 20, fontWeight: 'bold', marginVertical: 12, color: Colors.purple_blue },
+    container: { flex: 1, paddingHorizontal: 12 },
     video: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -26,14 +37,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         // justifyContent: 'space-around',
     },
+    calendar: {
+        // flex: 1,
+        width: 35,
+        resizeMode: 'contain',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
 });
 
 class CameraVideosComp extends Component {
-    // const { signOut } = React.useContext(AuthContext);
-
     constructor(props) {
         super(props);
         this.state = {
+            showCalendar: false,
             loading: true,
             eventList: [],
             video: {},
@@ -95,6 +112,10 @@ class CameraVideosComp extends Component {
 
     componentWillUnmount() {}
 
+    onCalendarPress = () => {
+        const { showCalendar } = this.state;
+        this.setState({ showCalendar: !showCalendar });
+    };
     timeToString = time => {
         const date = new Date(time);
         return date.toISOString().split('T')[0];
@@ -231,9 +252,9 @@ class CameraVideosComp extends Component {
                     ggUrl=""
                     showGG={true}
                     onEnd={this.onEnd}
-                    showTitle={true}
+                    showTitle={false}
                     title={cdnUrl}
-                    showBack={true}
+                    showBack={false}
                     onLeftPress={() => {}}
                     startFullScreen={() => {
                         this.setState({
@@ -269,6 +290,21 @@ class CameraVideosComp extends Component {
     renderLoading() {
         return <View />;
     }
+    renderCalendar = (backupList, eventList) => {
+        const { showCalendar } = this.state;
+        console.log(showCalendar);
+        if (showCalendar) {
+            return (
+                <CalendarPicker
+                    {...this.props}
+                    backupList={backupList}
+                    setBackupList={this.setBackupList}
+                    data={eventList}
+                    callback={this.getDate}
+                />
+            );
+        }
+    };
     render() {
         if (this.state.loading) {
             return this.renderLoading();
@@ -277,29 +313,45 @@ class CameraVideosComp extends Component {
         console.log('this.state', this.state.backupList);
         if (eventList.length > 0 || backupList.length > 0) {
             return (
-                <View style={{ flex: 1, backgroundColor: Colors.white }}>
-                    {/* {this.renderFrontVideo()} */}
+                <LinearGradient
+                    style={styles.container}
+                    colors={[Colors.screen, Colors.screen]}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 1, y: 1 }}
+                >
+                    <Text style={styles.title}>Playback</Text>
+                    {this.renderFrontVideo()}
 
                     {/*<View style={{ height: 50 }} />*/}
+                    {/*<Text style={styles.title}>Day picker</Text>*/}
+                    <TouchableOpacity
+                        style={{ height: 40, backgroundColor: Colors.white }}
+                        onPress={this.onCalendarPress}
+                    >
+                        {/*<Image*/}
+                        {/*    source={require('../../assets/ic_calendar.png')}*/}
+                        {/*    style={styles.calendar}*/}
+                        {/*/>*/}
+                    </TouchableOpacity>
 
-                    <CalendarPicker
-                        {...this.props}
-                        backupList={backupList}
-                        setBackupList={this.setBackupList}
-                        data={eventList}
-                        callback={this.getDate}
-                    />
-                </View>
+                    {this.renderCalendar(backupList, eventList)}
+                </LinearGradient>
             );
         } else {
-            const source = loading
-                ? require('../../assets/preview.gif')
-                : require('../../assets/empty.gif');
-            return (
-                <View style={{ flex: 1, backgroundColor: Colors.white }}>
-                    <Image source={source} style={{ width: width - 50 }} resizeMode={'contain'} />
-                </View>
-            );
+            const source = require('../../assets/empty.gif');
+            if (this.state.loading) {
+                return <View style={{ flex: 1 }} />;
+            } else {
+                return (
+                    <View style={{ flex: 1, backgroundColor: Colors.white }}>
+                        {/*<Image*/}
+                        {/*    source={source}*/}
+                        {/*    style={{ width: width - 50 }}*/}
+                        {/*    resizeMode={'contain'}*/}
+                        {/*/>*/}
+                    </View>
+                );
+            }
         }
     }
 }

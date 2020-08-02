@@ -18,5 +18,6 @@ module.exports = {
         grey: '#524e51',
         brandy_rose: '#ba8393',
         light_grey: '#E9E9E9',
+        red: 'red',
     },
 };

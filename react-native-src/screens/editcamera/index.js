@@ -19,7 +19,6 @@ export default function EditCamera(props) {
         console.log(newName, newIP, newPort, isEnabled);
         const token = await AsyncStorage.getItem('userToken');
         if (typeof newPort !== 'number') {
-            // console.log(typeof newPort);
             alert('Port must be a number');
             return;
         }
@@ -48,16 +47,14 @@ export default function EditCamera(props) {
             .then(result => {
                 console.log(result);
                 let { navigation } = props;
-                navigation && navigation.navigate(AppRoute.HOME, {});
+                navigation &&
+                    navigation.navigate(AppRoute.HOME, {
+                        screen: AppRoute.HOME,
+                        params: { reload: true },
+                    });
             });
     };
-    const onJumpToMode = () => {
-        const { navigation } = props;
-        navigation &&
-            navigation.navigate(AppRoute.CAMERA_EDIT_MODE, {
-                camera: camera,
-            });
-    };
+
     return (
         <View style={styles.container}>
             <Input

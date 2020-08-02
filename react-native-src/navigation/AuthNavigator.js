@@ -23,7 +23,7 @@ export const AuthNavigator = () => (
         />
         <Stack.Screen name={AppRoute.SIGN_IN_FORM} component={SignInForm} />
         <Stack.Screen
-            options={({}) => ({
+            options={() => ({
                 header: () => {
                     return <View />;
                 },
@@ -33,7 +33,6 @@ export const AuthNavigator = () => (
         />
         <Stack.Screen name={AppRoute.SIGN_UP_FORM} component={SignUpForm} />
 
-        {/* <Stack.Screen name={AppRoute.SIGN_UP} component={SignUpScreen}/> */}
         <Stack.Screen name={AppRoute.RESET_PASSWORD} component={ResetPassword} />
     </Stack.Navigator>
 );

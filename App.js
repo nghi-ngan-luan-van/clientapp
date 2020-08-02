@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from './react-native-src/navigation/AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 function App() {
+    console.disableYellowBox = true;
     return (
         <SafeAreaProvider>
             <NavigationContainer independent={true}>

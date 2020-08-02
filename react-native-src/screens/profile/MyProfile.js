@@ -1,4 +1,4 @@
-import React, { useContext, useEffect,useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Text, View, SafeAreaView, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../../utils/AppConfig';
 import { Icon } from 'react-native-elements';
@@ -72,35 +72,35 @@ const styles = StyleSheet.create({
 export default function MyProfile(props) {
     const insets = useSafeArea();
     const { signOut } = useContext(AuthContext);
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState({});
     useEffect(() => {
         const submitChangePass = result => {
             console.log(result);
-            setUser(result)
+            setUser(result);
         };
-        const getUser = async callback =>{
+        const getUser = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
-            console.log('token...',userToken)
+            console.log('token...', userToken);
             try {
                 await verifytoken({ token: userToken }, callback);
                 console.log('Sent successfully');
             } catch (error) {
+                signOut();
                 console.log(error);
             }
-        }
+        };
         getUser(submitChangePass);
-           
-    },[]);
+    }, []);
     const goChangePass = () => {
         const { navigation } = props;
-        navigation && navigation.push(AppRoute.CHANGE_PASS,{user:user});
+        navigation && navigation.push(AppRoute.CHANGE_PASS, { user: user });
     };
 
     return (
         <SafeAreaView style={styles.safeContainer}>
             <LinearGradient
                 style={styles.container}
-                colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.screen]}
+                colors={[Colors.purple_blue, Colors.screen]}
                 start={{ x: 1, y: 1 }}
                 end={{ x: 0, y: 0 }}
             >
@@ -108,9 +108,9 @@ export default function MyProfile(props) {
                     <View style={styles.avatarrow}>
                         <Image source={require('../../assets/ic_user.png')} style={styles.avatar} />
                         <View style={styles.nameRow}>
-                            <Text style={styles.title}>{user.name}</Text>
+                            <Text style={styles.title}>{user && user.name}</Text>
                             <Text numberOfLines={2} style={styles.text}>
-                                email: {user.email}
+                                email: {user && user.email}
                             </Text>
                         </View>
                         <Icon

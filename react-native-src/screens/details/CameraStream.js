@@ -1,72 +1,62 @@
 import React, { Component, useRef, useState } from 'react';
 import { StyleSheet, View, Text, Switch, Alert, Button, Image, Dimensions } from 'react-native';
 import { Colors } from '../../utils/AppConfig';
-
+import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
 import Orientation from 'react-native-orientation';
-import { VlCPlayerView } from 'react-native-vlc-media-player';
+// import { VlCPlayerView } from 'react-native-vlc-media-player';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { Icon } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
+const testlink = 'http://10.200.62.20:8080/playlist.m3u';
 
 export default function CameraStream(props) {
     const propscam = props.camera || (props.route.params && props.route.params.camera);
 
     const [camera, setCamera] = useState(propscam, {});
     const [isFull, setFull] = useState(false);
+    const [canPlay, setPlay] = useState(false);
     const insets = useSafeArea();
     const videoRef = useRef();
     const takeSnapShot = () => {
         console.log(videoRef);
     };
+    // const renderBadge = () => {
+    //     if (canPlay) {
+    //         return (
+    //
+    //         );
+    //     }
+    // };
     return (
         !!camera && (
-            <LinearGradient
-                style={[styles.container, { paddingBottom: insets.bottom }]}
-                colors={[Colors.brandy_rose, Colors.pigeon_post]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-            >
-                {/*<View style={[styles.container, { paddingBottom: insets.bottom }]}>*/}
-                <VlCPlayerView
+            <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+                <VLCPlayerView
                     ref={videoRef}
                     autoplay={false}
+                    // url={testlink}
                     url={camera.rtspUrl}
                     Orientation={Orientation}
                     showGG={false}
-                    showTitle={true}
+                    showTitle={false}
                     title={camera.name}
                     showBack={false}
                     onLeftPress={() => {}}
                     startFullScreen={() => setFull(true)}
                     closeFullScreen={() => setFull(false)}
                 />
-
-                {/*<View*/}
-                {/*    style={{*/}
-                {/*        alignSelf: 'flex-end',*/}
-                {/*        backgroundColor: 'white',*/}
-                {/*        flexDirection: 'row',*/}
-                {/*        width: width,*/}
-                {/*        // height: 40,*/}
-                {/*        justifyContent: 'space-between',*/}
-                {/*        alignItems: 'center',*/}
-                {/*        padding: 12,*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    <Icon name={'camera'} size={50} type={'font-awesome'} onPress={takeSnapShot} />*/}
-                {/*    <Text>Switch mode</Text>*/}
-                {/*</View>*/}
-                {/*</View>*/}
-            </LinearGradient>
+                {!!canPlay && (
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>LIVE</Text>
+                    </View>
+                )}
+            </View>
         )
     );
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.brandy_rose,
+        backgroundColor: Colors.white,
         // justifyContent: 'center',
         paddingBottom: 12,
         // alignContent: 'center',
@@ -103,5 +93,13 @@ const styles = StyleSheet.create({
     },
     body: {
         backgroundColor: Colors.white,
+    },
+    badge: {
+        backgroundColor: Colors.red,
+        borderRadius: 16,
+        padding: 8,
+    },
+    badgeText: {
+        color: Colors.white,
     },
 });

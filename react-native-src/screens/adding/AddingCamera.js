@@ -1,55 +1,62 @@
-import React, { Component } from 'react';
-import { View, Text, Alert, Image, StyleSheet } from 'react-native';
+import React, { Component, useContext } from 'react';
+import { View, Image, StyleSheet } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
-import Loader from '../../components/LoadingModal';
-import { HOST_URL } from '../../utils/AppConst';
+import Loader from '../../components/Loader';
 import { Colors } from '../../utils/AppConfig';
 import LinearGradient from 'react-native-linear-gradient';
 import { testConnection } from '../../utils/ApiUtils';
+import { AuthContext } from '../../navigation/AppNavigator';
 
-class AddingCamera extends Component {
+class AddingCameraComp extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            rtspUrl: '',
+            name: 'Camera',
+            rtspUrl: 'rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa',
             thumbnail: 'nothing',
             isTestConnection: false,
             loading: false,
         };
-        this.token = null;
         this.addtoken = null;
     }
 
-    async componentDidMount() {
-        this.token = await AsyncStorage.getItem('userToken');
-    }
+    async componentDidMount() {}
 
     onTestCamera = async () => {
-        // const { rtspUrl, name } = this.state;
-        const rtspUrl = 'rtsp://85.214.56.86/live/Autobahn/Quickborn-Schnellsen_Nord?vcodecs=h264';
-
+        const { signOut } = this.props;
+        // const rtspUrl = 'rtsp://85.214.56.86/live/Autobahn/Quickborn-Schnellsen_Nord?vcodecs=h264';
+        const { rtspUrl } = this.state;
+        const { navigaton } = this.props;
+        console.log('navigator', navigator);
         this.setState({
             loading: true,
         });
 
-        const headers = 'Authorization' + `Bearer ${this.token}`;
-        testConnection({ rtspUrl, headers }, result => {
-            if (!result) {
-                console.log('fail');
-            } else {
-                console.log(result);
-                this.setState(
-                    { thumbnail: result.toString(), isTestConnection: true, loading: false },
-                    () => {
-                        // console.log(this.state.thumbnail)
-                    }
-                );
-            }
-            this.setState({ loading: false });
-        });
+        const userToken = await AsyncStorage.getItem('userToken');
+        // console.log('token', token);
+        try {
+            await testConnection({ rtspUrl, userToken }, result => {
+                console.log('result', result);
+                if (!result) {
+                    console.log('fail');
+                    this.setState({ loading: false });
+                } else {
+                    console.log(result);
+                    this.setState(
+                        { thumbnail: result.toString(), isTestConnection: true, loading: false },
+                        () => {
+                            this.setState({ loading: false });
+
+                            // console.log(this.state.thumbnail)
+                        }
+                    );
+                }
+            });
+        } catch (e) {
+            typeof signOut === 'function' && signOut();
+        }
     };
     onAddCamera = async () => {
         this.setState({
@@ -84,11 +91,10 @@ class AddingCamera extends Component {
                     alert('Adding camera: Failed');
                     this.setState({ loading: false });
                 } else {
-                    return response.text();
+                    return response;
                 }
             })
             .then(result => {
-                result;
                 this.setState({ loading: false });
                 const { navigation } = this.props;
                 navigation.push(AppRoute.HOME, { reload: true });
@@ -97,11 +103,6 @@ class AddingCamera extends Component {
     };
 
     render() {
-        // console.log(this.state)
-        // let camera = {
-        //     name: '',
-        //     rtspUrl: '',
-        // }
         return (
             <LinearGradient
                 style={{ flex: 1, padding: 12 }}
@@ -109,15 +110,12 @@ class AddingCamera extends Component {
                 start={{ x: 1, y: 1 }}
                 end={{ x: 0, y: 0 }}
             >
-                {/*<View style={{ flex: 1, backgroundColor: Colors.white }}>*/}
                 <Loader loading={this.state.loading} />
                 <Input
                     labelStyle={styles.label}
                     label={'Tên camera'}
                     placeholder="Tên camera"
-                    // leftIcon={{ type: 'font-awesome', name: 'home' }}
                     inputContainerStyle={styles.inputRow}
-                    // style={{ marginBottom: -24 }}
                     onChangeText={name => this.setState({ name })}
                 />
 
@@ -125,6 +123,7 @@ class AddingCamera extends Component {
                     labelStyle={styles.label}
                     label={'URL'}
                     placeholder="Nhập Url"
+                    value={this.state.rtspUrl}
                     // leftIcon={{ type: 'font-awesome', name: 'comment' }}
                     // style={styles.inputRow}
                     inputContainerStyle={styles.inputRow}
@@ -147,13 +146,16 @@ class AddingCamera extends Component {
                     }}
                     source={{ uri: this.state.thumbnail }}
                 />
-                {/*</View>*/}
             </LinearGradient>
         );
     }
 }
 
-export default AddingCamera;
+export default function AddingCamera() {
+    const { signOut } = useContext(AuthContext);
+    return <AddingCameraComp signOut={signOut} />;
+}
+
 const styles = StyleSheet.create({
     inputRow: {
         // height: 50,

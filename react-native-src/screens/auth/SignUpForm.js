@@ -49,10 +49,11 @@ export default function SignUpForm(props) {
     const [email, setEmail] = React.useState('nn170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
     const [name, setName] = React.useState('nghi nguyen2');
-    console.log('props signup', props);
+
     const _signUp = async () => {
+        const _email = email.toLowerCase().trim();
         const _name = name.toLowerCase().trim();
-        signUp({ name: _name, email: email, password: password }, response => {
+        signUp({ name: _name, email: _email, password: password }, response => {
             console.log(response);
             if (!response) {
                 alert('Người dùng đã tồn tại');

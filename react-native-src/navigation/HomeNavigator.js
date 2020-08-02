@@ -11,7 +11,6 @@ import { Image, StyleSheet, View, Dimensions, TouchableOpacity, Text } from 'rea
 import EditCamera from '../screens/editcamera/index';
 import { Colors } from '../utils/AppConfig';
 
-const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 import SettingsDrawer from './CameraTabs';
@@ -21,7 +20,6 @@ import MyProfile from './../screens/profile/MyProfile';
 import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
 import ChangePassword from '../screens/profile/ChangePassword';
 import { Icon } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 
 export const getHeaderTitle = route => {
     const routeName =
@@ -30,15 +28,14 @@ export const getHeaderTitle = route => {
             : route.state
             ? // Get the currently active route name in the tab navigator
               route.state.routes[route.state.index].name
-            : // If state doesn't exist, we need to default to `screen` param if available, or the initial screen
-              // In our case, it's "Feed" as that's the first screen inside the navigator
-              route.params?.screen || 'Feed';
+            : route.params?.screen || 'Feed';
 
     switch (routeName) {
         case AppRoute.HOME:
             return 'Danh sách thiết bị';
         case AppRoute.CAMERA_DETAIL:
-            return 'Chi tiết';
+            return '';
+        // return 'Chi tiết';
         case AppRoute.ADD_CAMERA:
             return 'Thêm camera';
         case AppRoute.SIGN_UP:
@@ -50,27 +47,23 @@ export const getHeaderTitle = route => {
     }
 };
 
-function DrawerContent() {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Drawer content</Text>
-        </View>
-    );
-}
-
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+const MyTabs = props => {
     return (
         <Tab.Navigator
-            showLabel={false}
-            swipeEnabled
+            {...props}
             initialRouteName={AppRoute.HOME}
-            labelPosition={'beside-icon'}
+            tabBarOptions={{
+                activeTintColor: Colors.purple_blue,
+                inactiveTintColor: 'gray',
+            }}
         >
             <Tab.Screen
+                initialParams={props.route.params}
                 options={{
-                    // tabBarAccessibilityLabel: '0',
+                    tabBarAccessibilityLabel: 'here',
+                    // tabBarButton: () => <View style={{ flex: 1, backgroundColor: 'red' }} />,
                     tabBarLabel: 'Trang chủ',
                     tabBarIcon: props => (
                         <Icon
@@ -82,7 +75,7 @@ function MyTabs() {
                     ),
                 }}
                 name={AppRoute.HOME}
-                component={HomeScreenStack}
+                component={HomeScreen}
             />
             <Tab.Screen
                 options={{
@@ -102,7 +95,7 @@ function MyTabs() {
             />
         </Tab.Navigator>
     );
-}
+};
 const ProfileStack = createStackNavigator();
 const ProfileScreenStack = () => {
     return (
@@ -111,42 +104,7 @@ const ProfileScreenStack = () => {
             screenOptions={({ route = {} }) => ({
                 animationEnabled: true,
                 headerBackTitleVisible: false,
-                headerStyle: { backgroundColor: Colors.screen },
-                headerTitle: getHeaderTitle(route),
-                headerBackImage: () => (
-                    <Image
-                        style={{ width: 18, height: 18, marginLeft: 12 }}
-                        source={require('../assets/ic_back.png')}
-                    />
-                ),
-            })}
-            headerMode="screen"
-        >
-            <ProfileStack.Screen name={AppRoute.PROFILE} component={MyProfile} />
-            <ProfileStack.Screen name={AppRoute.CHANGE_PASS} component={ChangePassword} />
-        </ProfileStack.Navigator>
-        // <Drawer.Navigator drawerContent={() => <DrawerContent />}>
-        //     <Drawer.Screen name="Home" component={HomeScreenStack} />
-        // </Drawer.Navigator>
-    );
-};
-
-export default function HomeNavigator() {
-    return MyTabs();
-}
-export function HomeScreenStack(props) {
-    const onPressAdd = navigation => {
-        navigation && navigation.push(AppRoute.ADD_CAMERA);
-    };
-
-    return (
-        <Stack.Navigator
-            {...props}
-            initialRouteName={AppRoute.HOME}
-            screenOptions={({ route = {} }) => ({
-                animationEnabled: true,
-                headerBackTitleVisible: false,
-                headerStyle: { backgroundColor: Colors.screen },
+                headerStyle: { backgroundColor: Colors.white },
                 headerTitle: getHeaderTitle(route),
                 headerBackImage: () => (
                     <Image
@@ -157,65 +115,49 @@ export function HomeScreenStack(props) {
             })}
             headerMode="float"
         >
+            <ProfileStack.Screen name={AppRoute.PROFILE} component={MyProfile} />
+            <ProfileStack.Screen name={AppRoute.CHANGE_PASS} component={ChangePassword} />
+        </ProfileStack.Navigator>
+    );
+};
+
+export default function HomeNavigator(props) {
+    return HomeScreenStack(props);
+}
+export function HomeScreenStack(props) {
+    return (
+        <Stack.Navigator
+            {...props}
+            initialRouteName={AppRoute.HOME}
+            screenOptions={({ route = {} }) => ({
+                animationEnabled: true,
+                headerTitle: getHeaderTitle(route),
+                headerTitleStyle: { color: 'white' },
+                // headerStyle: { backgroundColor: Colors.screen },
+                headerBackTitleStyle: { color: Colors.purple_blue, fontSize: 19 },
+                // headerBackImage:,
+                headerBackImage: () => (
+                    <Icon
+                        type={'font-awesome'}
+                        name={'arrow-left'}
+                        color={Colors.purple_blue}
+                        style={{ marginHorizontal: 12 }}
+                        source={require('../assets/ic_back.png')}
+                    />
+                ),
+            })}
+            headerMode="screen"
+        >
             <Stack.Screen
                 name={AppRoute.HOME}
-                component={HomeScreen}
-                options={({ navigation }) => ({
-                    headerLeft: () => (
-                        <TouchableOpacity
-                            onPress={() => {
-                                // navigation &&
-                                //     navigation.dispatch &&
-                                //     navigation.dispatch(DrawerActions.openDrawer());
-                                // DrawerActions.toggleDrawer();
-                            }}
-                        >
-                            <Image
-                                style={{ margin: 12, width: 30, height: 30 }}
-                                source={require('../assets/ic_rainbow.png')}
-                            />
-                        </TouchableOpacity>
-                    ),
-                    // headerRight: () => (
-                    //     <TouchableOpacity onPress={() => onPressAdd(navigation)}>
-                    //         <Image
-                    //             style={{ margin: 12, width: 30, height: 30 }}
-                    //             source={require('../assets/icon_add.png')}
-                    //         />
-                    //     </TouchableOpacity>
-                    // ),
-                })}
+                component={MyTabs}
                 initialParams={props.route && props.route.params}
+                options={({ navigation }) => ({
+                    header: () => <View />,
+                })}
             />
             <Stack.Screen name={AppRoute.ADD_CAMERA} component={AddingCamera} />
-            <Stack.Screen
-                name={AppRoute.CAMERA_DETAIL}
-                component={CameraTabs}
-                options={({ route }) => ({
-                    headerBackground: () => (
-                        <LinearGradient
-                            style={{ flex: 1, padding: 12 }}
-                            colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.purple_blue]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                        />
-                    ),
-                    headerRight: () => (
-                        <TouchableOpacity
-                            onPress={() => {
-                                // DrawerActions.toggleDrawer();
-                            }}
-                        >
-                            <Image
-                                style={{ margin: 12, width: 30, height: 30 }}
-                                source={require('../assets/ic_settings.png')}
-                            />
-                        </TouchableOpacity>
-                    ),
-
-                    headerStyle: { backgroundColor: Colors.screen },
-                })}
-            />
+            <Stack.Screen name={AppRoute.CAMERA_DETAIL} component={CameraTabs} />
             <Stack.Screen name={AppRoute.MEDIA} component={CameraVideos} />
             <Stack.Screen name={AppRoute.VIDEO_PLAYER_SCREEN} component={VideoPlayerScreen} />
 

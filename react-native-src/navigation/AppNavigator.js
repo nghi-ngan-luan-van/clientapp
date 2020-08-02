@@ -5,7 +5,7 @@ import Welcome from '../screens/Welcome';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthNavigator } from './AuthNavigator';
 import { AppRoute } from './app-routes';
-import { getUserCameras, signIn } from '../utils/ApiUtils';
+import { getUserCameras, signIn, signInGG } from '../utils/ApiUtils';
 
 export const AuthContext = React.createContext();
 const Stack = createStackNavigator();
@@ -71,12 +71,13 @@ export default function AppNavigator() {
             signIn: async data => {
                 try {
                     await signIn(data, async result => {
-                        let { token } = result;
+                        let { token } = result || {};
                         if (!token) {
                             alert('Wrong email or password, please try again');
+                        } else {
+                            await AsyncStorage.setItem('userToken', token);
+                            dispatch({ type: 'SIGN_IN', token: token });
                         }
-                        await AsyncStorage.setItem('userToken', token);
-                        dispatch({ type: 'SIGN_IN', token: token });
                     });
                 } catch (e) {
                     console.warn('Signin Error');
@@ -86,19 +87,26 @@ export default function AppNavigator() {
             googleSignIn: async data => {
                 try {
                     await signInGG(data, async result => {
-                        let { token } = result;
+                        let { token } = result || {};
                         if (!token) {
                             alert('Wrong email or password, please try again');
+                        } else {
+                            await AsyncStorage.setItem('userToken', token);
+                            // await AsyncStorage.setItem('userData', data);
+                            dispatch({ type: 'SIGN_IN', token: token });
                         }
-                        await AsyncStorage.setItem('userToken', token);
-                        dispatch({ type: 'SIGN_IN', token: token });
                     });
                 } catch (e) {
                     console.warn('Signin GG Error');
                 }
             },
 
-            signOut: () => dispatch({ type: 'SIGN_OUT' }),
+            signOut: async () => {
+                try {
+                    await AsyncStorage.setItem('userToken', 'null');
+                    dispatch({ type: 'SIGN_OUT' });
+                } catch (e) {}
+            },
         }),
         []
     );

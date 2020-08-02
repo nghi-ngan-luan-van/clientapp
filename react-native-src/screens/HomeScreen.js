@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Dimensions,
     FlatList,
     Image,
-    Platform,
+    Animated,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -21,11 +21,29 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
 // const testThumbnail = require('../assets/camera.gif');
-const testThumbnail = {
-    uri:
-        'https://pp.netclipart.com/pp/s/351-3513655_i1000md-camera-video-conferencing-camera-icon.png',
-};
+const testThumbnail = require('../assets/security_camera.png');
 const WIDTH = Dimensions.get('window').width;
+const FadeInView = props => {
+    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+        }).start();
+    }, [fadeAnim]);
+
+    return (
+        <Animated.View // Special animatable View
+            style={{
+                ...props.style,
+                opacity: fadeAnim, // Bind opacity to animated value
+            }}
+        >
+            {props.children}
+        </Animated.View>
+    );
+};
 
 export default function HomeScreen(props) {
     const insets = useSafeArea();
@@ -38,19 +56,44 @@ export default function HomeScreen(props) {
     const [isEmpty, setEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const [searchLoad, setSearchLoading] = useState(false);
+    const [isShowName, setShow] = useState(true);
     const { navigation = {} } = props;
-
+    const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
+    const searchAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+    const translateX = searchAnim.interpolate({ inputRange: [0, 1], outputRange: ['10%', '100%'] });
     useFocusEffect(() => {
-        navigation.setOptions({
-            header: () => <View />,
-        });
-
         Orientation.getOrientation((err, orientation) => {
             if (orientation === 'LANDSCAPE') {
                 Orientation.lockToPortrait();
             }
         });
     });
+    const onSearchIcon = () => {
+        Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 1000,
+        }).start(() => {
+            Animated.timing(searchAnim, {
+                toValue: 1,
+                duration: 1000,
+            }).start();
+            setShow(false);
+        });
+    };
+
+    const onOutSearch = () => {
+        Animated.timing(searchAnim, {
+            toValue: 0,
+            duration: 1000,
+        }).start(() => {
+            setShow(true);
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+            }).start();
+        });
+    };
+
     useEffect(() => {
         getCameras(response => {
             if (response && response.result) {
@@ -62,7 +105,7 @@ export default function HomeScreen(props) {
                 signOut();
             }
         });
-    }, []);
+    }, [props]);
 
     const getCameras = async callback => {
         let userToken = await AsyncStorage.getItem('userToken');
@@ -77,8 +120,7 @@ export default function HomeScreen(props) {
                 screen: AppRoute.CAMERA_STREAM,
                 params: {
                     camera: camera,
-                    // cameras: cameras,
-                    // userToken: userToken,
+                    reload: () => getCameras(),
                 },
             });
     };
@@ -108,76 +150,85 @@ export default function HomeScreen(props) {
 
     const renderCamera = ({ item, index }) => {
         const thumnail = { uri: item.thumbnail };
+        const thumnailSource = thumnail.uri ? thumnail : testThumbnail;
+        const customStyle = thumnail.uri ? {} : { width: 40, height: 40 };
 
         return (
-            <TouchableOpacity style={styles.card} key={index} onPress={onPress(item)}>
-                <Image
-                    source={thumnail.uri ? thumnail : testThumbnail}
-                    resizeMode={'cover'}
-                    style={[styles.thumbnail, !thumnail.uri ? {} : {}]}
-                />
+            <TouchableOpacity style={[styles.card]} key={index} onPress={onPress(item)}>
+                <View style={[styles.thumbnail]}>
+                    <Image
+                        source={thumnailSource}
+                        resizeMode={'cover'}
+                        style={[styles.thumbnail, customStyle]}
+                    />
+                </View>
                 <View style={styles.nameRow}>
                     {!!(item && item.backupMode) && <View style={styles.dot} />}
-                    {/*<View style={{ flex: 1 }}>*/}
                     <Text style={styles.cameraName}>{String(item.name)}</Text>
-                    {/*<Text style={{ fontSize: 10 }}>Live</Text>*/}
-                    {/*</View>*/}
-                    {/*<Image*/}
-                    {/*    source={require('../assets/video.png')}*/}
-                    {/*    style={{ width: 30, height: 30 }}*/}
-                    {/*/>*/}
                 </View>
             </TouchableOpacity>
         );
     };
 
     if (loading) {
-        return (
-            <LinearGradient
-                colors={[Colors.brandy_rose, Colors.white, Colors.purple_blue]}
-                style={[styles.container, { paddingTop: insets.top }]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-            />
-        );
+        return <View style={{ flex: 1 }} />;
     } else {
         return (
             <LinearGradient
-                colors={[Colors.brandy_rose, Colors.white, Colors.purple_blue]}
+                colors={[Colors.purple_blue, Colors.white]}
                 style={[styles.container, { paddingTop: insets.top }]}
-                start={{ x: 0, y: 0 }}
+                start={{ x: 1, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
                 <View style={styles.headerBar}>
-                    <Text style={styles.headerTitle}>C L O M E R A</Text>
-                    {/*<Icon name={'search'} size={30} onPress={() => {}} />*/}
-                    <TouchableOpacity
-                        onPress={() => {
-                            onPressAdd();
-                        }}
-                    >
-                        <Image style={styles.icon} source={require('../assets/icon_add.png')} />
-                    </TouchableOpacity>
+                    {isShowName && (
+                        <Animated.Text style={[styles.headerTitle, { opacity: fadeAnim }]}>
+                            C L O M E R A
+                        </Animated.Text>
+                    )}
+                    {isShowName && (
+                        <Icon
+                            name={'search'}
+                            size={30}
+                            onPress={onSearchIcon}
+                            color={Colors.white}
+                        />
+                    )}
+                    {!isShowName && (
+                        <Animated.View style={{ opacity: searchAnim, flex: 1, width: translateX }}>
+                            <SearchBar
+                                onBlur={onOutSearch}
+                                // inputStyle={{ flex: 1, width: '100%' }}
+                                style={{
+                                    backgroundColor: 'white',
+                                    width: '100%',
+                                    flex: 1,
+                                }}
+                                // inputStyle={{ backgroundColor: 'red' }}
+                                round={true}
+                                // rightIconContainerStyle={{ padding: 5 }}
+                                clearTextOnFocus
+                                // showCancel={true}
+                                // showLoading={!searchLoad}
+                                clearButtonMode={'never'}
+                                placeholder="Tìm camera..."
+                                onChangeText={updateSearch}
+                                value={search}
+                                lightTheme
+                                containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                                inputContainerStyle={{ backgroundColor: Colors.white }}
+                            />
+                        </Animated.View>
+                    )}
+                    <Icon
+                        // reverse
+                        name={'add'}
+                        raised={true}
+                        type={'ant-design'}
+                        color={Colors.purple_blue}
+                        onPress={onPressAdd}
+                    />
                 </View>
-                <SearchBar
-                    onBlur={() => {
-                        // console.log('34252', value);
-                        setSearchLoading(false);
-                    }}
-                    round={true}
-                    // rightIconContainerStyle={{ padding: 5 }}
-                    clearTextOnFocus
-                    // showCancel={true}
-                    // showLoading={!searchLoad}
-                    clearButtonMode={'while-editing'}
-                    // clearIcon=<Icon name={'clean'} type={'font-awesome'} size={20} />
-                    placeholder="Tìm camera..."
-                    onChangeText={updateSearch}
-                    value={search}
-                    lightTheme
-                    containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
-                    inputContainerStyle={{ backgroundColor: Colors.white, opacity: 0.6 }}
-                />
 
                 <FlatList
                     showsVerticalScrollIndicator={false}
@@ -216,11 +267,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
     },
     headerTitle: {
-        fontSize: 25,
-        color: Colors.purple_blue,
+        fontSize: 27,
+        color: Colors.white,
         flex: 1,
         fontWeight: 'bold',
-        opacity: 0.8,
+        // opacity: 0.8,
     },
     camera: {
         flex: 1,
@@ -258,10 +309,11 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
         alignSelf: 'center',
         overflow: 'hidden',
+        justifyContent: 'center',
         resizeMode: 'cover',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-        backgroundColor: Colors.whisper,
+        backgroundColor: Colors.white,
     },
     container: {
         backgroundColor: Colors.whisper,

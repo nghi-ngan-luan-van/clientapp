@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Dimensions,
     Image,
@@ -17,10 +17,10 @@ import { Colors } from '../../utils/AppConfig';
 
 import { useSafeArea } from 'react-native-safe-area-context';
 import SignInForm from './SignInForm';
+import Loader from '../../components/Loader';
 
 export default function SignIn(props) {
     const insets = useSafeArea();
-
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

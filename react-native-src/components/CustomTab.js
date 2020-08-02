@@ -7,7 +7,8 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     tabs: {
         // flex: 1,
-        height: 70,
+        // height: 50,
+        // paddingHorizontal: 12,
         backgroundColor: Colors.whisper,
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -15,13 +16,26 @@ const styles = StyleSheet.create({
         // padding: 12,
     },
     activeTab: {
-        margin: 10,
-        borderRadius: 14,
-        backgroundColor: Colors.white,
+        // margin:1
+        margin: 12,
+        paddingVertical: 12,
+        // paddingHorizontal: 12,
+        borderRadius: 6,
+        // borderBottomWidth: 5,
+        // borderWidth: 2,
+        // borderBottomColor: Colors.purple_blue,
+        backgroundColor: Colors.purple_blue,
+        // boder: 5,
     },
 
     inactiveTab: {
-        backgroundColor: 'transparent',
+        // paddingVertical: 12,
+        // borderRadius: 14,
+        // borderBottomWidth: 5,
+        // borderWidth: 2,
+        // borderBottomColor: Colors.purple_blue,
+        // backgroundColor: Colors.whisper,
+        // backgroundColor: ,
     },
     tab: {
         alignItems: 'center',
@@ -34,14 +48,7 @@ export default function CustomTab(props) {
     // console.log(props);
     let { tabs, goToPage, activeTab } = props;
     return (
-        <LinearGradient
-            colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.purple_blue]}
-            style={styles.tabs}
-            // style={[styles.container, { paddingTop: insets.top }]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-        >
-            {/*<View style={styles.tabs}>*/}
+        <View style={styles.tabs}>
             {tabs.map((tab, index) => (
                 <TouchableOpacity
                     activeOpacity={false}
@@ -55,8 +62,8 @@ export default function CustomTab(props) {
                     <Text
                         style={{
                             fontSize: 16,
-                            fontWeight: activeTab === index ? 'bold' : '400',
-                            color: activeTab === index ? Colors.violet : Colors.arapawa,
+                            fontWeight: activeTab === index ? 'bold' : '600',
+                            color: activeTab === index ? Colors.white : Colors.grey,
                         }}
                     >
                         {tab}
@@ -64,6 +71,6 @@ export default function CustomTab(props) {
                 </TouchableOpacity>
             ))}
             {/*</View>*/}
-        </LinearGradient>
+        </View>
     );
 }

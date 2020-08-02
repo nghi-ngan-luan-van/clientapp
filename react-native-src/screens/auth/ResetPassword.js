@@ -17,7 +17,10 @@ import { Colors } from '../../utils/AppConfig';
 
 import { useSafeArea } from 'react-native-safe-area-context';
 import { EmailForm, ConfirmTokenForm } from './ResetPasswordForm';
-
+// {
+//     "token":"SbJFPAV",
+//     "newPassword":"123456"
+// }
 export function ResetPassword(props) {
     const insets = useSafeArea();
     const [isEmailVailid, setValidEmail] = useState(false);

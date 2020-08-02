@@ -1,7 +1,7 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
 import { StyleSheet, Dimensions, Text, View } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 const { width } = Dimensions.get('window');
 import { AppRoute } from '../../navigation/app-routes';
@@ -10,6 +10,7 @@ import {
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-community/google-signin';
+import Loader from '../../components/Loader';
 GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
     webClientId: '136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -38,38 +39,40 @@ const styles = StyleSheet.create({
     },
     text: { color: Colors.grey },
     button: {
+        // opacity: 0.95,
         alignContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.brandy_rose,
+        backgroundColor: Colors.purple_blue,
         paddingVertical: 16,
         width: width - 48,
         // paddingHorizontal: 50,
         borderRadius: 30,
         marginBottom: 12,
     },
-    title: { flex: 1, color: Colors.purple_blue, alignSelf: 'center' },
+    title: { flex: 1, color: Colors.screen, alignSelf: 'center' },
     row: {
         flexDirection: 'row',
         alignContent: 'center',
         justifyContent: 'center',
         width,
     },
+    ggButton: { width: 100, height: 48 },
 });
 
 export default function SignInForm(props) {
     const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
     const [password, setPassword] = React.useState('123456');
     const [isSigninInProgress, setSigninInProgress] = React.useState(false);
-    const [userInfo, setUserInfo] = React.useState();
     const { signIn, googleSignIn } = React.useContext(AuthContext);
+    const [loading, setLoading] = React.useState(false);
+
     const ggSignIn = async () => {
+        setLoading(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            console.log('userInfo', userInfo);
-            setUserInfo({ userInfo });
-
-            googleSignIn({ userInfo });
+            const { idToken = '' } = userInfo;
+            googleSignIn({ token: idToken });
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log('SIGN_IN_CANCELLED');
@@ -90,17 +93,22 @@ export default function SignInForm(props) {
             }
         }
     };
+    const onSignIn = () => {
+        setLoading(true);
+        signIn({ email, password });
+    };
 
     return (
         <View style={[styles.viewContainer, props.style]}>
+            <Loader loading={loading} />
             <View>
                 <View style={[styles.container]}>
                     <Input
                         placeholder="Nhập email của bạn"
                         leftIcon={{
-                            type: 'font-awesome',
-                            name: 'envelope',
-                            color: Colors.brandy_rose,
+                            type: 'ant-design',
+                            name: 'mail',
+                            color: Colors.purple_blue,
                             size: 20,
                         }}
                         label={'Email'}
@@ -109,7 +117,7 @@ export default function SignInForm(props) {
                         leftIconContainerStyle={styles.leftIconContainer}
                         value={email}
                         inputStyle={styles.text}
-                        onChangeText={value => setEmail(value)}
+                        onChangeText={value => setEmail(value.toLowerCase().trim())}
                         keyboardType="email-address"
                         // errorMessage={'Vui lòng nhập email'}
                     />
@@ -117,9 +125,9 @@ export default function SignInForm(props) {
                     <Input
                         placeholder="Nhập mật khẩu của bạn"
                         leftIcon={{
-                            type: 'font-awesome',
+                            type: 'ant-design',
                             name: 'lock',
-                            color: Colors.brandy_rose,
+                            color: Colors.purple_blue,
                             size: 20,
                         }}
                         leftIconContainerStyle={styles.leftIconContainer}
@@ -147,25 +155,31 @@ export default function SignInForm(props) {
             </View>
 
             <Button
-                title={'Đăng nhập'}
+                title={'ĐĂNG NHẬP'}
                 buttonStyle={styles.button}
-                onPress={() => {
-                    signIn({ email, password });
-                }}
+                onPress={onSignIn}
                 titleStyle={styles.title}
             />
-            <View style={styles.row}>
-                <Text style={{ color: Colors.brandy_rose, alignSelf: 'center', fontSize: 18 }}>
-                    Hoặc đăng nhập với
-                </Text>
-                <GoogleSigninButton
-                    style={{ width: 48, height: 48 }}
-                    size={GoogleSigninButton.Size.Icon}
-                    color={GoogleSigninButton.Color.Light}
-                    onPress={ggSignIn}
-                    disabled={isSigninInProgress}
-                />
-            </View>
+            {/*<View style={styles.row}>*/}
+            <Text style={{ color: Colors.purple_blue, alignSelf: 'center', fontSize: 18 }}>
+                Hoặc đăng nhập với
+            </Text>
+            <Icon
+                name={'google'}
+                type={'font-awesome'}
+                onPress={ggSignIn}
+                reverse
+                raised
+                color={Colors.purple_blue}
+            />
+            {/*<GoogleSigninButton*/}
+            {/*    style={styles.ggButton}*/}
+            {/*    size={GoogleSigninButton.Size.Standard}*/}
+            {/*    color={GoogleSigninButton.Color.Dark}*/}
+            {/*    onPress={ggSignIn}*/}
+            {/*    disabled={isSigninInProgress}*/}
+            {/*/>*/}
+            {/*</View>*/}
         </View>
     );
 }

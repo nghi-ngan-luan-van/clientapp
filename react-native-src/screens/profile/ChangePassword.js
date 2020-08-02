@@ -17,13 +17,14 @@ import { Colors } from '../../utils/AppConfig';
 import { AppRoute } from '../../navigation/app-routes';
 import { changePassword } from '../../utils/ApiUtils';
 import _ from 'lodash';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.whisper,
+        backgroundColor: Colors.white,
         alignItems: 'center',
         // justifyContent: 'space-around',
     },
@@ -61,11 +62,12 @@ const styles = StyleSheet.create({
 });
 
 export default function ChangePassword(props) {
+    const insets = useSafeArea();
     const [password, setPassword] = React.useState('123456');
     const [passwordNew, setPasswordNew] = React.useState('1234567');
     const [passwordConfirm, setPasswordConfirm] = React.useState('1234567');
     const [alertText, setAlert] = React.useState('');
-    const [user,setUser]=React.useState(_.get(props, 'route.params.user', {}));
+    const [user, setUser] = React.useState(_.get(props, 'route.params.user', {}));
     const validatePassword = () => {
         if (!password || !passwordNew) {
             setAlert('Mật khẩu không được để trống');
@@ -80,23 +82,24 @@ export default function ChangePassword(props) {
         validatePassword();
         if (!alertText) {
             //call api change password
-            changePassword({id:user._id,oldPassword:password,newPassword:passwordNew},response=>{
-                console.log(response)
-                if (response) {
-                    setAlert('Đổi mật khẩu thành công')
+            changePassword(
+                { id: user._id, oldPassword: password, newPassword: passwordNew },
+                response => {
+                    console.log(response);
+                    if (response) {
+                        setAlert('Đổi mật khẩu thành công');
+                    } else {
+                        setAlert('Sai mật khẩu hiện tại. Đổi mật khẩu thất bại');
+                    }
                 }
-                else {
-                    setAlert('Sai mật khẩu hiện tại. Đổi mật khẩu thất bại')
-                }
-
-            })
+            );
         }
     };
-    console.log('user',user)
+    console.log('user', user);
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={[styles.container, props.style]}>
+                <View style={[styles.container, props.style, { paddingTop: insets.top }]}>
                     <View style={[styles.boxContainer]}>
                         {alert}
                         <Input

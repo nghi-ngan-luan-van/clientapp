@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        paddingHorizontal: 12,
     },
 });
 
@@ -80,7 +81,11 @@ class CameraVideosComp extends Component {
     componentDidMount = async () => {
         let camera =
             this.props.camera || (this.props.route.params && this.props.route.params.camera);
-
+        let date = new Date();
+        const currentDay = this.timeToString(date);
+        // const currentDay = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+        console.log(currentDay);
+        this.setState({ currentDay });
         await this.loadData(camera);
     };
 
@@ -128,10 +133,14 @@ class CameraVideosComp extends Component {
             </View>
         );
     };
-
+    getDate = day => {
+        const { dateString } = day;
+        this.setState({ currentDay: dateString });
+        console.log('dateString', day);
+    };
     renderCalendar = () => {
         const { showCalendar, eventList, backupList } = this.state;
-        console.log('backup', backupList);
+        //console.log('backup', backupList);
         if (showCalendar) {
             return (
                 <CalendarPicker
@@ -139,7 +148,7 @@ class CameraVideosComp extends Component {
                     backupList={backupList}
                     setBackupList={this.setBackupList}
                     data={eventList}
-                    callback={this.getDate}
+                    getDate={day => this.getDate(day)}
                 />
             );
         } else {
@@ -162,8 +171,9 @@ class CameraVideosComp extends Component {
             </View>
         );
     }
+
     renderMainContent() {
-        const { backupList } = this.state;
+        const { showCalendar, currentDay } = this.state;
         return (
             <LinearGradient
                 style={styles.container}
@@ -173,12 +183,24 @@ class CameraVideosComp extends Component {
             >
                 <Text style={styles.title}>Playback</Text>
                 {/*{this.renderVideo()}*/}
-
-                {/*<View style={{ height: 50 }} />*/}
-                {/*<Text style={styles.title}>Day picker</Text>*/}
-                <TouchableOpacity style={styles.calendarRow} onPress={this.onCalendarPress}>
-                    <Text />
-                    <Icon name={'calendar'} type={'antdesign'} color={Colors.purple_blue} />
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    // activeOpacity={false}
+                    style={styles.calendarRow}
+                    onPress={this.onCalendarPress}
+                >
+                    <Text>{String(currentDay)}</Text>
+                    <Icon
+                        name={'calendar'}
+                        type={'antdesign'}
+                        color={Colors.purple_blue}
+                        activeOpacity={false}
+                    />
+                    <Icon
+                        name={showCalendar ? 'down' : 'up'}
+                        type={'antdesign'}
+                        color={Colors.violet}
+                    />
                     {/*<Image*/}
                     {/*    source={require('../../assets/ic_calendar.png')}*/}
                     {/*    style={styles.calendar}*/}

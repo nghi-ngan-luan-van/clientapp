@@ -25,7 +25,7 @@ export default class CalendarPicker extends Component {
 
     groupTime = () => {
         const { data } = this.state;
-        console.log('this.state.data', this.state.data);
+        //console.log('this.state.data', this.state.data);
         Array.isArray(data) &&
             data.forEach((value, index, arr) => {
                 const date = moment(Number(value.timeStart)).startOf('day');
@@ -47,9 +47,9 @@ export default class CalendarPicker extends Component {
             });
     };
     groupBackupListTime = () => {
-        // console.log(this.props);
+        // //console.log(this.props);
         let { recordVideos } = this.state;
-        console.log('recordVideos', this.props.backupList);
+        //console.log('recordVideos', this.props.backupList);
         this.props.backupList.forEach((value, index, arr) => {
             const date = moment(Number(value.timeStart)).startOf('day');
             const strDate = this.timeToString(date);
@@ -63,7 +63,7 @@ export default class CalendarPicker extends Component {
         setTimeout(async () => {
             const time = day.timestamp;
             const strTime = this.timeToString(time);
-            console.log('time', time, 'strTime', strTime);
+            //console.log('time', time, 'strTime', strTime);
             this.newData = {};
             this.newBackupList = {};
             this.allData = {};
@@ -76,14 +76,14 @@ export default class CalendarPicker extends Component {
                 this.newBackupList[strTime] = [];
             }
             this.allData = this.newData;
-            console.log('this.allData ', this.allData);
+            //console.log('this.allData ', this.allData);
 
             this.newBackupList[strTime].forEach((value, index, arr) => {
                 this.allData[strTime].push(value);
             });
-            console.log('this.newData', this.newData);
-            console.log('this.newbackupList ', this.newBackupList);
-            console.log('this.allData ', this.allData);
+            //console.log('this.newData', this.newData);
+            //console.log('this.newbackupList ', this.newBackupList);
+            //console.log('this.allData ', this.allData);
 
             // this.props.setBackupList(this.newBackupList[strTime]);
             setTimeout(() => {
@@ -96,7 +96,7 @@ export default class CalendarPicker extends Component {
     findVideo = item => {
         const date = moment(Number(item.timeStart)).startOf('day');
         const strDate = this.timeToString(date);
-        console.log(strDate);
+        //console.log(strDate);
         const found = this.newBackupList[strDate].filter(value => {
             return item.timeStart >= value.timeStart && item.timeStart <= value.timeEnd;
         });
@@ -105,9 +105,9 @@ export default class CalendarPicker extends Component {
     renderVideoByItem = item => {
         let { navigation } = this.props;
         if (item.cdnUrl === null) {
-            console.log('aa');
+            //console.log('aa');
             const found = this.findVideo(item);
-            console.log(found);
+            //console.log(found);
             if (found) {
                 navigation &&
                     navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, {
@@ -116,16 +116,16 @@ export default class CalendarPicker extends Component {
                     });
             }
         } else {
-            console.log('renderVideoByItem', this.props);
+            //console.log('renderVideoByItem', this.props);
             navigation && navigation.navigate(AppRoute.VIDEO_PLAYER_SCREEN, { video: item });
         }
     };
     renderItem = item => {
-        // console.log('item', item);
+        // //console.log('item', item);
         const d = new Date(Number(item.timeStart));
         const n = d.toLocaleTimeString();
         const end = new Date(Number(item.timeEnd)).toLocaleTimeString();
-        console.log('n', n);
+        //console.log('n', n);
         return (
             <TouchableOpacity
                 testID={'ITEM'}
@@ -154,7 +154,8 @@ export default class CalendarPicker extends Component {
         return date.toISOString().split('T')[0];
     };
     render() {
-        console.log('nar', this.markedDates);
+        const { getDate } = this.props;
+        //console.log('nar', this.markedDates);
         return (
             <AgendaView
                 testID={'CONTAINER'}
@@ -162,11 +163,12 @@ export default class CalendarPicker extends Component {
                 // markedDates={this.markedDates}
                 loadItemsForMonth={this.loadItems}
                 onDayPress={day => {
-                    console.log('day pressed');
+                    getDate && getDate(day);
+                    console.log('day pressed', day);
                 }}
                 // callback that gets called when day changes while scrolling agenda list
                 onDayChange={day => {
-                    console.log('day changed');
+                    //console.log('day changed');
                 }}
                 // selected={'2020-06-10'}
                 renderItem={this.renderItem}

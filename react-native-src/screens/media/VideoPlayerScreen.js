@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Platform } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { VlCPlayerView, VLCPlayer } from 'react-native-vlc-media-player';
+import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
+import { VLCPlayer } from 'react-native-vlc-media-player';
 //import Video from 'react-native-video';
 import _ from 'lodash';
 import Orientation from 'react-native-orientation';
@@ -68,9 +69,10 @@ export default class VideoPlayerScreen extends Component {
         this.seek();
         return (
             <View style={styles.container}>
-                <VLCPlayer
+                <VLCPlayerView
                     ref={ref => (this.vlcplayer = ref)}
-                    source={{ uri: video.cdnUrl }}
+                    url={video.cdnUrl}
+                    // source={{ uri: video.cdnUrl }}
                     style={{ height: 300 }}
                     paused={this.state.paused}
                     onProgress={this.onProgress}

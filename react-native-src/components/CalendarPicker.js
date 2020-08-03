@@ -155,12 +155,12 @@ export default class CalendarPicker extends Component {
     };
     render() {
         const { getDate } = this.props;
-        //console.log('nar', this.markedDates);
+        console.log('nar', this.markedDates);
         return (
             <AgendaView
                 testID={'CONTAINER'}
                 items={this.state.items}
-                // markedDates={this.markedDates}
+                markedDates={this.markedDates}
                 loadItemsForMonth={this.loadItems}
                 onDayPress={day => {
                     getDate && getDate(day);

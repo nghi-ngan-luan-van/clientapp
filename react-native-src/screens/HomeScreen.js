@@ -149,6 +149,7 @@ export default function HomeScreen(props) {
     };
 
     const renderCamera = ({ item, index }) => {
+        const { backupMode } = item;
         const thumnail = { uri: item.thumbnail };
         const thumnailSource = thumnail.uri ? thumnail : testThumbnail;
         const customStyle = thumnail.uri ? {} : { width: 40, height: 40 };
@@ -163,8 +164,15 @@ export default function HomeScreen(props) {
                     />
                 </View>
                 <View style={styles.nameRow}>
-                    {!!(item && item.backupMode) && <View style={styles.dot} />}
                     <Text style={styles.cameraName}>{String(item.name)}</Text>
+                    {!!backupMode && (
+                        // <View style={styles.dot} />
+                        <Image
+                            source={require('../assets/ic_rec.png')}
+                            resizeMode={'contain'}
+                            style={styles.dot}
+                        />
+                    )}
                 </View>
             </TouchableOpacity>
         );
@@ -308,10 +316,11 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     dot: {
-        height: 10,
-        width: 10,
-        borderRadius: 5,
-        marginRight: 6,
+        height: 16,
+        width: 16,
+        borderRadius: 6,
+        // marginRight: 6,
+        // backgroundColor: Colors.alert,
     },
     thumbnail: {
         height: CARD_HEIGHT,

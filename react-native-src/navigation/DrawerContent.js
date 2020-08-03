@@ -38,26 +38,32 @@ export default function DrawerContent(props) {
 
     const camera = _.get(props, 'state.routes[0].params.camera', {});
     const [isEnabled, setIsEnabled] = useState(camera.backupMode);
-    const toggleSwitch = () => {
+
+    const toggleSwitch = async () => {
         console.log(isEnabled);
         setIsEnabled(previousState => !previousState);
         if (isEnabled) {
-            onSwitchDetectMode();
+            await onSwitchDetectMode();
         } else {
-            onSwitchRecordMode();
+            await onSwitchRecordMode();
         }
     };
-    const onSwitch = result => {
-        console.log(result);
-        if (result) {
-            navigation && navigation.navigate(AppRoute.CAMERA);
-        }
-    };
+
     const onSwitchDetectMode = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const { _id } = camera;
+
         try {
-            await turnDetect({ _id, userToken }, onSwitch);
+            await turnDetect({ _id, userToken }, result => {
+                if (result) {
+                    navigation &&
+                        navigation.navigate(AppRoute.HOME, {
+                            screen: AppRoute.HOME,
+                            params: { reload: true },
+                        });
+                } else {
+                }
+            });
         } catch (e) {
             console.log(e);
         }
@@ -66,13 +72,16 @@ export default function DrawerContent(props) {
     const onSwitchRecordMode = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
         const { _id } = camera;
+
         try {
             await switchRecordMode({ _id, userToken }, res => {
                 if (res) {
-                    let { navigation } = props;
-                    navigation && navigation.navigate('Camera');
+                    navigation &&
+                        navigation.navigate(AppRoute.HOME, {
+                            screen: AppRoute.HOME,
+                            params: { reload: true },
+                        });
                 } else {
-                    // setAlert(false)
                 }
             });
         } catch (e) {
@@ -85,14 +94,17 @@ export default function DrawerContent(props) {
         const { _id } = camera;
         try {
             await deleteCam({ _id, userToken }, res => {
-                navigation && navigation.navigate(AppRoute.HOME, { reload: true });
+                navigation &&
+                    navigation.navigate(AppRoute.HOME, {
+                        screen: AppRoute.HOME,
+                        params: { reload: true },
+                    });
                 console.log('res', res);
             });
         } catch (e) {
             props.signOut && props.signOut();
         }
     };
-    // Animated.in
 
     return (
         <DrawerContentScrollView>
@@ -102,42 +114,12 @@ export default function DrawerContent(props) {
                 descriptors={props.descriptors}
                 activeBackgroundColor={Colors.purple_blue}
                 activeTintColor={Colors.white}
-                // itemStyle={{ backgroundColor: 'red' }}
             />
-            {/*<DrawerItemList {...props} />*/}
-            {/*<DrawerItem*/}
-            {/*    // focused*/}
-            {/*    icon={() => (*/}
-            {/*        <Icon*/}
-            {/*            // style={{width:36,height:36}}*/}
-            {/*            name="camera"*/}
-            {/*            color="#7b79db"*/}
-            {/*            type="font-awesome"*/}
-            {/*            style={styles.rightIcon}*/}
-            {/*        />*/}
-            {/*    )}*/}
-            {/*    // style={{ backgroundColor: 'red', alignItems: 'flex-start' }}*/}
-            {/*    label={'Xem Camera'}*/}
-            {/*    labelStyle={styles.label}*/}
-            {/*    onPress={() => navigation && navigation.navigate && navigation.navigate('Camera')}*/}
-            {/*/>*/}
-            {/*<DrawerItem*/}
-            {/*    activeTintColor={'red'}*/}
-            {/*    icon={() => (*/}
-            {/*        <Image*/}
-            {/*            // style={{ width: 30, height: 30 }}*/}
-            {/*            source={require('../assets/ic_edit.png')}*/}
-            {/*            style={styles.rightIcon}*/}
-            {/*        />*/}
-            {/*    )}*/}
-            {/*    label="Chỉnh sửa thông tin camera"*/}
-            {/*    labelStyle={styles.label}*/}
-            {/*    onPress={() => {*/}
-            {/*        navigation && navigation.navigate && navigation.navigate('Edit');*/}
-            {/*    }}*/}
-            {/*/>*/}
+
             <DrawerItem
-                icon={() => <Switch onValueChange={toggleSwitch} value={isEnabled} />}
+                icon={() => (
+                    <Switch onValueChange={async () => await toggleSwitch()} value={isEnabled} />
+                )}
                 label="Chế độ backup"
                 labelStyle={[styles.label, { marginLeft: -12 }]}
             />

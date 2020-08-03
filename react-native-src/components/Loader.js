@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native';
 import { Colors } from '../utils/AppConfig';
+import { backgroundColor } from 'react-native-calendars/src/style';
 const Loader = props => {
-    const { loading, transparent, ...attributes } = props;
+    const { loading, transparent, color, ...attributes } = props;
+    // con
     console.log('loading', loading);
+    // useEffect(()=>{
+    //     return setLoading(false)
+    // })
     return (
         <Modal
             fullScreen
@@ -15,7 +20,7 @@ const Loader = props => {
             }}
         >
             <View style={styles.modalBackground}>
-                <View style={[styles.activityIndicatorWrapper]}>
+                <View style={[styles.activityIndicatorWrapper, { backgroundColor: color }]}>
                     {/*<Text>Loading...</Text>*/}
                     <ActivityIndicator
                         animating={loading}

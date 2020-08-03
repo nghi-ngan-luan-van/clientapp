@@ -72,7 +72,7 @@ export default function EditCamera(props) {
                 disabled
                 inputContainerStyle={styles.input}
                 label="RTSP Url"
-                rightIcon={{ type: 'antdesign', name: 'location-arrow' }}
+                // rightIcon={{ type: 'antdesign', name: '' }}
                 style={{ height: '36' }}
                 defaultValue={camera.rtspUrl}
             />
@@ -102,7 +102,7 @@ export default function EditCamera(props) {
 
             <Button
                 type={'solid'}
-                title={'Save Camera Information'}
+                title={'Lưuedit'}
                 titleStyle={styles.title}
                 // style={styles.btn}
                 onPress={onUpdateCamera}

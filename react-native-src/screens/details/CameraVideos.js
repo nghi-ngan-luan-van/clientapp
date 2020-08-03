@@ -22,6 +22,7 @@ import Slider from '../../components/slider/Slider';
 import { AuthContext } from '../../navigation/AppNavigator';
 import LinearGradient from 'react-native-linear-gradient';
 import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
+import Loader from '../../components/Loader';
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -29,13 +30,15 @@ const styles = StyleSheet.create({
     container: { flex: 1, paddingHorizontal: 12 },
     eContainer: {
         flex: 1,
+        paddingHorizontal: 12,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Colors.purple_blue,
+        backgroundColor: Colors.white,
         opacity: 0.9,
     },
     text: {
-        color: Colors.white,
+        textAlign: 'center',
+        color: Colors.arapawa,
         fontSize: 20,
     },
     calendar: {
@@ -157,15 +160,17 @@ class CameraVideosComp extends Component {
     };
 
     renderLoading() {
-        return <View />;
+        return <Loader color={Colors.white} />;
     }
 
     renderEmpty() {
         return (
             <View style={styles.eContainer}>
-                <Text style={styles.text}>Danh sách Video của Camera trống!</Text>
+                <Text style={styles.text}>
+                    Hiện tại hệ thống chưa tìm thấy dữ liệu của camera này. Quay lại sau bạn nhé!
+                </Text>
                 <Image
-                    source={require('../../assets/camera.gif')}
+                    source={require('../../assets/emptyLib.gif')}
                     style={{ width: 300, height: 300, alignSelf: 'center', resizeMode: 'contain' }}
                 />
             </View>

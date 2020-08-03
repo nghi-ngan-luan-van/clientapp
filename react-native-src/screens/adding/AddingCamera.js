@@ -8,13 +8,13 @@ import { Colors } from '../../utils/AppConfig';
 import LinearGradient from 'react-native-linear-gradient';
 import { testConnection } from '../../utils/ApiUtils';
 import { AuthContext } from '../../navigation/AppNavigator';
-
+import { HOST_URL } from '../../utils/AppConst';
 class AddingCameraComp extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: 'Camera',
-            rtspUrl: 'rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa',
+            rtspUrl: 'rtsp://172.16.3.134:8080/h264_ulaw.sdp',
             thumbnail: 'nothing',
             isTestConnection: false,
             loading: false,
@@ -84,7 +84,7 @@ class AddingCameraComp extends Component {
             redirect: 'follow',
         };
 
-        await fetch('http://128.199.211.44/camera/add', requestOptions)
+        await fetch(HOST_URL + 'camera/add', requestOptions)
             .then(response => {
                 console.log(response.status);
                 if (response.status !== 200) {

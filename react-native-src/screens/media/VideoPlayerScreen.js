@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Platform } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Platform, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
@@ -16,6 +16,7 @@ export default class VideoPlayerScreen extends Component {
         super(props);
         this.state = {
             paused: false,
+            videoLoad: true,
             video: _.get(props, 'route.params.video', {}),
             seekTime: _.get(props, 'route.params.seekTime', 0),
         };
@@ -63,29 +64,55 @@ export default class VideoPlayerScreen extends Component {
             '/Users/macintoshhd/Documents/clientapp/react-native-src/screens/media/video.png'
         );
     };
+    onPlaying = () => {
+        this.setState({ videoLoad: false });
+    };
     render() {
-        const { video } = this.state;
-        console.log('sstate vlc', this.state);
+        const { video, videoLoad } = this.state;
+        // console.log('sstate vlc', this.state);
+        console.log(video);
         this.seek();
         return (
             <View style={styles.container}>
-                <VLCPlayerView
-                    ref={ref => (this.vlcplayer = ref)}
-                    url={video.cdnUrl}
-                    // source={{ uri: video.cdnUrl }}
-                    style={{ height: 300 }}
-                    paused={this.state.paused}
-                    onProgress={this.onProgress}
-                    onPaused={this.onPaused}
-                />
-                {/*<Icon type={'ant-design'} name={'camera'} onPress={this.capture} />*/}
-                {/*<Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />*/}
-                <Button
-                    icon={() => <Icon type={'font-awesome'} name={'play'} />}
-                    title={'pause'}
-                    onPress={this.pause}
-                    style={{ padding: 12 }}
-                />
+                <View style={styles.backgroundVideo}>
+                    <VLCPlayer
+                        style={{ height: 400, width: Dimensions.get('window').width }}
+                        ref={ref => (this.vlcplayer = ref)}
+                        // url={video.cdnUrl}
+                        source={{ uri: video.cdnUrl }}
+                        paused={this.state.paused}
+                        onProgress={this.onProgress}
+                        onPaused={this.onPaused}
+                        onPlaying={this.onPlaying}
+                    />
+                    {/*<Icon type={'ant-design'} name={'camera'} onPress={this.capture} />*/}
+                    {/*<Button title={'seek'} onPress={this.seek} style={{ padding: 12 }} />*/}
+
+                    <ActivityIndicator
+                        size={'large'}
+                        color={'#fff'}
+                        animating={videoLoad}
+                        style={styles.indicator}
+                    />
+                </View>
+                <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center' }}>
+                    <View
+                        style={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: 6,
+                            backgroundColor: videoLoad ? 'grey' : 'green',
+                            marginRight: 12,
+                        }}
+                    />
+                    <Text>Tín hiệu video</Text>
+                </View>
+                {/*<Button*/}
+                {/*    icon={() => <Icon type={'font-awesome'} name={'play'} />}*/}
+                {/*    title={'pause'}*/}
+                {/*    onPress={this.pause}*/}
+                {/*    style={{ padding: 12 }}*/}
+                {/*/>*/}
                 {/*<VlCPlayerView*/}
                 {/*    autoplay={true}*/}
                 {/*    url={video.cdnUrl}*/}
@@ -114,12 +141,20 @@ export default class VideoPlayerScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         // backgroundColor: Colors.black,
     },
     body: {
         backgroundColor: Colors.white,
     },
     backgroundVideo: {
-        height: 600,
+        // height: 600,
+        // backgroundColor: '#000',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    indicator: {
+        position: 'absolute',
     },
 });

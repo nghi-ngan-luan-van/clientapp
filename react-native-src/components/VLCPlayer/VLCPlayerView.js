@@ -89,7 +89,7 @@ export default class VLCPlayerView extends Component {
                     }}
                 >
                     <VLCPlayer
-                        style={{ width: '100%', height: 300 }}
+                        style={{ width: Dimensions.get('window').width, height: 300 }}
                         source={{ uri: url }}
                         initType={2}
                         initOptions={[
@@ -109,18 +109,32 @@ export default class VLCPlayerView extends Component {
 
                     {/*<Loader loading={isLoading} transparent />*/}
                 </View>
-                <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center' }}>
+                {isLoading ? (
+                    <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center' }}>
+                        <View
+                            style={{
+                                width: 12,
+                                height: 12,
+                                borderRadius: 6,
+                                backgroundColor: 'grey',
+                                marginRight: 12,
+                            }}
+                        />
+                        <Text style={{ fontSize: 20 }}>Đang kết nối đến camera</Text>
+                    </View>
+                ) : (
                     <View
                         style={{
-                            width: 12,
-                            height: 12,
+                            backgroundColor: 'red',
+                            position: 'absolute',
+                            padding: 6,
                             borderRadius: 6,
-                            backgroundColor: isLoading ? 'grey' : 'red',
-                            marginRight: 12,
+                            margin: 12,
                         }}
-                    />
-                    <Text>LIVE</Text>
-                </View>
+                    >
+                        <Text style={{ color: '#fff' }}>LIVE</Text>
+                    </View>
+                )}
                 {/*<Text>Theo dõi trực tiếp camera</Text>*/}
             </View>
         );

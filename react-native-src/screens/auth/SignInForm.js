@@ -65,6 +65,7 @@ export default function SignInForm(props) {
     const [isSigninInProgress, setSigninInProgress] = React.useState(false);
     const { signIn, googleSignIn } = React.useContext(AuthContext);
     const [loading, setLoading] = React.useState(false);
+    const [showPass, setShowPass] = React.useState(false);
 
     const ggSignIn = async () => {
         setLoading(true);
@@ -95,7 +96,7 @@ export default function SignInForm(props) {
     };
     const onSignIn = () => {
         setLoading(true);
-        signIn({ email, password });
+        signIn({ email, password }, setLoading(false));
     };
 
     return (
@@ -131,9 +132,19 @@ export default function SignInForm(props) {
                             size: 20,
                         }}
                         leftIconContainerStyle={styles.leftIconContainer}
+                        rightIcon=<Icon
+                            type="font-awesome"
+                            name={showPass ? 'eye' : 'eye-slash'}
+                            color={Colors.purple_blue}
+                            onPress={() => {
+                                setShowPass(!showPass);
+                            }}
+                            hitSlop={{ x: 5, y: 5 }}
+                            size={20}
+                        />
                         label={'Mật khẩu'}
                         labelStyle={{ color: Colors.grey }}
-                        secureTextEntry={true}
+                        secureTextEntry={!showPass}
                         // errorMessage={'Vui lòng nhập mật khẩu'}
                         // style={styles}
                         value={password}

@@ -68,11 +68,12 @@ export default function AppNavigator() {
 
     const authContext = React.useMemo(
         () => ({
-            signIn: async data => {
+            signIn: async (data, callback) => {
                 try {
                     await signIn(data, async result => {
                         let { token } = result || {};
                         if (!token) {
+                            callback && callback();
                             alert('Wrong email or password, please try again');
                         } else {
                             await AsyncStorage.setItem('userToken', token);

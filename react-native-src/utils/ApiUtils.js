@@ -112,8 +112,17 @@ export const testConnection = (params, callback) => {
 };
 
 export const turnDetect = (params, callback) => {
+    const { _id, userToken } = params;
+    const message = {
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+        },
+        data: {
+            _id: _id,
+        },
+    };
     try {
-        post(HOST_URL + 'camera/turndetect', { data: params }, callback);
+        post(HOST_URL + 'camera/turndetect', message, callback);
     } catch (e) {
         console.warn('[err] ApiUtils turndetect', e);
         callback();

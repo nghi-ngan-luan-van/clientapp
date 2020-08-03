@@ -155,7 +155,7 @@ export default class CalendarPicker extends Component {
     };
     render() {
         const { getDate } = this.props;
-        console.log('nar', this.markedDates);
+        // console.log('nar', this.markedDates);
         return (
             <AgendaView
                 testID={'CONTAINER'}
@@ -164,7 +164,7 @@ export default class CalendarPicker extends Component {
                 loadItemsForMonth={this.loadItems}
                 onDayPress={day => {
                     getDate && getDate(day);
-                    console.log('day pressed', day);
+                    // console.log('day pressed', day);
                 }}
                 // callback that gets called when day changes while scrolling agenda list
                 onDayChange={day => {
@@ -173,7 +173,6 @@ export default class CalendarPicker extends Component {
                 // selected={'2020-06-10'}
                 renderItem={this.renderItem}
                 renderEmptyDate={this.renderEmptyDate}
-                markedDates={this.markedDates}
                 // rowHasChanged={this.rowHasChanged}
                 markingType={'period'}
                 monthFormat={'yyyy/MM'}

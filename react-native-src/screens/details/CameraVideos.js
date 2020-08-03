@@ -186,7 +186,7 @@ class CameraVideosComp extends Component {
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 1 }}
             >
-                <Text style={styles.title}>Playback</Text>
+                <Text style={styles.title}>Chọn ngày bạn muốn kiểm tra:</Text>
                 {/*{this.renderVideo()}*/}
                 <TouchableOpacity
                     activeOpacity={0.9}

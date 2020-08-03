@@ -238,7 +238,6 @@ export default function HomeScreen(props) {
                         </Animated.View>
                     )}
                     <Icon
-                        // reverse
                         name={'add'}
                         raised={true}
                         type={'ant-design'}

@@ -15,12 +15,8 @@ import { VLCPlayer } from 'react-native-vlc-media-player';
 import PropTypes from 'prop-types';
 import TimeLimt from './TimeLimit';
 import ControlBtn from './ControlBtn';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getStatusBarHeight } from './SizeController';
-import Loader from '../Loader';
 const statusBarHeight = getStatusBarHeight();
-let deviceHeight = Dimensions.get('window').height;
-let deviceWidth = Dimensions.get('window').width;
 export default class VLCPlayerView extends Component {
     static propTypes = {
         uri: PropTypes.string,
@@ -119,7 +115,7 @@ export default class VLCPlayerView extends Component {
                             width: 12,
                             height: 12,
                             borderRadius: 6,
-                            backgroundColor: 'green',
+                            backgroundColor: isLoading ? 'grey' : 'red',
                             marginRight: 12,
                         }}
                     />

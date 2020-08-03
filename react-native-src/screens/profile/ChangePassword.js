@@ -12,7 +12,7 @@ import {
     Keyboard,
     Image,
 } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 import { AppRoute } from '../../navigation/app-routes';
 import { changePassword } from '../../utils/ApiUtils';
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.white,
-        alignItems: 'center',
+        // alignItems: 'center',
         // justifyContent: 'space-around',
     },
     boxContainer: {
@@ -43,13 +43,18 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         marginEnd: 12,
     },
-
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
+    headerBack: {
+        color: Colors.purple_blue,
+        fontSize: 16,
+    },
     text: { color: Colors.grey },
     button: {
         // flex: 1,
-        marginVertical: 12,
+        // margin: 12,
         // backgroundColor: Colors.purple_blue,
-        width: '100%',
+        alignSelf: 'center',
+        width: '70%',
         paddingVertical: 14,
         borderRadius: 40,
     },
@@ -68,6 +73,11 @@ export default function ChangePassword(props) {
     const [passwordConfirm, setPasswordConfirm] = React.useState('1234567');
     const [alertText, setAlert] = React.useState('');
     const [user, setUser] = React.useState(_.get(props, 'route.params.user', {}));
+    const goBack = () => {
+        const { navigation } = props;
+        navigation && navigation.canGoBack() && navigation.pop();
+    };
+
     const validatePassword = () => {
         if (!password || !passwordNew) {
             setAlert('Mật khẩu không được để trống');
@@ -100,6 +110,16 @@ export default function ChangePassword(props) {
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={[styles.container, props.style, { paddingTop: insets.top }]}>
+                    <TouchableOpacity style={styles.header} onPress={() => goBack()}>
+                        <Icon
+                            type={'antdesin'}
+                            name={'chevron-left'}
+                            color={Colors.purple_blue}
+                            size={40}
+                            style={{ alignSelf: 'flex-start' }}
+                        />
+                        <Text style={styles.headerBack}>Quay về hồ sơ của tôi</Text>
+                    </TouchableOpacity>
                     <View style={[styles.boxContainer]}>
                         {alert}
                         <Input
@@ -159,12 +179,12 @@ export default function ChangePassword(props) {
                             // inputContainerStyle={styles.input}
                             onChangeText={value => setPasswordConfirm(value)}
                         />
+                        <Button
+                            title={'Đổi mật khẩu'}
+                            buttonStyle={styles.button}
+                            onPress={submitChange}
+                        />
                     </View>
-                    <Button
-                        title={'Đổi mật khẩu'}
-                        buttonStyle={styles.button}
-                        onPress={submitChange}
-                    />
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

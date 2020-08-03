@@ -20,13 +20,7 @@ export default function CameraStream(props) {
     const takeSnapShot = () => {
         console.log(videoRef);
     };
-    // const renderBadge = () => {
-    //     if (canPlay) {
-    //         return (
-    //
-    //         );
-    //     }
-    // };
+
     return (
         !!camera && (
             <View style={[styles.container, { paddingBottom: insets.bottom }]}>

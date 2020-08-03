@@ -20,6 +20,7 @@ import MyProfile from './../screens/profile/MyProfile';
 import VideoPlayerScreen from '../screens/media/VideoPlayerScreen';
 import ChangePassword from '../screens/profile/ChangePassword';
 import { Icon } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/core';
 
 export const getHeaderTitle = route => {
     const routeName =
@@ -68,9 +69,9 @@ const MyTabs = props => {
                     tabBarIcon: props => (
                         <Icon
                             name="home"
-                            type={'ant-design'}
-                            size={30}
-                            color={props.focused ? Colors.brandy_rose : Colors.grey}
+                            type={'antdesign'}
+                            size={props.focused ? 36 : 25}
+                            color={props.focused ? Colors.purple_blue : Colors.grey}
                         />
                     ),
                 }}
@@ -79,14 +80,16 @@ const MyTabs = props => {
             />
             <Tab.Screen
                 options={{
+                    // tabBarVisible: false,
                     // tabBarButton:
-                    tabBarLabel: 'Cá nhân',
+                    // tabBarLabel: props => (props.focused ? null : <Text style={}>Cá nhân</Text>),
+                    tabBarLabel: 'Hồ sơ',
                     tabBarIcon: props => (
                         <Icon
-                            name="people"
-                            type={'ant-design'}
-                            size={30}
-                            color={props.focused ? Colors.brandy_rose : Colors.grey}
+                            name="profile"
+                            type={'antdesign'}
+                            size={props.focused ? 36 : 25}
+                            color={props.focused ? Colors.purple_blue : Colors.grey}
                         />
                     ),
                 }}
@@ -97,23 +100,32 @@ const MyTabs = props => {
     );
 };
 const ProfileStack = createStackNavigator();
-const ProfileScreenStack = () => {
+const ProfileScreenStack = props => {
+    // useFocusEffect(() => {
+    //     const { navigation } = props;
+    //     console.log('navigation', navigation);
+    //     navigation &&
+    //         navigation.setOptions({
+    //             header: () => <View style={{ backgroundColor: 'red' }} />,
+    //         });
+    // });
     return (
         <ProfileStack.Navigator
             initialRouteName={AppRoute.PROFILE}
             screenOptions={({ route = {} }) => ({
+                header: <View style={{ backgroundColor: 'red', height: 100 }} />,
                 animationEnabled: true,
-                headerBackTitleVisible: false,
-                headerStyle: { backgroundColor: Colors.white },
-                headerTitle: getHeaderTitle(route),
-                headerBackImage: () => (
-                    <Image
-                        style={{ width: 18, height: 18, marginLeft: 12 }}
-                        source={require('../assets/ic_back.png')}
-                    />
-                ),
+                // headerBackTitleVisible: false,
+                // headerStyle: { backgroundColor: Colors.white },
+                // headerTitle: getHeaderTitle(route),
+                // headerBackImage: () => (
+                //     <Image
+                //         style={{ width: 18, height: 18, marginLeft: 12 }}
+                //         source={require('../assets/ic_back.png')}
+                //     />
+                // ),
             })}
-            headerMode="float"
+            headerMode="screen"
         >
             <ProfileStack.Screen name={AppRoute.PROFILE} component={MyProfile} />
             <ProfileStack.Screen name={AppRoute.CHANGE_PASS} component={ChangePassword} />
@@ -138,11 +150,10 @@ export function HomeScreenStack(props) {
                 // headerBackImage:,
                 headerBackImage: () => (
                     <Icon
-                        type={'font-awesome'}
-                        name={'arrow-left'}
+                        type={'antdesin'}
+                        name={'chevron-left'}
                         color={Colors.purple_blue}
-                        style={{ marginHorizontal: 12 }}
-                        source={require('../assets/ic_back.png')}
+                        // style={{ marginHorizontal: 12 }}
                     />
                 ),
             })}

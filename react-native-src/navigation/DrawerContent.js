@@ -121,21 +121,21 @@ export default function DrawerContent(props) {
             {/*    labelStyle={styles.label}*/}
             {/*    onPress={() => navigation && navigation.navigate && navigation.navigate('Camera')}*/}
             {/*/>*/}
-            <DrawerItem
-                activeTintColor={'red'}
-                icon={() => (
-                    <Image
-                        // style={{ width: 30, height: 30 }}
-                        source={require('../assets/ic_edit.png')}
-                        style={styles.rightIcon}
-                    />
-                )}
-                label="Chỉnh sửa thông tin camera"
-                labelStyle={styles.label}
-                onPress={() => {
-                    navigation && navigation.navigate && navigation.navigate('Edit');
-                }}
-            />
+            {/*<DrawerItem*/}
+            {/*    activeTintColor={'red'}*/}
+            {/*    icon={() => (*/}
+            {/*        <Image*/}
+            {/*            // style={{ width: 30, height: 30 }}*/}
+            {/*            source={require('../assets/ic_edit.png')}*/}
+            {/*            style={styles.rightIcon}*/}
+            {/*        />*/}
+            {/*    )}*/}
+            {/*    label="Chỉnh sửa thông tin camera"*/}
+            {/*    labelStyle={styles.label}*/}
+            {/*    onPress={() => {*/}
+            {/*        navigation && navigation.navigate && navigation.navigate('Edit');*/}
+            {/*    }}*/}
+            {/*/>*/}
             <DrawerItem
                 icon={() => <Switch onValueChange={toggleSwitch} value={isEnabled} />}
                 label="Chế độ backup"

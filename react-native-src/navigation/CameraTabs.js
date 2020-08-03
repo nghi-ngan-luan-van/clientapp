@@ -61,8 +61,12 @@ const CameraTabs = props => {
             drawerType={isLargeScreen ? 'permanent' : 'back'}
             drawerContent={props => <DrawerContent {...props} signOut={signOut} />}
         >
-            <Drawer.Screen name={'Camera'} component={Detail} initialParams={params} />
-            <Drawer.Screen name={'Edit'} component={EditCamera} initialParams={params} />
+            <Drawer.Screen name={'Chi tiết camera'} component={Detail} initialParams={params} />
+            <Drawer.Screen
+                name={'Chỉnh sửa thông tin'}
+                component={EditCamera}
+                initialParams={params}
+            />
         </Drawer.Navigator>
     );
 };

@@ -215,8 +215,17 @@ export default function HomeScreen(props) {
                                 onChangeText={updateSearch}
                                 value={search}
                                 lightTheme
-                                containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
-                                inputContainerStyle={{ backgroundColor: Colors.white }}
+                                containerStyle={{
+                                    backgroundColor: 'transparent',
+                                    borderWidth: 0, //no effect
+                                    // shadowColor: 'white', //no effect
+                                    borderBottomColor: 'transparent',
+                                    borderTopColor: 'transparent',
+                                }}
+                                inputContainerStyle={{
+                                    backgroundColor: Colors.white,
+                                    opacity: 0.9,
+                                }}
                             />
                         </Animated.View>
                     )}

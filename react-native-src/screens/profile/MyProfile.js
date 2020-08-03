@@ -8,6 +8,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { verifytoken } from '../../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/core';
+import { getHeaderTitle } from '../../navigation/HomeNavigator';
 
 const styles = StyleSheet.create({
     safeContainer: {
@@ -73,14 +75,37 @@ export default function MyProfile(props) {
     const insets = useSafeArea();
     const { signOut } = useContext(AuthContext);
     const [user, setUser] = useState({});
+    const { navigation } = props;
+    useFocusEffect(() => {
+        navigation &&
+            navigation.setOptions({
+                header: <View style={{ backgroundColor: 'red' }} />,
+                // headerTitle: getHeaderTitle(route),
+                headerTitleStyle: { color: 'white' },
+                // headerStyle: { backgroundColor: Colors.screen },
+                headerBackTitleStyle: { color: Colors.purple_blue, fontSize: 19 },
+                // headerBackImage:,
+                headerBackImage: () => (
+                    <Icon
+                        type={'antdesin'}
+                        // type={'antdesign'}
+                        name={'chevron-left'}
+                        color={Colors.purple_blue}
+                        style={{ marginHorizontal: 12 }}
+                    />
+                ),
+            });
+    });
     useEffect(() => {
         const submitChangePass = result => {
+            if (!result) {
+                signOut();
+            }
             console.log(result);
             setUser(result);
         };
         const getUser = async callback => {
             let userToken = await AsyncStorage.getItem('userToken');
-            console.log('token...', userToken);
             try {
                 await verifytoken({ token: userToken }, callback);
                 console.log('Sent successfully');
@@ -91,6 +116,7 @@ export default function MyProfile(props) {
         };
         getUser(submitChangePass);
     }, []);
+
     const goChangePass = () => {
         const { navigation } = props;
         navigation && navigation.push(AppRoute.CHANGE_PASS, { user: user });
@@ -100,7 +126,7 @@ export default function MyProfile(props) {
         <SafeAreaView style={styles.safeContainer}>
             <LinearGradient
                 style={styles.container}
-                colors={[Colors.purple_blue, Colors.screen]}
+                colors={[Colors.white, Colors.screen]}
                 start={{ x: 1, y: 1 }}
                 end={{ x: 0, y: 0 }}
             >

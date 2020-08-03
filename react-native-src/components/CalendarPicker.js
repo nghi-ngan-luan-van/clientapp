@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-na
 import AgendaView from 'react-native-calendars/src/agenda';
 import moment from 'moment';
 import { AppRoute } from '../navigation/app-routes';
-
+import { Colors } from '../utils/AppConfig';
 export default class CalendarPicker extends Component {
     constructor(props) {
         super(props);
@@ -12,34 +12,39 @@ export default class CalendarPicker extends Component {
             items: {},
             data: this.props.data,
             recordVideos: this.props.backupList,
+            markedDates: {},
         };
         this.newData = {};
         this.newBackupList = {};
         this.allData = {};
-        this.markedDates = {
-            '2020-05-08': { textColor: '#43515c' },
-            '2020-05-09': { textColor: '#43515c' },
-            '2020-05-14': { startingDay: true, endingDay: true, color: 'pink' },
-            '2020-05-21': { startingDay: true, color: 'blue' },
-            '2020-07-22': { endingDay: true, color: 'gray' },
-            '2020-07-24': { startingDay: true, color: 'gray' },
-            '2020-07-25': { color: 'gray' },
-            '2020-07-02': { startingDay: true, endingDay: true, color: 'pink' },
-        };
+
+        this.markedDates = {};
         // this.loadItems = this.props.data;
     }
     componentDidMount = () => {};
 
     groupTime = () => {
+        const { data } = this.state;
         console.log('this.state.data', this.state.data);
-        this.state.data.forEach((value, index, arr) => {
-            const date = moment(Number(value.timeStart)).startOf('day');
-            const strDate = this.timeToString(date);
-            if (!this.newData[strDate]) {
-                this.newData[strDate] = [];
-            }
-            this.newData[strDate].push(value);
-        });
+        Array.isArray(data) &&
+            data.forEach((value, index, arr) => {
+                const date = moment(Number(value.timeStart)).startOf('day');
+                let newValue = value;
+                // newValue.startingDay = true;
+                // newValue.endingDay = true;
+                // newValue.color = 'pink';
+                const strDate = this.timeToString(date);
+                this.markedDates[strDate] = {
+                    startingDay: true,
+                    endingDay: true,
+                    color: Colors.pigeon_post,
+                };
+
+                if (!this.newData[strDate]) {
+                    this.newData[strDate] = [];
+                }
+                this.newData[strDate].push(value);
+            });
     };
     groupBackupListTime = () => {
         // console.log(this.props);
@@ -149,6 +154,7 @@ export default class CalendarPicker extends Component {
         return date.toISOString().split('T')[0];
     };
     render() {
+        console.log('nar', this.markedDates);
         return (
             <AgendaView
                 testID={'CONTAINER'}
@@ -165,6 +171,7 @@ export default class CalendarPicker extends Component {
                 // selected={'2020-06-10'}
                 renderItem={this.renderItem}
                 renderEmptyDate={this.renderEmptyDate}
+                markedDates={this.markedDates}
                 // rowHasChanged={this.rowHasChanged}
                 markingType={'period'}
                 monthFormat={'yyyy/MM'}

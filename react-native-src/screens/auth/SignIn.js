@@ -24,7 +24,7 @@ export default function SignIn(props) {
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={[styles.contentContainer, { paddingBottom: insets.bottom }]}>
+                <View style={[styles.contentContainer, { padhdingBottom: insets.bottom }]}>
                     <View style={[styles.topView, { paddingTop: insets.top }]}>
                         <Image
                             style={styles.backgroundImg}

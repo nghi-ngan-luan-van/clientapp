@@ -144,6 +144,7 @@ export default function HomeScreen(props) {
         setSearch(value);
         searchCamera(value);
     };
+
     const onPressAdd = () => {
         navigation && navigation.navigate(AppRoute.ADD_CAMERA);
     };
@@ -177,9 +178,21 @@ export default function HomeScreen(props) {
             </TouchableOpacity>
         );
     };
+    const renderLoading = () => {
+        return (
+            <LinearGradient
+                colors={[Colors.purple_blue, Colors.white]}
+                style={[styles.container, { paddingTop: insets.top }]}
+                start={{ x: 1, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            >
+                <Text style={styles.headerTitle}>C L O M E R A</Text>
+            </LinearGradient>
+        );
+    };
 
     if (loading) {
-        return <View style={{ flex: 1 }} />;
+        return renderLoading();
     } else {
         return (
             <LinearGradient

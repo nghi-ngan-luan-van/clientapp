@@ -96,7 +96,7 @@ export default function SignInForm(props) {
     };
     const onSignIn = () => {
         setLoading(true);
-        signIn({ email, password }, setLoading(false));
+        signIn({ email, password }, () => setLoading(false));
     };
 
     return (

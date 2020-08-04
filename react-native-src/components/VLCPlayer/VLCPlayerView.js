@@ -74,7 +74,9 @@ export default class VLCPlayerView extends Component {
     //         this.changeUrl = true;
     //     }
     // }
-
+    onPlaying = () => {
+        this.setState({ isLoading: false });
+    };
     render() {
         const { url } = this.props;
         const { isLoading } = this.state;
@@ -99,7 +101,7 @@ export default class VLCPlayerView extends Component {
                             '--tcp-caching=' + 150,
                             '--realrtsp-caching=' + 150,
                         ]}
-                        onPlaying={() => this.setState({ isLoading: false })}
+                        onPlaying={this.onPlaying}
                     />
                     <ActivityIndicator
                         size={'large'}
@@ -144,13 +146,13 @@ export default class VLCPlayerView extends Component {
      * 视屏播放
      * @param event
      */
-    onPlaying(event) {
-        this.isEnding = false;
-        // if (this.state.paused) {
-        //   this.setState({ paused: false });
-        // }
-        console.log('onPlaying');
-    }
+    // onPlaying(event) {
+    //     this.isEnding = false;
+    //     // if (this.state.paused) {
+    //     //   this.setState({ paused: false });
+    //     // }
+    //     console.log('onPlaying');
+    // }
 
     /**
      * 视屏停止

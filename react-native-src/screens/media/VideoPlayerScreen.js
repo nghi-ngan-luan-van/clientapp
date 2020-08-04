@@ -2,14 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Dimensions, Platform, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
 import { VLCPlayer } from 'react-native-vlc-media-player';
-//import Video from 'react-native-video';
 import _ from 'lodash';
 import Orientation from 'react-native-orientation';
 import { Button } from 'react-native-elements';
-
-// import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 
 export default class VideoPlayerScreen extends Component {
     constructor(props) {
@@ -22,15 +18,16 @@ export default class VideoPlayerScreen extends Component {
         };
     }
     componentDidMount() {
-        // if (this.vlcplayer) {
-        //     if (Platform.OS === 'ios') {
-        //         this.vlcplayer.seek(this.state.seekTime/10000);
-        //     } else {
-        //         console.log(this.vlcplayer);
-        //         console.log('sstate vlcmount', this.state);
-        //         this.vlcplayer.seek(this.state.seekTime/1000);
-        //     }
-        // }
+        if (this.vlcplayer) {
+            if (Platform.OS === 'ios') {
+                console.log();
+                this.vlcplayer.seek(this.state.seekTime / 10000);
+            } else {
+                console.log(this.vlcplayer);
+                console.log('sstate vlcmount', this.state);
+                this.vlcplayer.seek(this.state.seekTime / 1000);
+            }
+        }
     }
     pause = () => {
         let { paused } = this.state;
@@ -59,7 +56,6 @@ export default class VideoPlayerScreen extends Component {
         console.log(event);
     };
     capture = async () => {
-        // console.log(this.vlcplayer);
         this.vlcplayer.snapshot(
             '/Users/macintoshhd/Documents/clientapp/react-native-src/screens/media/video.png'
         );
@@ -105,7 +101,7 @@ export default class VideoPlayerScreen extends Component {
                             marginRight: 12,
                         }}
                     />
-                    <Text>Tín hiệu video</Text>
+                    <Text>Đang tải video</Text>
                 </View>
                 {/*<Button*/}
                 {/*    icon={() => <Icon type={'font-awesome'} name={'play'} />}*/}
@@ -149,7 +145,7 @@ const styles = StyleSheet.create({
     },
     backgroundVideo: {
         // height: 600,
-        // backgroundColor: '#000',
+        backgroundColor: '#000',
 
         justifyContent: 'center',
         alignItems: 'center',

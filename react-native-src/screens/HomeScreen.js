@@ -196,6 +196,7 @@ export default function HomeScreen(props) {
                     )}
                     {isShowName && (
                         <Icon
+                            // style={{ flex: 1 }}
                             name={'search'}
                             size={30}
                             onPress={onSearchIcon}
@@ -205,6 +206,7 @@ export default function HomeScreen(props) {
                     {!isShowName && (
                         <Animated.View style={{ opacity: searchAnim, flex: 1, width: translateX }}>
                             <SearchBar
+                                autoFocus
                                 onBlur={onOutSearch}
                                 // inputStyle={{ flex: 1, width: '100%' }}
                                 style={{

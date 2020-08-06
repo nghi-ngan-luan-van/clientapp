@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../navigation/app-routes';
@@ -187,6 +188,7 @@ export default function HomeScreen(props) {
                 end={{ x: 1, y: 1 }}
             >
                 <Text style={styles.headerTitle}>C L O M E R A</Text>
+                <ActivityIndicator animating={true} />
             </LinearGradient>
         );
     };
@@ -253,9 +255,9 @@ export default function HomeScreen(props) {
                         </Animated.View>
                     )}
                     <Icon
-                        name={'add'}
+                        name={'plus'}
                         raised={true}
-                        type={'ant-design'}
+                        type={'antdesign'}
                         color={Colors.purple_blue}
                         onPress={onPressAdd}
                     />

@@ -65,19 +65,9 @@ class CameraVideosComp extends Component {
             showCalendar: true,
             loading: true,
             eventList: [],
-            video: {},
             backupList: [],
-            currentIndex: 0,
-            seek: 0,
-
-            loadingSuccess: false,
-            currentTime: 0.0,
-            currentRate: 0.0,
-            totalTime: 0.0,
-            paused: false,
-            animating: true,
             currentDay: '',
-            isFull: false,
+            items: [],
         };
     }
 
@@ -85,17 +75,13 @@ class CameraVideosComp extends Component {
         let camera =
             this.props.camera || (this.props.route.params && this.props.route.params.camera);
         let date = new Date();
-        const currentDay = this.timeToString(date);
-        // const currentDay = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
-        console.log(currentDay);
+        const currentDay = this.timeToString();
+        //console.log('currentDay', currentDay);
         this.setState({ currentDay });
         await this.loadData(camera);
     };
 
-    getTodayEvent = () => {
-        // const date = moment(Number(item.timeStart)).startOf('day');
-        // const strDate = this.timeToString(date);
-    };
+    componentWillUnmount() {}
 
     loadData = async camera => {
         const { signOut } = this.props;
@@ -104,7 +90,7 @@ class CameraVideosComp extends Component {
 
         await getMovingEvents({ userToken, camera }, respond => {
             if (Array.isArray(respond)) {
-                this.setState({ eventList: respond, loading: false });
+                this.setState({ eventList: respond }, () => this.setState({ loading: false }));
             } else {
                 typeof signOut === 'function' && signOut();
             }
@@ -117,33 +103,49 @@ class CameraVideosComp extends Component {
         });
     };
 
-    componentWillUnmount() {}
-
     onCalendarPress = () => {
         const { showCalendar } = this.state;
         this.setState({ showCalendar: !showCalendar });
     };
 
     timeToString = time => {
-        const date = new Date(time);
-        return date.toISOString().split('T')[0];
+        let dateStr = time ? new Date(time) : new Date();
+        const date = dateStr.getDate() < 10 ? `0${dateStr.getDate()}` : dateStr.getDate();
+        const month = dateStr.getMonth() < 10 ? `0${dateStr.getMonth() + 1}` : dateStr.getMonth();
+        const year = dateStr.getFullYear();
+        return year + '-' + month + '-' + date;
+        // return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
     };
 
-    renderVideo = () => {
-        return (
-            <View>
-                <VLCPlayerView />
-            </View>
-        );
-    };
     getDate = day => {
         const { dateString } = day;
         this.setState({ currentDay: dateString });
-        console.log('dateString', day);
+        //console.log('dateString', day);
+    };
+    getItems = items => {
+        //console.log('get', items);
+        const newItems = items && items.filter(item => item.cdnUrl !== null);
+        this.setState({ items: newItems });
+        //const
+    };
+    onEnd = () => {};
+    renderVideo = () => {
+        const { items } = this.state;
+
+        // console.log(items);
+        if (items && items[0]) {
+            let { cdnUrl } = items[0] || {};
+            return (
+                <View>
+                    <VLCPlayerView url={cdnUrl} style={{ width: width, height: 300 }} />
+                </View>
+            );
+        } else {
+            return null;
+        }
     };
     renderCalendar = () => {
         const { showCalendar, eventList, backupList } = this.state;
-        //console.log('backup', backupList);
         if (showCalendar) {
             return (
                 <CalendarPicker
@@ -152,6 +154,7 @@ class CameraVideosComp extends Component {
                     setBackupList={this.setBackupList}
                     data={eventList}
                     getDate={day => this.getDate(day)}
+                    getItems={day => this.getItems(day)}
                 />
             );
         } else {
@@ -187,7 +190,7 @@ class CameraVideosComp extends Component {
                 end={{ x: 1, y: 1 }}
             >
                 <Text style={styles.title}>Chọn ngày bạn muốn kiểm tra:</Text>
-                {/*{this.renderVideo()}*/}
+                {this.renderVideo()}
                 <TouchableOpacity
                     activeOpacity={0.9}
                     // activeOpacity={false}

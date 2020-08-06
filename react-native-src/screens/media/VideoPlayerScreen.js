@@ -55,11 +55,11 @@ export default class VideoPlayerScreen extends Component {
     onProgress = event => {
         console.log(event);
     };
-    capture = async () => {
-        this.vlcplayer.snapshot(
-            '/Users/macintoshhd/Documents/clientapp/react-native-src/screens/media/video.png'
-        );
-    };
+    // capture = async () => {
+    //     this.vlcplayer.snapshot(
+    //         '/Users/macintoshhd/Documents/clientapp/react-native-src/screens/media/video.png'
+    //     );
+    // };
     onPlaying = () => {
         this.setState({ videoLoad: false });
     };

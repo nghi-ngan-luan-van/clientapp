@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthContext } from '../../navigation/AppNavigator';
-import { StyleSheet, Dimensions, Text, View } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, ScrollView } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 const { width } = Dimensions.get('window');
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
 });
 
 export default function SignInForm(props) {
-    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
-    const [password, setPassword] = React.useState('123456');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [isSigninInProgress, setSigninInProgress] = React.useState(false);
     const { signIn, googleSignIn } = React.useContext(AuthContext);
     const [loading, setLoading] = React.useState(false);
@@ -188,7 +188,7 @@ export default function SignInForm(props) {
             {/*    size={GoogleSigninButton.Size.Standard}*/}
             {/*    color={GoogleSigninButton.Color.Dark}*/}
             {/*    onPress={ggSignIn}*/}
-            {/*    disabled={isSigninInProgress}*/}
+            {/*    disabled={isSigninIanProgress}*/}
             {/*/>*/}
             {/*</View>*/}
         </View>

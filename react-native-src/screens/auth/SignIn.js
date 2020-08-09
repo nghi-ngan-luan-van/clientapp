@@ -4,6 +4,7 @@ import {
     Image,
     Keyboard,
     KeyboardAvoidingView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
@@ -17,63 +18,54 @@ import { Colors } from '../../utils/AppConfig';
 
 import { useSafeArea } from 'react-native-safe-area-context';
 import SignInForm from './SignInForm';
-import Loader from '../../components/Loader';
 
 export default function SignIn(props) {
     const insets = useSafeArea();
-    return (
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={[styles.contentContainer, { padhdingBottom: insets.bottom }]}>
-                    <View style={[styles.topView, { paddingTop: insets.top }]}>
-                        <Image
-                            style={styles.backgroundImg}
-                            source={require('../../assets/camera.gif')}
-                        />
-                        <Text style={styles.appname}>C L O M E R A</Text>
-                    </View>
 
-                    <SignInForm
-                        {...props}
-                        style={{
-                            marginTop: -height / 6,
-                        }}
+    return (
+        <ScrollView
+            style={{ flex: 1, backgroundColor: Colors.screen }}
+            contentContainerStyle={styles.contentContainer}
+        >
+            <View style={[styles.topView, { paddingTop: insets.top }]}>
+                <View style={styles.gif}>
+                    <Image
+                        style={styles.backgroundImg}
+                        source={require('../../assets/camera.gif')}
                     />
-                    <View
-                        style={{
-                            // flex: 0.5,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Text style={{ fontSize: 14, color: Colors.violet, fontWeight: 'bold' }}>
-                            Chưa có tài khoản?
-                        </Text>
-                        <Button
-                            title={' Đăng ký!'}
-                            type="outline"
-                            titleStyle={{
-                                fontSize: 14,
-                                color: Colors.pomegranate,
-                                fontWeight: 'bold',
-                            }}
-                            buttonStyle={{ borderColor: Colors.screen }}
-                            onPress={() => {
-                                const { navigation } = props || {};
-                                navigation && navigation.navigate(AppRoute.SIGN_UP);
-                            }}
-                        />
-                    </View>
                 </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                <Text style={styles.appname}>C L O M E R A</Text>
+            </View>
+
+            <SignInForm
+                {...props}
+                style={{
+                    marginTop: -height / 16,
+                }}
+            />
+            <View style={styles.bottomView}>
+                <Text style={styles.textBold}>Chưa có tài khoản?</Text>
+                <Button
+                    title={' Đăng ký!'}
+                    type="outline"
+                    titleStyle={{
+                        fontSize: 14,
+                        color: Colors.pomegranate,
+                        fontWeight: 'bold',
+                    }}
+                    buttonStyle={{ borderColor: Colors.screen }}
+                    onPress={() => {
+                        const { navigation } = props || {};
+                        navigation && navigation.navigate(AppRoute.SIGN_UP);
+                    }}
+                />
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     contentContainer: {
-        flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: Colors.screen,
@@ -87,10 +79,24 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 40,
         borderBottomRightRadius: 40,
     },
+    bottomView: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     backgroundImg: {
         height: 180,
         width: 180,
         borderRadius: 90,
+        // resizeMode: 'contain',
+        overlayColor: 'transparent',
+    },
+    gif: {
+        width: 180,
+        height: 180,
+        borderRadius: 90,
+        overlayColor: '#fff',
+        overflow: 'hidden',
     },
     title: {
         fontWeight: 'bold',
@@ -107,4 +113,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: Colors.brandy_rose,
     },
+    textBold: { fontSize: 14, color: Colors.violet, fontWeight: 'bold' },
 });

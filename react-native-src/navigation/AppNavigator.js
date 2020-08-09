@@ -73,8 +73,9 @@ export default function AppNavigator() {
                     await signIn(data, async result => {
                         let { token } = result || {};
                         if (!token) {
+                            alert(result);
                             callback && callback();
-                            alert('Wrong email or password, please try again');
+                            // alert('Wrong email or password, please try again');
                         } else {
                             await AsyncStorage.setItem('userToken', token);
                             dispatch({ type: 'SIGN_IN', token: token });

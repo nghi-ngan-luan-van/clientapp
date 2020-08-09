@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View,
     ActivityIndicator,
+    ImageBackground,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../navigation/app-routes';
@@ -152,18 +153,21 @@ export default function HomeScreen(props) {
 
     const renderCamera = ({ item, index }) => {
         const { backupMode } = item;
-        const thumnail = { uri: item.thumbnail };
-        const thumnailSource = thumnail.uri ? thumnail : testThumbnail;
-        const customStyle = thumnail.uri ? {} : { width: 40, height: 40 };
+        const thumbnail = { uri: item.thumbnail };
+        const thumbnailSource = thumbnail.uri ? thumbnail : testThumbnail;
+        // console.log(item.thumbnail);
 
+        const customStyle = thumbnail.uri ? {} : { width: 40, height: 40 };
+        // const arr = 'https://img.mservice.io/momo_app_v2/new_version/img/appx_icon/logo_momo.png';
         return (
             <TouchableOpacity style={[styles.card]} key={index} onPress={onPress(item)}>
                 <View style={[styles.thumbnail]}>
-                    <Image
-                        source={thumnailSource}
-                        resizeMode={'cover'}
-                        style={[styles.thumbnail, customStyle]}
-                    />
+                    <Image source={thumbnailSource} style={[styles.thumbnail, customStyle]} />
+                    {/*<Image*/}
+                    {/*    source={{ uri: item.thumbnail }}*/}
+                    {/*    resizeMode={'cover'}*/}
+                    {/*    style={[styles.thumbnail, customStyle]}*/}
+                    {/*/>*/}
                 </View>
                 <View style={styles.nameRow}>
                     <Text style={styles.cameraName}>{String(item.name)}</Text>
@@ -213,6 +217,7 @@ export default function HomeScreen(props) {
                         <Icon
                             // style={{ flex: 1 }}
                             name={'search'}
+                            // type={'antdesign'}
                             size={30}
                             onPress={onSearchIcon}
                             color={Colors.white}

@@ -14,7 +14,8 @@ class AddingCameraComp extends Component {
         super(props);
         this.state = {
             name: 'Camera',
-            rtspUrl: 'rtsp://172.16.3.134:8080/h264_ulaw.sdp',
+            rtspUrl: '',
+            // rtspUrl: 'rtsp://172.16.3.134:8080/h264_ulaw.sdp',
             thumbnail: 'nothing',
             isTestConnection: false,
             loading: false,
@@ -106,7 +107,7 @@ class AddingCameraComp extends Component {
         return (
             <LinearGradient
                 style={{ flex: 1, padding: 12 }}
-                colors={[Colors.brandy_rose, Colors.pigeon_post, Colors.screen]}
+                colors={[Colors.purple_blue, Colors.pigeon_post, Colors.screen]}
                 start={{ x: 1, y: 1 }}
                 end={{ x: 0, y: 0 }}
             >
@@ -122,7 +123,7 @@ class AddingCameraComp extends Component {
                 <Input
                     labelStyle={styles.label}
                     label={'URL'}
-                    placeholder="Nhập Url"
+                    placeholder="Nhập link RTSP URL từ camera của "
                     value={this.state.rtspUrl}
                     // leftIcon={{ type: 'font-awesome', name: 'comment' }}
                     // style={styles.inputRow}

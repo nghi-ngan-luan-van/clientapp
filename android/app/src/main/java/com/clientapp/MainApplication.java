@@ -15,6 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.util.List;
 
+//import io.invertase.firebase.RNFirebasePackage;
+//import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+//import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
     private final ReactNativeHost mReactNativeHost =
@@ -23,7 +27,15 @@ public class MainApplication extends Application implements ReactApplication {
                 public boolean getUseDeveloperSupport() {
                     return BuildConfig.DEBUG;
                 }
-
+//                @Override
+//                protected List<ReactPackage> getPackages() {
+//                    return Arrays.<ReactPackage>asList(
+//                            new MainReactPackage(),
+//                            new RNFirebasePackage(),
+//                            new RNFirebaseMessagingPackage(),
+//                            new RNFirebaseNotificationsPackage()
+//                    );
+//                }
                 @Override
                 protected List<ReactPackage> getPackages() {
                     @SuppressWarnings("UnnecessaryLocalVariable")

@@ -80,9 +80,6 @@ const MyTabs = props => {
             />
             <Tab.Screen
                 options={{
-                    // tabBarVisible: false,
-                    // tabBarButton:
-                    // tabBarLabel: props => (props.focused ? null : <Text style={}>Cá nhân</Text>),
                     tabBarLabel: 'Hồ sơ',
                     tabBarIcon: props => (
                         <Icon

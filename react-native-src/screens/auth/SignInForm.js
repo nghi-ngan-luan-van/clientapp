@@ -19,7 +19,7 @@ GoogleSignin.configure({
     loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
     forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
     accountName: '', // [Android] specifies an account name on the device that should be used
-    iosClientId: '136433114251-j3plam2goeoqaifnhj2umab2tuib4mts.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+    iosClientId: '', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 const styles = StyleSheet.create({
     viewContainer: {

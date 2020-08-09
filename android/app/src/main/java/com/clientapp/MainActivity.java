@@ -1,4 +1,4 @@
-package com.clientapp;
+package com.clomera.clientapp;
 
 import com.facebook.react.ReactActivity;
 

@@ -1,5 +1,5 @@
 import React, { Component, useContext } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Text } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
@@ -15,7 +15,6 @@ class AddingCameraComp extends Component {
         this.state = {
             name: 'Camera',
             rtspUrl: '',
-            // rtspUrl: 'rtsp://172.16.3.134:8080/h264_ulaw.sdp',
             thumbnail: 'nothing',
             isTestConnection: false,
             loading: false,
@@ -123,6 +122,7 @@ class AddingCameraComp extends Component {
                 <Input
                     labelStyle={styles.label}
                     label={'URL'}
+                    dd
                     placeholder="Nhập link RTSP URL từ camera của "
                     value={this.state.rtspUrl}
                     // leftIcon={{ type: 'font-awesome', name: 'comment' }}
@@ -139,10 +139,12 @@ class AddingCameraComp extends Component {
                     />
                     <Button style={styles.button} title={'Kiểm tra'} onPress={this.onTestCamera} />
                 </View>
+                <Text>Hình ảnh từ camera</Text>
                 <Image
                     style={{
                         height: 200,
                         width: 200,
+                        alignItems: 'center',
                         opacity: this.state.thumbnail !== '' ? 1 : 0,
                     }}
                     source={{ uri: this.state.thumbnail }}

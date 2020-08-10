@@ -11,6 +11,7 @@ import {
     statusCodes,
 } from '@react-native-community/google-signin';
 import Loader from '../../components/Loader';
+a;
 GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
     webClientId: '136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
 });
 
 export default function SignInForm(props) {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = React.useState('nghinguyen.170498@gmail.com');
+    const [password, setPassword] = React.useState('123456');
     const [isSigninInProgress, setSigninInProgress] = React.useState(false);
     const { signIn, googleSignIn } = React.useContext(AuthContext);
     const [loading, setLoading] = React.useState(false);

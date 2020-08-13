@@ -18,34 +18,11 @@ import { getUserCameras } from '../utils/ApiUtils';
 import { SearchBar, Icon } from 'react-native-elements';
 import Orientation from 'react-native-orientation';
 import { useFocusEffect } from '@react-navigation/native';
-import { AuthContext } from '../navigation/AppNavigator';
+import { AuthContext } from '../navigation/context';
 import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
-
-// const testThumbnail = require('../assets/camera.gif');
 const testThumbnail = require('../assets/security_camera.png');
 const WIDTH = Dimensions.get('window').width;
-const FadeInView = props => {
-    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
-
-    React.useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 1000,
-        }).start();
-    }, [fadeAnim]);
-
-    return (
-        <Animated.View // Special animatable View
-            style={{
-                ...props.style,
-                opacity: fadeAnim, // Bind opacity to animated value
-            }}
-        >
-            {props.children}
-        </Animated.View>
-    );
-};
 
 export default function HomeScreen(props) {
     const insets = useSafeArea();
@@ -161,13 +138,17 @@ export default function HomeScreen(props) {
         // const arr = 'https://img.mservice.io/momo_app_v2/new_version/img/appx_icon/logo_momo.png';
         return (
             <TouchableOpacity style={[styles.card]} key={index} onPress={onPress(item)}>
-                <View style={[styles.thumbnail]}>
-                    <Image source={thumbnailSource} style={[styles.thumbnail, customStyle]} />
-                    {/*<Image*/}
-                    {/*    source={{ uri: item.thumbnail }}*/}
-                    {/*    resizeMode={'cover'}*/}
-                    {/*    style={[styles.thumbnail, customStyle]}*/}
-                    {/*/>*/}
+                <View style={styles.thumbnail}>
+                    <ImageBackground style={[styles.thumbnail, customStyle]} source={testThumbnail}>
+                        {thumbnail.uri ? (
+                            <Image source={thumbnail} style={[styles.thumbnail]} />
+                        ) : null}
+                        {/*<Image*/}
+                        {/*    source={{ uri: item.thumbnail }}*/}
+                        {/*    resizeMode={'cover'}*/}
+                        {/*    style={[styles.thumbnail, customStyle]}*/}
+                        {/*/>*/}
+                    </ImageBackground>
                 </View>
                 <View style={styles.nameRow}>
                     <Text style={styles.cameraName}>{String(item.name)}</Text>

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { AppRoute } from './app-routes';

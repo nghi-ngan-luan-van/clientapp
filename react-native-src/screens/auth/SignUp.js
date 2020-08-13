@@ -10,7 +10,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from 'react-native';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import { AppRoute } from '../../navigation/app-routes';
 
 const { width, height } = Dimensions.get('window');

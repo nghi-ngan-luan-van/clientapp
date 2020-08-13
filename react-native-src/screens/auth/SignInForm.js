@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import { StyleSheet, Dimensions, Text, View, ScrollView } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';

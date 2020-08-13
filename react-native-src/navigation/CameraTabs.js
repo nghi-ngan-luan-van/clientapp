@@ -10,7 +10,7 @@ import EditCamera from '../screens/editcamera';
 import CameraVideos from '../screens/details/CameraVideos';
 import CustomTab from '../components/CustomTab';
 import DrawerContent from './DrawerContent';
-import { AuthContext } from './AppNavigator';
+import { AuthContext } from './context';
 const Drawer = createDrawerNavigator();
 const styles = StyleSheet.create({
     rightIcon: {

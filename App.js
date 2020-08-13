@@ -26,44 +26,12 @@ function App() {
                 tokens: firestore.FieldValue.arrayUnion(token),
             });
     }
-
-    // useEffect(() => {
-    //     // Assume a message-notification contains a "type" property in the data payload of the screen to open
-    //
-    //     messaging().onNotificationOpenedApp(remoteMessage => {
-    //         console.log(
-    //             'Notification caused app to open from background state:',
-    //             remoteMessage.notification
-    //         );
-    //         // navigation.navigate(remoteMessage.data.type);
-    //     });
-    //     // Check whether an initial notification is available
-    //     messaging()
-    //         .getInitialNotification()
-    //         .then(remoteMessage => {
-    //             if (remoteMessage) {
-    //                 console.log(
-    //                     'Notification caused app to open from quit state:',
-    //                     remoteMessage.notification
-    //                 );
-    //                 setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-    //             }
-    //             setLoading(false);
-    //         });
-    // }, []);
     useEffect(() => {
-        messaging()
-            .requestPermission()
-            .then(value => {
-                messaging()
-                    .getToken()
-                    .then(token => {
-                        console.log('FCM_token', token);
-                    });
-            });
-        // return messaging().onTokenRefresh(token => {
-        //     saveTokenToDatabase(token);
-        // });
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        });
+
+        return unsubscribe;
     }, []);
 
     async function registerAppWithFCM() {

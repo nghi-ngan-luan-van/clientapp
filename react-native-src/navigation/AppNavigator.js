@@ -7,9 +7,8 @@ import { AuthNavigator } from './AuthNavigator';
 import { AppRoute } from './app-routes';
 import { getUserCameras, signIn, signInGG } from '../utils/ApiUtils';
 // import notifee from '@notifee/react-native';
-export const AuthContext = React.createContext();
 const Stack = createStackNavigator();
-
+import { AuthContext } from './context';
 export default function AppNavigator() {
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {

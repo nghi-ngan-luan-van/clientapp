@@ -3,13 +3,12 @@ import { Text, View, SafeAreaView, Image, StyleSheet, TouchableOpacity } from 'r
 import { Colors } from '../../utils/AppConfig';
 import { Icon } from 'react-native-elements';
 import { AppRoute } from '../../navigation/app-routes';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { verifytoken } from '../../utils/ApiUtils';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from '@react-navigation/core';
-import { getHeaderTitle } from '../../navigation/HomeNavigator';
 
 const styles = StyleSheet.create({
     safeContainer: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import {
     StyleSheet,
     Dimensions,

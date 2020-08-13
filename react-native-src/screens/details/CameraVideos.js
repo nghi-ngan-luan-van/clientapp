@@ -19,7 +19,7 @@ import VLCPlayer from 'react-native-vlc-media-player/VLCPlayer';
 import { VlCPlayerView } from 'react-native-vlc-media-player';
 import { Icon } from 'react-native-elements';
 import Slider from '../../components/slider/Slider';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import LinearGradient from 'react-native-linear-gradient';
 import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
 import Loader from '../../components/Loader';
@@ -154,7 +154,7 @@ class CameraVideosComp extends Component {
                 <CalendarPicker
                     {...this.props}
                     backupList={backupList}
-                    setBackupList={this.setBackupList}
+                    // setBackupList={this.setBackupList}
                     data={eventList}
                     getDate={day => this.getDate(day)}
                     getItems={items => this.getItems(items)}

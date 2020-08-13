@@ -7,7 +7,7 @@ import Loader from '../../components/Loader';
 import { Colors } from '../../utils/AppConfig';
 import LinearGradient from 'react-native-linear-gradient';
 import { testConnection } from '../../utils/ApiUtils';
-import { AuthContext } from '../../navigation/AppNavigator';
+import { AuthContext } from '../../navigation/context';
 import { HOST_URL } from '../../utils/AppConst';
 class AddingCameraComp extends Component {
     constructor(props) {
@@ -146,11 +146,12 @@ class AddingCameraComp extends Component {
                     <Button style={styles.button} title={'Kiểm tra'} onPress={this.onTestCamera} />
                 </View>
                 <Text style={styles.text}>Hình ảnh từ camera:</Text>
-                {thumbnail !== 'nothing' && <Image
+                {thumbnail !== 'nothing' && (
+                    <Image
                         style={[styles.thumbnail, { opacity: this.state.thumbnail !== '' ? 1 : 0 }]}
                         source={{ uri: thumbnail }}
                     />
-                }
+                )}
             </LinearGradient>
         );
     }

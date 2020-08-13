@@ -86,11 +86,12 @@ export default function AppNavigator() {
                 }
             },
 
-            googleSignIn: async data => {
+            googleSignIn: async (data, callback) => {
                 try {
                     await signInGG(data, async result => {
                         let { token } = result || {};
                         if (!token) {
+                            callback && callback();
                             alert('Wrong email or password, please try again');
                         } else {
                             await AsyncStorage.setItem('userToken', token);

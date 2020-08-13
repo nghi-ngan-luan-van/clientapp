@@ -122,7 +122,7 @@ export default function HomeScreen(props) {
                 screen: AppRoute.CAMERA_STREAM,
                 params: {
                     camera: camera,
-                    reload: () => getCameras(),
+                    // reload: () => getCameras(),
                 },
             });
     };

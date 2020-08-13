@@ -4,15 +4,16 @@ import AgendaView from 'react-native-calendars/src/agenda';
 import moment from 'moment';
 import { AppRoute } from '../navigation/app-routes';
 import { Colors } from '../utils/AppConfig';
+import { Icon } from 'react-native-elements';
 const calendarTheme = {
-    backgroundColor: Colors.whisper,
+    backgroundColor: Colors.white,
     calendarBackground: Colors.white,
     textSectionTitleColor: '#b6c1cd',
     textSectionTitleDisabledColor: '#d9e1e8',
     selectedDayBackgroundColor: '#00adf5',
     selectedDayTextColor: Colors.alert,
-    todayTextColor: '#00adf5',
-    dayTextColor: '#2d4150',
+    todayTextColor: Colors.purple_blue,
+    dayTextColor: Colors.grey,
     textDisabledColor: '#d9e1e8',
     dotColor: '#00adf5',
     selectedDotColor: Colors.alert,
@@ -33,8 +34,8 @@ export default class CalendarPicker extends Component {
 
         this.state = {
             items: {},
-            data: this.props.data,
-            recordVideos: this.props.backupList,
+            data: this.props.data || [],
+            recordVideos: this.props.backupList || [],
         };
         this.newData = {};
         this.newBackupList = {};
@@ -44,7 +45,6 @@ export default class CalendarPicker extends Component {
         // this.loadItems = this.props.data;
     }
     componentDidMount = () => {
-        // this.groupTime();
         this.groupTime(markedDates => {
             console.log('new', markedDates);
             this.setState({ markedDates: markedDates });
@@ -61,44 +61,54 @@ export default class CalendarPicker extends Component {
 
     groupTime = callback => {
         const { data } = this.state;
+        const { getItems } = this.props;
         //console.log('this.state.data', this.state.data);
+        // getItems && getItems(this.state.items);
+        // console.log('Iamherea');
         let markedDates = {};
         // let newData = [];
 
         Array.isArray(data) &&
             data.forEach((value, index, arr) => {
-                const date = new Date(Number(value.timeStart));
+                const dayToNumber = Number(value.timeStart);
+                // console.log()
+                if (dayToNumber) {
+                    const date = new Date(dayToNumber);
 
-                const strDate = this.timeToString(date);
-                markedDates[strDate] = {
-                    startingDay: true,
-                    endingDay: true,
-                    color: Colors.pigeon_post,
-                    marked: true,
-                };
+                    const strDate = this.timeToString(date);
+                    markedDates[strDate] = {
+                        startingDay: true,
+                        endingDay: true,
+                        color: Colors.screen,
+                        // marked: true,
+                    };
 
-                if (!this.newData[strDate]) {
-                    this.newData[strDate] = [];
+                    if (!this.newData[strDate]) {
+                        this.newData[strDate] = [];
+                    }
+                    this.newData[strDate].push(value);
                 }
-                this.newData[strDate].push(value);
             });
         callback && callback(markedDates);
     };
     groupBackupListTime = () => {
         let { recordVideos } = this.state;
-        this.props.backupList.forEach((value, index, arr) => {
-            const date = moment(Number(value.timeStart)).startOf('day');
-            const strDate = this.timeToString(date);
-            if (!this.newBackupList[strDate]) {
-                this.newBackupList[strDate] = [];
-            }
-            this.newBackupList[strDate].push(value);
-        });
+        // let {backupList}=this.props;
+        Array.isArray(recordVideos) &&
+            recordVideos.forEach((value, index, arr) => {
+                const date = moment(Number(value.timeStart)).startOf('day');
+                const strDate = this.timeToString(date);
+                if (!this.newBackupList[strDate]) {
+                    this.newBackupList[strDate] = [];
+                }
+                this.newBackupList[strDate].push(value);
+            });
     };
 
     loadItems = day => {
         // console.log('new0000000', this.state.markedDates);
         // this.timer1 = setTimeout(() => {
+
         const { getItems } = this.props;
         const time = day.timestamp;
         const strTime = this.timeToString(time);
@@ -117,15 +127,15 @@ export default class CalendarPicker extends Component {
             this.newBackupList[strTime] = [];
         }
         this.allData = this.newData;
+        if (this.newBackupList && this.newBackupList[strTime]) {
+            this.newBackupList[strTime].forEach((value, index, arr) => {
+                this.allData[strTime].push(value);
+            });
+        }
 
-        this.newBackupList[strTime].forEach((value, index, arr) => {
-            this.allData[strTime].push(value);
-        });
-
-        // this.timer2 = setTimeout(() => {
         let newItems = this.state.items;
         newItems[strTime] = this.allData[strTime];
-        this.setState({ items: newItems }, () => getItems && getItems(this.state.items[strTime]));
+        this.setState({ items: newItems }, () => {});
 
         // const time = day.timestamp;
         // const strTime = this.timeToString(time);
@@ -140,10 +150,12 @@ export default class CalendarPicker extends Component {
     findVideo = item => {
         const date = moment(Number(item.timeStart)).startOf('day');
         const strDate = this.timeToString(date);
-        const found = this.newBackupList[strDate].filter(value => {
-            return item.timeStart >= value.timeStart && item.timeStart <= value.timeEnd;
-        });
-        return found[0];
+        const found =
+            this.newBackupList[strDate] &&
+            this.newBackupList[strDate].filter(value => {
+                return item.timeStart >= value.timeStart && item.timeStart <= value.timeEnd;
+            });
+        return found && found[0];
     };
 
     renderVideoByItem = item => {
@@ -169,13 +181,30 @@ export default class CalendarPicker extends Component {
         const n = d.toLocaleTimeString();
         const end = new Date(Number(item.timeEnd)).toLocaleTimeString();
         //console.log('n', n);
+        const color = item.cdnUrl ? Colors.alert : Colors.brandy_rose;
         return (
             <TouchableOpacity
                 testID={'ITEM'}
-                style={[styles.item, { height: 50 }]}
+                style={[
+                    styles.item,
+                    {
+                        height: 50,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: Colors.screen,
+                    },
+                ]}
                 onPress={() => this.renderVideoByItem(item)}
             >
-                <Text>{item.cdnUrl !== null ? `📷 ${n} - ${end} ` : ` 🚶  ${n} - ${end}`}</Text>
+                <Icon
+                    // name={item.cdnUrl !== null ? 'play' : 'warning'}
+                    name={'play'}
+                    type={'antdesign'}
+                    // color={'white'}
+                    color={item.cdnUrl ? Colors.alert : Colors.brandy_rose}
+                    size={20}
+                />
+                <Text style={{ color: Colors.purple_blue }}> {` ${n} - ${end}`}</Text>
             </TouchableOpacity>
         );
     };
@@ -202,13 +231,12 @@ export default class CalendarPicker extends Component {
             return year + '-' + month + '-' + date;
         } else {
             const date = new Date(time);
-            console.log(date.toISOString().split('T')[0]);
             return date.toISOString().split('T')[0];
         }
     };
     render() {
         const { getDate, getItems } = this.props;
-        console.log('nar', this.state.markedDates);
+        // console.log('nar', this.state.markedDates);
         return (
             <AgendaView
                 items={this.state.items}
@@ -216,8 +244,9 @@ export default class CalendarPicker extends Component {
                 loadItemsForMonth={date => this.loadItems(date)}
                 onDayPress={day => {
                     getDate && getDate(day);
-                    // const { getItems } = this.props;
 
+                    // const { getItems } = this.props;
+                    // getItems(this.state.items);
                     // console.log('day pressed', day);
                 }}
                 // callback that gets called when day changes while scrolling agenda list
@@ -237,6 +266,7 @@ export default class CalendarPicker extends Component {
                     agendaDayNumColor: 'green',
                     agendaTodayColor: 'red',
                     agendaKnobColor: 'blue',
+                    // selectedDayTextColor: ?Colors.pomegranate : '#fff',
                 }}
                 // Agenda container style
                 // style={{ backgroundColor: Colors.screen }}

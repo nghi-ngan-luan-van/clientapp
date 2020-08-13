@@ -1,5 +1,5 @@
 import React, { Component, useContext } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Text } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
@@ -21,6 +21,7 @@ class AddingCameraComp extends Component {
             loading: false,
         };
         this.addtoken = null;
+        console.log('afafs', this.props);
     }
 
     async componentDidMount() {}
@@ -29,7 +30,7 @@ class AddingCameraComp extends Component {
         const { signOut } = this.props;
         // const rtspUrl = 'rtsp://85.214.56.86/live/Autobahn/Quickborn-Schnellsen_Nord?vcodecs=h264';
         const { rtspUrl } = this.state;
-        const { navigaton } = this.props;
+        const { navigator } = this.props;
         console.log('navigator', navigator);
         this.setState({
             loading: true,
@@ -87,23 +88,28 @@ class AddingCameraComp extends Component {
 
         await fetch(HOST_URL + 'camera/add', requestOptions)
             .then(response => {
-                console.log(response.status);
+                // console.log(response.status);
                 if (response.status !== 200) {
-                    alert('Adding camera: Failed');
                     this.setState({ loading: false });
+
+                    alert('Adding camera: Failed');
                 } else {
                     return response;
                 }
             })
             .then(result => {
                 this.setState({ loading: false });
+
                 const { navigation } = this.props;
-                navigation.push(AppRoute.HOME, { reload: true });
+                if (result) {
+                    navigation.navigate(AppRoute.HOME, { params: { reload: true } });
+                }
             })
             .catch(error => console.log('error', error));
     };
 
     render() {
+        let { thumbnail } = this.state;
         return (
             <LinearGradient
                 style={{ flex: 1, padding: 12 }}
@@ -139,22 +145,20 @@ class AddingCameraComp extends Component {
                     />
                     <Button style={styles.button} title={'Kiểm tra'} onPress={this.onTestCamera} />
                 </View>
-                <Image
-                    style={{
-                        height: 200,
-                        width: 200,
-                        opacity: this.state.thumbnail !== '' ? 1 : 0,
-                    }}
-                    source={{ uri: this.state.thumbnail }}
-                />
+                <Text style={styles.text}>Hình ảnh từ camera:</Text>
+                {thumbnail !== 'nothing' && <Image
+                        style={[styles.thumbnail, { opacity: this.state.thumbnail !== '' ? 1 : 0 }]}
+                        source={{ uri: thumbnail }}
+                    />
+                }
             </LinearGradient>
         );
     }
 }
 
-export default function AddingCamera() {
+export default function AddingCamera(props) {
     const { signOut } = useContext(AuthContext);
-    return <AddingCameraComp signOut={signOut} />;
+    return <AddingCameraComp signOut={signOut} {...props} />;
 }
 
 const styles = StyleSheet.create({
@@ -175,5 +179,15 @@ const styles = StyleSheet.create({
         padding: 12,
         // marginBottom: 12,
         borderRadius: 5,
+    },
+    text: {
+        color: Colors.text,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    thumbnail: {
+        alignSelf: 'center',
+        height: 200,
+        width: 200,
     },
 });

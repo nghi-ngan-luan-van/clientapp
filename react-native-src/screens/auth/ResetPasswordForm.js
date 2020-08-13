@@ -71,45 +71,45 @@ export function ResetForm(props) {
 
     return (
         <View style={[styles.wrapper, style]}>
-            <View>
-                <View style={[styles.container]}>
-                    <Button
-                        title={title ? title : ''}
-                        type="outline"
-                        titleStyle={styles.title}
-                        buttonStyle={styles.buttonTitle}
-                        disabled={true}
-                    />
-                    <Input
-                        placeholder={placeholder}
-                        label={label}
-                        labelStyle={styles.text}
-                        leftIconContainerStyle={styles.leftIconContainer}
-                        value={inputValue}
-                        inputStyle={styles.text}
-                        onChangeText={value => setInputValue(value)}
-                        keyboardType="email-address"
-                    />
-                    <View style={styles.navigationRow}>
-                        {!showBack ? (
-                            <View />
-                        ) : (
-                            <Icon
-                                type="font-awesome"
-                                name="arrow-left"
-                                onPress={goToPrev}
-                                style={styles.icon}
-                            />
-                        )}
+            {/*<View>*/}
+            <View style={[styles.container]}>
+                <Button
+                    title={title ? title : ''}
+                    type="outline"
+                    titleStyle={styles.title}
+                    buttonStyle={styles.buttonTitle}
+                    disabled={true}
+                />
+                <Input
+                    placeholder={placeholder}
+                    label={label}
+                    labelStyle={styles.text}
+                    leftIconContainerStyle={styles.leftIconContainer}
+                    value={inputValue}
+                    inputStyle={styles.text}
+                    onChangeText={value => setInputValue(value)}
+                    keyboardType="email-address"
+                />
+                <View style={styles.navigationRow}>
+                    {!showBack ? (
+                        <View />
+                    ) : (
                         <Icon
                             type="font-awesome"
-                            name="arrow-down"
-                            onPress={onSubmit}
+                            name="arrow-left"
+                            onPress={goToPrev}
                             style={styles.icon}
                         />
-                    </View>
+                    )}
+                    <Icon
+                        type="font-awesome"
+                        name="arrow-down"
+                        onPress={onSubmit}
+                        style={styles.icon}
+                    />
                 </View>
             </View>
+            {/*</View>*/}
         </View>
     );
 }

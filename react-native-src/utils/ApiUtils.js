@@ -201,6 +201,19 @@ export const getBackupVideo = (params, callback) => {
 
     get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
 };
+export const getAllVideo = (params, callback) => {
+    let { camera = {}, userToken } = params;
+    let { _id } = camera;
+    let message = {
+        // data: { _id: _id },
+        headers: {
+            Authorization: `Bearer ${userToken}`,
+            // timeout:2000,
+        },
+    };
+
+    get(HOST_URL + 'camera/recordedvideo/' + _id, message, callback);
+};
 
 // const renderAlertDelete = () => {
 //     return Alert.alert(

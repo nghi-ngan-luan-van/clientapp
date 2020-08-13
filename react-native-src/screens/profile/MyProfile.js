@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
         // padding: 12,
     },
     avatar: {
+        borderRadius: 32,
         height: 64,
         width: 64,
     },
@@ -132,7 +133,10 @@ export default function MyProfile(props) {
             >
                 <View>
                     <View style={styles.avatarrow}>
-                        <Image source={require('../../assets/ic_user.png')} style={styles.avatar} />
+                        <Image
+                            source={require('../../assets/ic_user.jpeg')}
+                            style={styles.avatar}
+                        />
                         <View style={styles.nameRow}>
                             <Text style={styles.title}>{user && user.name}</Text>
                             <Text numberOfLines={2} style={styles.text}>

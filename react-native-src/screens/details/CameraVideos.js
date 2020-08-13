@@ -23,6 +23,7 @@ import { AuthContext } from '../../navigation/AppNavigator';
 import LinearGradient from 'react-native-linear-gradient';
 import VLCPlayerView from '../../components/VLCPlayer/VLCPlayerView';
 import Loader from '../../components/Loader';
+import VLCVideoMp4 from '../../components/VLCPlayer/VLCVideoMp4';
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -124,21 +125,23 @@ class CameraVideosComp extends Component {
     };
     getItems = items => {
         //console.log('get', items);
-        const newItems = items && items.filter(item => item.cdnUrl !== null);
+        const newItems = Array.isArray(items) && items.filter(item => item.cdnUrl !== null);
         this.setState({ items: newItems });
         //const
     };
     onEnd = () => {};
     renderVideo = () => {
-        const { items } = this.state;
+        let { items } = this.state;
 
-        // console.log(items);
+        console.log('items', items);
         if (items && items[0]) {
             let { cdnUrl } = items[0] || {};
             return (
-                <View>
-                    <VLCPlayerView url={cdnUrl} style={{ width: width, height: 300 }} />
-                </View>
+                <VLCVideoMp4 url={cdnUrl} style={{ width: width, height: 300 }} />
+                //
+                // <View>
+                //     <VLCPlayerView url={cdnUrl} style={{ width: width, height: 300 }} />
+                // </View>
             );
         } else {
             return null;
@@ -154,7 +157,7 @@ class CameraVideosComp extends Component {
                     setBackupList={this.setBackupList}
                     data={eventList}
                     getDate={day => this.getDate(day)}
-                    getItems={day => this.getItems(day)}
+                    getItems={items => this.getItems(items)}
                 />
             );
         } else {
@@ -189,8 +192,8 @@ class CameraVideosComp extends Component {
                 start={{ x: 0, y: 1 }}
                 end={{ x: 1, y: 1 }}
             >
-                <Text style={styles.title}>Chọn ngày bạn muốn kiểm tra:</Text>
                 {this.renderVideo()}
+                <Text style={styles.title}>Xem video theo ngày:</Text>
                 <TouchableOpacity
                     activeOpacity={0.9}
                     // activeOpacity={false}
@@ -214,7 +217,6 @@ class CameraVideosComp extends Component {
                     {/*    style={styles.calendar}*/}
                     {/*/>*/}
                 </TouchableOpacity>
-
                 {this.renderCalendar()}
             </LinearGradient>
         );

@@ -4,6 +4,7 @@ import {
     Image,
     Keyboard,
     KeyboardAvoidingView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,
@@ -28,67 +29,66 @@ export function ResetPassword(props) {
         setValidEmail(true);
     };
     return (
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={[styles.contentContainer, { paddingBottom: insets.bottom }]}>
-                    <View style={[styles.topView, { paddingTop: insets.top }]}>
-                        <Image
-                            style={styles.backgroundImg}
-                            source={require('../../assets/camera.gif')}
-                        />
-                        <Text style={styles.appname}>C L O M E R A</Text>
-                    </View>
-
-                    <EmailForm
-                        {...props}
-                        style={{
-                            marginTop: -height / 6,
-                        }}
-                        onSubmit={submitEmail}
-                    />
-                    {!!isEmailVailid && (
-                        <ConfirmTokenForm
-                            {...props}
-                            style={{
-                                marginTop: -height / 6,
-                            }}
-                        />
-                    )}
-                    <View style={styles.registerContainer}>
-                        <Text style={styles.textRegister}>Chưa có tài khoản?</Text>
-                        <Button
-                            title={'Đăng ký ngay!'}
-                            type="solid"
-                            titleStyle={styles.regTitle}
-                            buttonStyle={styles.button}
-                            onPress={() => {
-                                const { navigation } = props || {};
-                                navigation && navigation.navigate(AppRoute.SIGN_UP);
-                            }}
-                        />
-                    </View>
-                    <Button
-                        title={'Quay về đăng nhập.'}
-                        type="outline"
-                        titleStyle={styles.signInTitle}
-                        buttonStyle={styles.signInButton}
-                        onPress={() => {
-                            const { navigation } = props || {};
-                            navigation && navigation.navigate(AppRoute.SIGN_IN);
-                        }}
+        <ScrollView
+            style={{ flex: 1, backgroundColor: Colors.purple_blue }}
+            contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom }]}
+        >
+            <View style={[styles.topView, { paddingTop: insets.top }]}>
+                <View style={styles.gif}>
+                    <Image
+                        style={styles.backgroundImg}
+                        source={require('../../assets/camera.gif')}
                     />
                 </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                <Text style={styles.appname}>C L O M E R A</Text>
+            </View>
+
+            <EmailForm
+                {...props}
+                style={{
+                    marginTop: insets.top,
+                }}
+                onSubmit={submitEmail}
+            />
+            {!!isEmailVailid && (
+                <ConfirmTokenForm
+                    {...props}
+                    style={{
+                        marginTop: -height * 0.15,
+                    }}
+                />
+            )}
+            <View style={styles.registerContainer}>
+                <Text style={styles.textRegister}>Chưa có tài khoản?</Text>
+                <Button
+                    title={'Đăng ký ngay!'}
+                    type="solid"
+                    titleStyle={styles.regTitle}
+                    buttonStyle={styles.button}
+                    onPress={() => {
+                        const { navigation } = props || {};
+                        navigation && navigation.navigate(AppRoute.SIGN_UP);
+                    }}
+                />
+            </View>
+            <Button
+                title={'Quay về đăng nhập.'}
+                type="outline"
+                titleStyle={styles.signInTitle}
+                buttonStyle={styles.signInButton}
+                onPress={() => {
+                    const { navigation } = props || {};
+                    navigation && navigation.navigate(AppRoute.SIGN_IN);
+                }}
+            />
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     contentContainer: {
-        flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: Colors.purple_blue,
     },
     topView: {
         width,
@@ -103,6 +103,16 @@ const styles = StyleSheet.create({
         height: 180,
         width: 180,
         borderRadius: 90,
+        // resizeMode: 'contain',
+        overlayColor: 'transparent',
+    },
+    gif: {
+        width: 180,
+        height: 180,
+        borderRadius: 90,
+        overlayColor: '#fff',
+        overflow: 'hidden',
+        marginTop: 10,
     },
     title: {
         fontWeight: 'bold',
@@ -114,8 +124,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     appname: {
-        fontSize: 40,
-        marginTop: 20,
+        fontSize: 30,
+        marginTop: 12,
         fontWeight: 'bold',
         color: Colors.brandy_rose,
     },
@@ -129,7 +139,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 12,
+        marginVertical: 12,
     },
     regTitle: {
         fontSize: 14,

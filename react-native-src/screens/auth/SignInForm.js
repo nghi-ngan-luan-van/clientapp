@@ -11,17 +11,8 @@ import {
     statusCodes,
 } from '@react-native-community/google-signin';
 import Loader from '../../components/Loader';
-a;
-GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
-    webClientId: '136433114251-o6sboivdtsi146766r9uhnv56dcqprkb.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-    hostedDomain: '', // specifies a hosted domain restriction
-    loginHint: '', // [iOS] The user's ID, or email address, to be prefilled in the authentication UI if possible. [See docs here](https://developers.google.com/identity/sign-in/ios/api/interface_g_i_d_sign_in.html#a0a68c7504c31ab0b728432565f6e33fd)
-    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-    accountName: '', // [Android] specifies an account name on the device that should be used
-    iosClientId: '', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-});
+import config from './config/config.json';
+GoogleSignin.configure(config);
 const styles = StyleSheet.create({
     viewContainer: {
         flex: 1,
@@ -74,8 +65,10 @@ export default function SignInForm(props) {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             const { idToken = '' } = userInfo;
-            googleSignIn({ token: idToken });
+
+            googleSignIn({ token: idToken }, () => setLoading(false));
         } catch (error) {
+            setLoading(false);
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 console.log('SIGN_IN_CANCELLED');
                 // user cancelled the login flow
@@ -97,71 +90,95 @@ export default function SignInForm(props) {
     };
     const onSignIn = () => {
         setLoading(true);
-        signIn({ email, password }, () => setLoading(false));
+
+        signIn({ email: email.toLowerCase().trim(), password }, () => setLoading(false));
     };
 
     return (
         <View style={[styles.viewContainer, props.style]}>
             <Loader loading={loading} />
-            <View>
-                <View style={[styles.container]}>
-                    <Input
-                        placeholder="Nhập email của bạn"
-                        leftIcon={{
-                            type: 'ant-design',
-                            name: 'mail',
-                            color: Colors.purple_blue,
-                            size: 20,
-                        }}
-                        label={'Email'}
-                        labelStyle={styles.text}
-                        // style={styles}
-                        leftIconContainerStyle={styles.leftIconContainer}
-                        value={email}
-                        inputStyle={styles.text}
-                        onChangeText={value => setEmail(value.toLowerCase().trim())}
-                        keyboardType="email-address"
-                        // errorMessage={'Vui lòng nhập email'}
-                    />
+            <View style={[styles.container]}>
+                <Input
+                    placeholder="Nhập email của bạn"
+                    leftIcon={{
+                        type: 'ant-design',
+                        name: 'mail',
+                        color: Colors.purple_blue,
+                        size: 20,
+                    }}
+                    label={'Email'}
+                    labelStyle={styles.text}
+                    // style={styles}
+                    leftIconContainerStyle={styles.leftIconContainer}
+                    value={email}
+                    inputStyle={styles.text}
+                    onChangeText={value => {
+                        // let newVal = value.toLowerCase();
+                        setEmail(value);
+                    }}
+                    keyboardType="email-address"
+                    // errorMessage={'Vui lòng nhập email'}
+                />
 
-                    <Input
-                        placeholder="Nhập mật khẩu của bạn"
-                        leftIcon={{
-                            type: 'ant-design',
-                            name: 'lock',
-                            color: Colors.purple_blue,
-                            size: 20,
+                <Input
+                    placeholder="Nhập mật khẩu của bạn"
+                    leftIcon={{
+                        type: 'ant-design',
+                        name: 'lock',
+                        color: Colors.purple_blue,
+                        size: 20,
+                    }}
+                    leftIconContainerStyle={styles.leftIconContainer}
+                    rightIcon=<Icon
+                        type="font-awesome"
+                        name={showPass ? 'eye' : 'eye-slash'}
+                        color={Colors.purple_blue}
+                        onPress={() => {
+                            setShowPass(!showPass);
                         }}
-                        leftIconContainerStyle={styles.leftIconContainer}
-                        rightIcon=<Icon
-                            type="font-awesome"
-                            name={showPass ? 'eye' : 'eye-slash'}
-                            color={Colors.purple_blue}
-                            onPress={() => {
-                                setShowPass(!showPass);
-                            }}
-                            hitSlop={{ x: 5, y: 5 }}
-                            size={20}
-                        />
-                        label={'Mật khẩu'}
-                        labelStyle={{ color: Colors.grey }}
-                        secureTextEntry={!showPass}
-                        // errorMessage={'Vui lòng nhập mật khẩu'}
-                        // style={styles}
-                        value={password}
-                        inputStyle={styles.text}
-                        // inputContainerStyle={styles.input}
-                        onChangeText={value => setPassword(value)}
+                        hitSlop={{ x: 5, y: 5 }}
+                        size={20}
                     />
-                </View>
+                    label={'Mật khẩu'}
+                    labelStyle={{ color: Colors.grey }}
+                    secureTextEntry={!showPass}
+                    value={password}
+                    inputStyle={styles.text}
+                    inputContainerStyle={styles.input}
+                    onChangeText={value => setPassword(value)}
+                />
+            </View>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    width: width - 48,
+                    justifyContent: 'space-between',
+                    // backgroundColor: 'red',
+                }}
+            >
                 <Button
                     title={'Quên mật khẩu'}
                     type="outline"
                     titleStyle={{ color: Colors.violet, fontSize: 14 }}
-                    buttonStyle={{ width: '50%', borderWidth: 0, alignSelf: 'flex-end' }}
+                    buttonStyle={{ borderWidth: 0, alignSelf: 'flex-end' }}
                     onPress={() => {
                         const { navigation } = props || {};
                         navigation && navigation.navigate(AppRoute.RESET_PASSWORD);
+                    }}
+                />
+                <Button
+                    title={' Đăng ký'}
+                    type="outline"
+                    titleStyle={{
+                        alignItems: 'center',
+                        fontSize: 14,
+                        color: Colors.brandy_rose,
+                        fontWeight: 'bold',
+                    }}
+                    buttonStyle={{ borderColor: Colors.screen }}
+                    onPress={() => {
+                        const { navigation } = props || {};
+                        navigation && navigation.navigate(AppRoute.SIGN_UP);
                     }}
                 />
             </View>
@@ -172,8 +189,7 @@ export default function SignInForm(props) {
                 onPress={onSignIn}
                 titleStyle={styles.title}
             />
-            {/*<View style={styles.row}>*/}
-            <Text style={{ color: Colors.purple_blue, alignSelf: 'center', fontSize: 18 }}>
+            <Text style={{ color: Colors.purple_blue, alignSelf: 'center', fontSize: 16 }}>
                 Hoặc đăng nhập với
             </Text>
             <Icon
@@ -183,6 +199,7 @@ export default function SignInForm(props) {
                 reverse
                 raised
                 color={Colors.purple_blue}
+                disabled={isSigninInProgress}
             />
             {/*<GoogleSigninButton*/}
             {/*    style={styles.ggButton}*/}

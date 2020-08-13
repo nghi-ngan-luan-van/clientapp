@@ -1,6 +1,3 @@
-/**
- * Created by yuanzhou.xu on 2018/5/14.
- */
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -77,6 +74,9 @@ export default class VLCPlayerView extends Component {
     onPlaying = () => {
         this.setState({ isLoading: false });
     };
+    renderControlBar = () => {
+        return null;
+    };
     render() {
         const { url } = this.props;
         const { isLoading } = this.state;
@@ -103,12 +103,7 @@ export default class VLCPlayerView extends Component {
                         ]}
                         onPlaying={this.onPlaying}
                     />
-                    <ActivityIndicator
-                        size={'large'}
-                        style={styles.indicator}
-                        animating={isLoading}
-                    />
-
+                    {this.renderControlBar()}
                     {/*<Loader loading={isLoading} transparent />*/}
                 </View>
                 {isLoading ? (

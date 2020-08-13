@@ -24,6 +24,7 @@ export default function SignIn(props) {
 
     return (
         <ScrollView
+            showsVerticalScrollIndicator={false}
             style={{ flex: 1, backgroundColor: Colors.screen }}
             contentContainerStyle={styles.contentContainer}
         >
@@ -34,32 +35,16 @@ export default function SignIn(props) {
                         source={require('../../assets/camera.gif')}
                     />
                 </View>
+
                 <Text style={styles.appname}>C L O M E R A</Text>
             </View>
 
             <SignInForm
                 {...props}
                 style={{
-                    marginTop: -height / 16,
+                    marginTop: -(insets.top + 80),
                 }}
             />
-            <View style={styles.bottomView}>
-                <Text style={styles.textBold}>Chưa có tài khoản?</Text>
-                <Button
-                    title={' Đăng ký!'}
-                    type="outline"
-                    titleStyle={{
-                        fontSize: 14,
-                        color: Colors.pomegranate,
-                        fontWeight: 'bold',
-                    }}
-                    buttonStyle={{ borderColor: Colors.screen }}
-                    onPress={() => {
-                        const { navigation } = props || {};
-                        navigation && navigation.navigate(AppRoute.SIGN_UP);
-                    }}
-                />
-            </View>
         </ScrollView>
     );
 }
@@ -72,6 +57,7 @@ const styles = StyleSheet.create({
     },
     topView: {
         width,
+        height: height * 0.55,
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
@@ -97,6 +83,7 @@ const styles = StyleSheet.create({
         borderRadius: 90,
         overlayColor: '#fff',
         overflow: 'hidden',
+        marginTop: 10,
     },
     title: {
         fontWeight: 'bold',
@@ -108,8 +95,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     appname: {
-        fontSize: 40,
-        marginTop: 20,
+        fontSize: 30,
+        marginTop: 12,
         fontWeight: 'bold',
         color: Colors.brandy_rose,
     },

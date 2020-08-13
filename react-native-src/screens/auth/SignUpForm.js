@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, View, Platform } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { Colors } from '../../utils/AppConfig';
 import { AppRoute } from '../../navigation/app-routes';
@@ -34,21 +34,24 @@ const styles = StyleSheet.create({
     //     borderColor: Colors.grey,
     //     // dash
     // },
-    text: { color: Colors.grey },
+    text: {
+        color: Colors.grey,
+        // fontSize: Platform.OS === 'android' ? 14 : 16
+    },
     button: {
-        // flex: 1,
         marginVertical: 12,
-        backgroundColor: Colors.purple_blue,
-        width: '100%',
+        backgroundColor: Colors.brandy_rose,
+        width: '80%',
         paddingVertical: 14,
         borderRadius: 40,
+        alignSelf: 'center',
     },
 });
 
 export default function SignUpForm(props) {
-    const [email, setEmail] = React.useState('nn170498@gmail.com');
-    const [password, setPassword] = React.useState('123456');
-    const [name, setName] = React.useState('nghi nguyen2');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [name, setName] = React.useState('');
 
     const _signUp = async () => {
         const _email = email.toLowerCase().trim();
@@ -89,14 +92,19 @@ export default function SignUpForm(props) {
                 <Input
                     placeholder="Nhập mật khẩu của bạn"
                     label={'Mật khẩu'}
-                    labelStyle={{ color: Colors.grey }}
+                    labelStyle={styles.text}
                     secureTextEntry={true}
                     value={password}
                     inputStyle={styles.text}
                     onChangeText={value => setPassword(value)}
                 />
             </View>
-            <Button title={'Đăng ký'} buttonStyle={styles.button} onPress={_signUp} />
+            <Button
+                title={'ĐĂNG KÝ'}
+                titleStyle={{ color: Colors.purple_blue }}
+                buttonStyle={styles.button}
+                onPress={_signUp}
+            />
         </View>
     );
 }

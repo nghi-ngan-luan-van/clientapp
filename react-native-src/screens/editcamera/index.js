@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import _ from 'lodash';
@@ -6,17 +6,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { AppRoute } from '../../navigation/app-routes';
 import { Colors } from '../../utils/AppConfig';
 import { HOST_URL } from '../../utils/AppConst';
+import { AuthContext } from '../../navigation/context';
 
 export default function EditCamera(props) {
     const [camera, setCamera] = useState(_.get(props, 'route.params.camera', {}));
     const [isEnabled, setIsEnabled] = useState(camera.backupMode);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const [newName, setNewName] = useState(camera.name);
     const [newIP, setNewIP] = useState(camera.ip);
     const [newPort, setNewPort] = useState(camera.port);
-
+    const { signOut } = useContext(AuthContext);
     const onUpdateCamera = async () => {
-        console.log(newName, newIP, newPort, isEnabled);
         const token = await AsyncStorage.getItem('userToken');
         if (typeof newPort !== 'number') {
             alert('Port must be a number');
@@ -52,6 +51,10 @@ export default function EditCamera(props) {
                         screen: AppRoute.HOME,
                         params: { reload: true },
                     });
+            })
+            .catch(error => {
+                signOut && signOut();
+                console.error('Error:', error);
             });
     };
 

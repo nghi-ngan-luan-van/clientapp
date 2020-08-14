@@ -28,24 +28,11 @@ public class MainApplication extends Application implements ReactApplication {
                 public boolean getUseDeveloperSupport() {
                     return BuildConfig.DEBUG;
                 }
-//                @Override
-//                protected List<ReactPackage> getPackages() {
-//                    return Arrays.<ReactPackage>asList(
-//                            new MainReactPackage(),
-//                            new RNFirebasePackage(),
-//                            new RNFirebaseMessagingPackage(),
-//                            new RNFirebaseNotificationsPackage()
-//                    );
-//                }
+
                 @Override
                 protected List<ReactPackage> getPackages() {
-                    @SuppressWarnings("UnnecessaryLocalVariable")
                     List<ReactPackage> packages =
                             new PackageList(   this   ).getPackages();
-
-                    // Packages that cannot be autolinked yet can be added manually here, for example:
-//                    packages.add(new ReactVideoPackage());
-//                    packages.add(new ReactNativeFirebaseMessagingPackage());
 
                     return packages;
                 }

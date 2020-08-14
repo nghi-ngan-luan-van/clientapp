@@ -131,8 +131,6 @@ class AddingCameraComp extends Component {
                     dd
                     placeholder="Nhập link RTSP URL từ camera của "
                     value={this.state.rtspUrl}
-                    // leftIcon={{ type: 'font-awesome', name: 'comment' }}
-                    // style={styles.inputRow}
                     inputContainerStyle={styles.inputRow}
                     onChangeText={rtspUrl => this.setState({ rtspUrl })}
                 />
